@@ -17,4 +17,4 @@ def handle_input(index, state):
 
 while True:
     keybow.show()
-    time.Sleep(1.0 / 60.0)
+    time.sleep(1.0 / 60.0)
