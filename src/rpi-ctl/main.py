@@ -3,6 +3,24 @@ import time
 
 keybow.setup(keybow.MINI)
 
+colorDict = dict([
+    (0, dict(
+        r = 80,
+        g = 220,
+        b = 100
+    )),
+    (1, dict(
+        r = 205,
+        g = 92,
+        b = 92
+    )),
+    (2, dict(
+        r = 0,
+        g = 142,
+        b = 204
+    ))
+])
+
 @keybow.on()
 def handle_input(index, state):
     print("{}: Key {} has been {}".format(
@@ -10,10 +28,10 @@ def handle_input(index, state):
         index,
         'pressed' if state else 'released'))
 
+
     if state:
-        keybow.set_led(index, 255, 0, 0)
-    else:
-        keybow.set_led(index, 0, 0, 0)
+        colors = colorDict.get(index)
+        keybow.set_all(colors.get("r"), colors.get("g"), colors.get("b"))
 
 while True:
     keybow.show()
