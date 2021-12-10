@@ -1,0 +1,158 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Restaurant {
+  id String [pk]
+  name String [not null]
+  tables Table [not null]
+  bookings Booking [not null]
+  menuItems MenuItem [not null]
+  usersWithRoles UserRoleInRestaurant [not null]
+  tablePositionGrid TablePosition [not null]
+  gridSize Int [not null]
+}
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  password String [not null]
+  firstName String [not null]
+  lastName String [not null]
+  bookings UsersAtBooking [not null]
+  rolesInRestaurants UserRoleInRestaurant [not null]
+}
+
+Table UserRoleInRestaurant {
+  restaurant Restaurant [not null]
+  restaurantId String [not null]
+  user User [not null]
+  userId String [not null]
+  role UserRole [not null]
+
+  indexes {
+    (userId, restaurantId) [unique]
+  }
+}
+
+Table Table {
+  id String [pk]
+  name String [not null]
+  bookings Booking [not null]
+  restaurant Restaurant [not null]
+  restaurantId String [not null]
+  tablesPositions TablePosition [not null]
+}
+
+Table TablePosition {
+  x Int [not null]
+  y Int [not null]
+  table Table [not null]
+  tableId String [not null]
+  restaurant Restaurant [not null]
+  restaurantId String [not null]
+
+  indexes {
+    (x, y, restaurantId) [pk]
+  }
+}
+
+Table Booking {
+  id String [pk]
+  table Table [not null]
+  tableId String [not null]
+  start DateTime [not null]
+  end DateTime [not null]
+  status BookingStatus [not null]
+  restaurant Restaurant [not null]
+  restaurantId String [not null]
+  items ItemsOnBooking [not null]
+  users UsersAtBooking [not null]
+  joinValidationData Json [not null]
+
+  indexes {
+    (tableId, start, end) [unique]
+  }
+}
+
+Table UsersAtBooking {
+  user User [not null]
+  userId String [not null]
+  booking Booking [not null]
+  bookingId String [not null]
+  role BookingRole [not null]
+
+  indexes {
+    (userId, bookingId) [pk]
+  }
+}
+
+Table ItemsOnBooking {
+  booking Booking [not null]
+  bookingId String [not null]
+  item MenuItem [not null]
+  itemId String [not null]
+
+  indexes {
+    (bookingId, itemId) [pk]
+  }
+}
+
+Table MenuItem {
+  id String [pk]
+  name String [not null]
+  description String [not null]
+  price Decimal [not null]
+  type MenuItemType [not null]
+  available Boolean [not null]
+  bookings ItemsOnBooking [not null]
+  restaurant Restaurant [not null]
+  restaurantId String [not null]
+}
+
+Enum UserRole {
+  WAITER
+  ADMIN
+}
+
+Enum BookingStatus {
+  RESERVED
+  CHECKED_IN
+  READY_TO_ORDER
+  NEEDS_SERVICE
+  DONE
+}
+
+Enum BookingRole {
+  HOST
+  GUEST
+}
+
+Enum MenuItemType {
+  FOOD
+  DRINK
+}
+
+Ref: UserRoleInRestaurant.restaurantId > Restaurant.id
+
+Ref: UserRoleInRestaurant.userId > User.id
+
+Ref: Table.restaurantId > Restaurant.id
+
+Ref: TablePosition.tableId > Table.id
+
+Ref: TablePosition.restaurantId > Restaurant.id
+
+Ref: Booking.tableId > Table.id
+
+Ref: Booking.restaurantId > Restaurant.id
+
+Ref: UsersAtBooking.userId > User.id
+
+Ref: UsersAtBooking.bookingId > Booking.id
+
+Ref: ItemsOnBooking.bookingId > Booking.id
+
+Ref: ItemsOnBooking.itemId > MenuItem.id
+
+Ref: MenuItem.restaurantId > Restaurant.id
