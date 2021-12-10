@@ -16,8 +16,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
-import 'package:frontend/bottom_nav_bar/nav.dart';
-import 'package:frontend/constants.dart';
 
 void main() {
   runApp(const MyApp());
