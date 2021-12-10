@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common_components/login_or_Signup_check.dart';
+import 'package:frontend/common_components/login_or_signup.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_password_field.dart';
+import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/components/background.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 
@@ -29,7 +30,11 @@ class Body extends StatelessWidget {
         RoundedPasswordField(
           onChanged: (value) {},
         ),
-        RoundedButton(text: "LOGIN", click: () {}),
+        RoundedButton(
+            text: "LOGIN",
+            click: () {
+              navigateToOverview(context);
+            }),
         LoginOrSignupCheck(click: (value) {
           Navigator.push(
             context,
@@ -42,5 +47,18 @@ class Body extends StatelessWidget {
         }),
       ],
     ));
+  }
+
+  void navigateToOverview(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return const OverviewScreen(
+            userType: UserType.user,
+          );
+        },
+      ),
+    );
   }
 }
