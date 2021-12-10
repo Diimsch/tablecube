@@ -1,0 +1,36 @@
+{
+  "name": "wahlprojekt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node -r dotenv/config src/index.ts",
+    "watch": "nodemon",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose stop",
+    "db:erase": "docker-compose down",
+    "db:init": "prisma db push"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.6",
+    "@types/node": "^16.10.2",
+    "prisma": "3.4.2",
+    "prisma-dbml-generator": "^0.8.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@graphql-tools/utils": "^8.5.3",
+    "@prisma/client": "3.4.2",
+    "apollo-server": "^3.5.0",
+    "argon2": "^0.28.3",
+    "dotenv": "^10.0.0",
+    "graphql": "^15.7.2",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.15"
+  },
+  "packageManager": "yarn@3.1.0"
+}
