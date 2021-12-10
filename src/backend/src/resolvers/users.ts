@@ -8,7 +8,6 @@ import {
   UserInputError,
 } from "apollo-server-errors";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../utils";
 
 export const usersResolver: IResolvers<any, IServerContext> = {
   Query: {
@@ -47,7 +46,7 @@ export const usersResolver: IResolvers<any, IServerContext> = {
         throw new UserInputError("Invalid email or password");
       }
 
-      const accessToken = jwt.sign({}, JWT_SECRET, {
+      const accessToken = jwt.sign({}, process.env.JWT_SECRET ?? "", {
         subject: user.id,
         expiresIn: "30d",
       });

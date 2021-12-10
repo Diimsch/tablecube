@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ApolloServer, gql, UserInputError } from "apollo-server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { JWT_SECRET } from "./utils";
 
 import resolvers from './resolvers';
 import { typeDefs } from "./types/gql";
@@ -11,7 +10,7 @@ const prisma = new PrismaClient();
 
 const processAuthToken = async (token: string) => {
   try {
-    const decodedToken = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET ?? "") as JwtPayload;
     return {
       userId: decodedToken.sub ?? null,
     };
