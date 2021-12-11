@@ -1,47 +1,44 @@
-import { prisma } from "@prisma/client";
-import { IResolvers } from "@graphql-tools/utils";
-import { IServerContext } from "../types/context";
-import argon2 from "argon2";
 import {
   AuthenticationError,
   ForbiddenError,
   UserInputError,
 } from "apollo-server-errors";
+import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import { Resolvers } from "../generated/graphql";
 
-export const usersResolver: IResolvers<any, IServerContext> = {
+export const usersResolver: Resolvers = {
   Query: {
-    me: async (_: any, args: void, { token, prisma }: IServerContext) => {
-      if (token.userId === null) {
+    me: async (parent, args, ctx) => {
+      if (ctx.token.userId === null) {
         throw new AuthenticationError("login required");
       }
-      const user = await prisma.user.findUnique({
+      const user = await ctx.prisma.user.findUnique({
         where: {
-          id: token.userId,
+          id: ctx.token.userId,
         },
       });
 
+      if (!user) {
+        throw new AuthenticationError("user doesn't exist");
+      }
+
       return user;
     },
-    login: async (
-      _: any,
-      { email, password }: { email: string; password: string },
-      { token, prisma }: IServerContext
-    ) => {
-      if (token.userId !== null) {
-        console.log(`${token.userId}`);
+    login: async (parent, args, ctx) => {
+      if (ctx.token.userId !== null) {
         throw new ForbiddenError("already logged in");
       }
 
-      const user = await prisma.user.findUnique({
+      const user = await ctx.prisma.user.findUnique({
         where: {
-          email,
+          email: args.email,
         },
       });
 
       if (
         !user ||
-        !argon2.verify(user.password, password, { type: argon2.argon2id })
+        !argon2.verify(user.password, args.password, { type: argon2.argon2id })
       ) {
         throw new UserInputError("Invalid email or password");
       }
@@ -57,34 +54,22 @@ export const usersResolver: IResolvers<any, IServerContext> = {
     },
   },
   Mutation: {
-    createUser: async (
-      _: any,
-      {
-        email,
-        firstName,
-        lastName,
-        password,
-      }: {
-        email: string;
-        firstName: string;
-        lastName: string;
-        password: string;
-      },
-      { prisma }: IServerContext
-    ) => {
-      const hashedPassword = await argon2.hash(password, {
+    createUser: async (parent, args, ctx) => {
+      const hashedPassword = await argon2.hash(args.password, {
         type: argon2.argon2id,
       });
 
       try {
-        const user = await prisma.user.create({
+        const user = await ctx.prisma.user.create({
           data: {
-            email,
-            firstName,
-            lastName,
+            email: args.email,
+            firstName: args.firstName,
+            lastName: args.lastName,
             password: hashedPassword,
           },
         });
+
+        return user;
       } catch (e) {
         throw new UserInputError("email already in use");
       }
