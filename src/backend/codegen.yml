@@ -4,6 +4,8 @@ documents: null
 generates:
   src/generated/graphql.ts:
     config:
+      useIndexSignature: true
+      mapperTypeSuffix: Model
       mappers:
         User: ../../node_modules/.prisma/client#User
         MenuItem: ../../node_modules/.prisma/client#MenuItem
