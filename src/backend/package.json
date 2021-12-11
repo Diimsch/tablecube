@@ -9,12 +9,17 @@
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose stop",
     "db:erase": "docker-compose down",
-    "db:init": "prisma db push"
+    "db:init": "prisma db push",
+    "codegen": "prisma generate && graphql-codegen --config codegen.yml"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@graphql-codegen/cli": "2.3.0",
+    "@graphql-codegen/introspection": "2.1.0",
+    "@graphql-codegen/typescript": "2.4.1",
+    "@graphql-codegen/typescript-resolvers": "2.4.2",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/node": "^16.10.2",
     "prisma": "3.4.2",
@@ -23,6 +28,10 @@
     "typescript": "^4.4.3"
   },
   "dependencies": {
+    "@graphql-tools/graphql-file-loader": "^7.3.3",
+    "@graphql-tools/load": "^7.4.1",
+    "@graphql-tools/merge": "^8.2.1",
+    "@graphql-tools/schema": "^8.3.1",
     "@graphql-tools/utils": "^8.5.3",
     "@prisma/client": "3.4.2",
     "apollo-server": "^3.5.0",

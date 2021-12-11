@@ -1,16 +1,40 @@
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { loadTypedefsSync } from "@graphql-tools/load";
 import { PrismaClient } from "@prisma/client";
-import { ApolloServer, gql, UserInputError } from "apollo-server";
+import { ApolloServer, UserInputError } from "apollo-server";
+import { DocumentNode } from "graphql";
 import jwt, { JwtPayload } from "jsonwebtoken";
-
-import resolvers from './resolvers';
-import { typeDefs } from "./types/gql";
+import { join } from "path";
+import resolvers from "./resolvers";
 import { IServerContext } from "./types/context";
 
 const prisma = new PrismaClient();
 
-const processAuthToken = async (token: string) => {
+const sources = loadTypedefsSync(join(__dirname, "schema.graphql"), {
+  loaders: [new GraphQLFileLoader()],
+});
+const typeDefs = sources
+  .map((source) => source.document)
+  .filter((d) => d !== undefined) as DocumentNode[];
+
+const processAuthToken = async (token: string | undefined) => {
+  if (!token) {
+    return {
+      userId: null,
+    };
+  }
   try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET ?? "") as JwtPayload;
+    const tokenData = token.split("Bearer ");
+    if (tokenData.length !== 2) {
+      throw new UserInputError("invalid authentication token");
+    }
+    const parsedToken = tokenData[1];
+
+    const decodedToken = jwt.verify(
+      parsedToken,
+      process.env.JWT_SECRET ?? ""
+    ) as JwtPayload;
+
     return {
       userId: decodedToken.sub ?? null,
     };
@@ -22,17 +46,12 @@ const processAuthToken = async (token: string) => {
 };
 
 const server = new ApolloServer({
-  resolvers,
   typeDefs,
+  resolvers,
   context: async ({ req }): Promise<IServerContext> => {
-    const token = req.headers.authorization ?? "";
-    const parsedToken = token.split("Bearer ");
-    if(parsedToken.length !== 2) {
-      throw new UserInputError("invalid authentication token");
-    }
-
+    const token = req.headers.authorization;
     return {
-      token: await processAuthToken(parsedToken[1]),
+      token: await processAuthToken(token),
       prisma,
     };
   },
