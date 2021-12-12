@@ -30,12 +30,8 @@ class Body extends StatelessWidget {
         RoundedPasswordField(
           onChanged: (value) {},
         ),
-        RoundedButton(
-            text: "LOGIN",
-            click: () {
-              navigateToOverview(context);
-            }),
-        LoginOrSignupCheck(click: (value) {
+        RoundedButton(text: "LOGIN", click: () {}),
+        LoginOrSignupCheck(click: () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -47,18 +43,5 @@ class Body extends StatelessWidget {
         }),
       ],
     ));
-  }
-
-  void navigateToOverview(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return const OverviewScreen(
-            userType: UserType.user,
-          );
-        },
-      ),
-    );
   }
 }

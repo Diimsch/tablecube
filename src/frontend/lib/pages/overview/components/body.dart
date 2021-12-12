@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_welcome/components/background.dart';
-
-import '../../../bottom_nav_bar/account_bubble.dart';
+import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 
 class Body extends StatelessWidget {
   final UserType userType;
@@ -29,17 +28,17 @@ class Body extends StatelessWidget {
             RoundedButton(
                 text: "Select item from menu",
                 click: () {
-                  navigateToMenu(context);
+                  navigateTo(context, Container());
                 }),
             RoundedButton(
                 text: "Watch cart",
                 click: () {
-                  navigateToCart(context);
+                  navigateTo(context, Container());
                 }),
             RoundedButton(
                 text: "Bill and pay",
                 click: () {
-                  navigateToPayView(context);
+                  navigateTo(context, Container());
                 }),
             SizedBox(
               height: size.height * 0.05,
@@ -53,43 +52,50 @@ class Body extends StatelessWidget {
         ),
       ));
     } else if (userType == UserType.waiter) {
-      return const Background(child: SingleChildScrollView());
+      return const Background(child: TableOverviewScreen());
     } else if (userType == UserType.admin) {
-      return const Background(child: SingleChildScrollView());
+      return Background(
+          child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              "Select an option",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: size.height * 0.05,
+            ),
+            RoundedButton(
+                text: "Edit restaurant information",
+                click: () {
+                  navigateTo(context, Container());
+                }),
+            RoundedButton(
+                text: "Edit menu",
+                click: () {
+                  navigateTo(context, Container());
+                }),
+            RoundedButton(
+                text: "Edit table placement",
+                click: () {
+                  navigateTo(context, Container());
+                }),
+          ],
+        ),
+      ));
     } else {
       // error
-      return const Background(child: SingleChildScrollView());
+      return const Background(child: Text("Error"));
     }
   }
 
-  void navigateToMenu(BuildContext context) {
+  void navigateTo(BuildContext context, StatelessWidget widget) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) {
-          return Container(); //const MenuScreen();
-        },
-      ),
-    );
-  }
-
-  void navigateToCart(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return Container(); //const MenuScreen();
-        },
-      ),
-    );
-  }
-
-  void navigateToPayView(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return Container(); //const MenuScreen();
+          return widget;
         },
       ),
     );
