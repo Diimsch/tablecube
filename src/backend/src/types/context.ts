@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 export interface IServerContext {
-    token: ITokenData
+    token: ITokenData;
     prisma: PrismaClient;
 }
 

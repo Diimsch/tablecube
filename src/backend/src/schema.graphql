@@ -1,0 +1,49 @@
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+}
+
+type LoginResponse {
+  token: String!
+}
+
+enum MenuItemType {
+  FOOD
+  DRINK
+}
+
+input CreateMenuItemInput {
+  name: String!
+  description: String!
+  price: Float!
+  type: MenuItemType!
+}
+
+type MenuItem {
+  id: ID!
+  name: String!
+  description: String!
+  price: Float!
+  type: MenuItemType!
+  available: Boolean!
+}
+
+type Query {
+  login(email: String!, password: String!): LoginResponse!
+  me: User
+
+  getMenu(restaurantId: ID!): [MenuItem]!
+}
+
+type Mutation {
+  createUser(
+    email: String!
+    firstName: String!
+    lastName: String!
+    password: String!
+  ): User
+
+  addMenuItem(restaurantId: ID!, menuItem: CreateMenuItemInput!): MenuItem
+}
