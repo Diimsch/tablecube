@@ -1,0 +1,18 @@
+overwrite: true
+schema: "./src/schema.graphql"
+documents: null
+generates:
+  src/generated/graphql.ts:
+    config:
+      useIndexSignature: true
+      mapperTypeSuffix: Model
+      mappers:
+        User: ../../node_modules/.prisma/client#User
+        MenuItem: ../../node_modules/.prisma/client#MenuItem
+      contextType: ../types/context#IServerContext
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
