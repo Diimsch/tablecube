@@ -4,6 +4,7 @@ import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_password_field.dart';
 import 'package:frontend/pages/page_login/components/background.dart';
+import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 
 class Body extends StatelessWidget {
@@ -29,7 +30,17 @@ class Body extends StatelessWidget {
         RoundedPasswordField(
           onChanged: (value) {},
         ),
-        RoundedButton(text: "LOGIN", click: () {}),
+        RoundedButton(text: "Select Menu", //TODO: Change! Just for testing
+            click: () {
+              Navigator.push(context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const SelectMenuScreen();
+                    }
+                  )
+              );
+            }
+            ),
         LoginOrSignupCheck(click: (value) {
           Navigator.push(
             context,
