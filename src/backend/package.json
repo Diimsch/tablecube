@@ -38,7 +38,7 @@
     "apollo-server": "^3.5.0",
     "argon2": "^0.28.3",
     "dotenv": "^10.0.0",
-    "graphql": "^16.1.0",
+    "graphql": "^15.8.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.15"
   },
