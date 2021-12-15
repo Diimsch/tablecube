@@ -4,7 +4,7 @@ import { Resolvers } from "../generated/graphql";
 
 export const menuResolvers: Resolvers = {
   Query: {
-    getMenu: async (parent, args, ctx) => {
+    menu: async (parent, args, ctx) => {
         const menu = await ctx.prisma.menuItem.findMany({
             where: {
                 restaurantId: args.restaurantId,

@@ -10,8 +10,12 @@
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose stop",
     "db:erase": "docker-compose down",
+    "db:seed": "prisma db seed",
     "db:init": "prisma db push",
     "codegen": "prisma generate && graphql-codegen --config codegen.yml"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -36,11 +40,18 @@
     "@graphql-tools/utils": "^8.5.4",
     "@prisma/client": "3.6.0",
     "apollo-server": "^3.5.0",
+    "apollo-server-core": "^3.5.0",
+    "apollo-server-express": "^3.5.0",
     "argon2": "^0.28.3",
     "dotenv": "^10.0.0",
-    "graphql": "^16.1.0",
+    "express": "^4.17.1",
+    "graphql": "^15.8.0",
+    "graphql-subscriptions": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "nodemon": "^2.0.15"
+    "ms": "^2.0.0",
+    "nodemon": "^2.0.15",
+    "subscriptions-transport-ws": "^0.11.0",
+    "ws": "^8.3.0"
   },
   "packageManager": "yarn@3.1.0"
 }

@@ -10,7 +10,6 @@ Table Restaurant {
   menuItems MenuItem [not null]
   usersWithRoles UserRoleInRestaurant [not null]
   tablePositionGrid TablePosition [not null]
-  gridSize Int [not null]
 }
 
 Table User {
@@ -88,14 +87,12 @@ Table UsersAtBooking {
 }
 
 Table ItemsOnBooking {
+  id String [pk]
   booking Booking [not null]
   bookingId String [not null]
   item MenuItem [not null]
   itemId String [not null]
-
-  indexes {
-    (bookingId, itemId) [pk]
-  }
+  comment String
 }
 
 Table MenuItem {

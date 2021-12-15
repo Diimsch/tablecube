@@ -1,14 +1,31 @@
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadTypedefsSync } from "@graphql-tools/load";
 import { PrismaClient } from "@prisma/client";
-import { ApolloServer, UserInputError } from "apollo-server";
-import { DocumentNode } from "graphql";
+import { ApolloServer } from "apollo-server-express";
+import {
+  ApolloServerPluginDrainHttpServer,
+  UserInputError,
+} from "apollo-server-core";
+import express from "express";
+import http, { IncomingMessage } from "http";
+import { DocumentNode, GraphQLScalarType, Kind } from "graphql";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { join } from "path";
 import resolvers from "./resolvers";
 import { IServerContext } from "./types/context";
 
-const prisma = new PrismaClient();
+import { createServer } from "http";
+import { execute, subscribe } from "graphql";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { WebSocket } from "ws";
+import qs from "querystring";
+import { URL, URLSearchParams } from "url";
+
+const prisma = new PrismaClient({
+  log: ['query'],
+});
+
 
 const sources = loadTypedefsSync(join(__dirname, "schema.graphql"), {
   loaders: [new GraphQLFileLoader()],
@@ -45,17 +62,87 @@ const processAuthToken = async (token: string | undefined) => {
   }
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: async ({ req }): Promise<IServerContext> => {
-    const token = req.headers.authorization;
-    return {
-      token: await processAuthToken(token),
-      prisma,
-    };
-  },
-});
-server.listen({ port: 4000 }, () => {
-  console.log("🥳 Server is running on http://localhost:4000");
-});
+async function startApolloServer() {
+  // Required logic for integrating with Express
+  const app = express();
+  const httpServer = http.createServer(app);
+
+  // Same ApolloServer initialization as before, plus the drain plugin.
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+  const subscriptionServer = SubscriptionServer.create(
+    {
+      // This is the `schema` we just created.
+      schema,
+      // These are imported from `graphql`.
+      execute,
+      onConnect: (
+        connectionParams: any,
+        webSocket: any,
+        connectionContext: any
+      ) => {
+        const req = connectionParams.request as IncomingMessage;
+        if(!req.url) {
+          throw new Error("invalid url");
+        }
+        
+        const url = new URL(req.url);
+        const token = url.searchParams.get("token");
+        if(!token) {
+          throw new Error("token missing");
+        }
+        jwt.verify(token, process.env.JWT_SECRET ?? "");
+      },
+      subscribe,
+    },
+    {
+      // This is the `httpServer` we created in a previous step.
+      server: httpServer,
+      // Pass a different path here if your ApolloServer serves at
+      // a different path.
+      path: "/graphql",
+    }
+  );
+
+  const server = new ApolloServer({
+    schema,
+    context: async ({ req }): Promise<IServerContext> => {
+      const token = req.headers.authorization;
+      return {
+        token: await processAuthToken(token),
+        prisma,
+      };
+    },
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              subscriptionServer.close();
+            },
+          };
+        },
+      },
+    ],
+  });
+
+  // More required logic for integrating with Express
+  await server.start();
+  server.applyMiddleware({
+    app,
+
+    // By default, apollo-server hosts its GraphQL endpoint at the
+    // server root. However, *other* Apollo Server packages host it at
+    // /graphql. Optionally provide this to match apollo-server.
+    path: "/graphql",
+  });
+
+  // Modified server startup
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+}
+
+startApolloServer();
