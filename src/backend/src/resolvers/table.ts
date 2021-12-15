@@ -40,7 +40,8 @@ export const tablesResolvers: Resolvers = {
         return false;
       }
 
-      pubsub.publish("VALIDATION_PROMPTED", booking?.joinValidationData);
+      console.log(booking.joinValidationData);
+      pubsub.publish("VALIDATION_PROMPTED", booking.joinValidationData);
       return true;
     }
   },

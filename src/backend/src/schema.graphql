@@ -86,6 +86,11 @@ input AddItemToBookingInput {
   comment: String
 }
 
+input ChangeBookingStatusInput {
+  tableId: ID!
+  status: BookingStatus!
+}
+
 type BookingItem {
   id: ID!
   item: MenuItem!
@@ -146,6 +151,10 @@ type Mutation {
   Adds items to booking which is required to be of status CHECKED_IN
   """
   addItemToBooking(data: AddItemToBookingInput!): Booking
+  """
+  Change booking status of table
+  """
+  changeBookingStatus(data: ChangeBookingStatusInput!): Booking
 }
 
 type Subscription {

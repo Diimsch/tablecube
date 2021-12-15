@@ -319,5 +319,51 @@ export const bookingResolvers: Resolvers = {
 
       return booking;
     },
+    changeBookingStatus: async (parent, args, ctx) => {
+      if (!ctx.token.userId) {
+        throw new AuthenticationError("not signed in");
+      }
+
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.token.userId,
+        },
+        include: {
+          rolesInRestaurants: true,
+        },
+      });
+
+      if (!user) {
+        throw new AuthenticationError("invalid user");
+      }
+
+      if(args.data.status === BookingStatus.RESERVED || args.data.status === BookingStatus.CHECKED_IN) {
+        throw new UserInputError("cant use reserved or checked_in state in this method");
+      }
+
+      let bookings = await ctx.prisma.booking.findMany({
+        where: {
+          tableId: args.data.tableId,
+          status: {
+            notIn: ["DONE", "RESERVED"],
+          },
+        },
+      });
+
+      if(bookings.length < 1) {
+        throw new UserInputError("couldn't find active booking for specified table");
+      }
+
+      const booking = await ctx.prisma.booking.update({
+        where: {
+          id: bookings[0].id,
+        },
+        data: {
+          status: args.data.status,
+        },
+      });
+
+      return booking;
+    },
   },
 };
