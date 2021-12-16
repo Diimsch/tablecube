@@ -9,7 +9,9 @@ class RoundedMenuItem extends StatelessWidget {
       {Key? key,
       required this.click,
       this.color = primaryColor,
-      this.textColor = Colors.white})
+      this.textColor = Colors.white,
+      required Null Function() onPressed,
+      icon})
       : super(key: key);
 
   @override
@@ -28,7 +30,7 @@ class RoundedMenuItem extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(borderRadius),
             child: TextButton.icon(
-              icon: const Icon(Icons.arrow_drop_down_sharp),
+              icon: Icon(Icons.arrow_drop_down_sharp),
               label: const Text("Platzhalter"),
               onPressed: click,
               style: TextButton.styleFrom(
@@ -40,7 +42,7 @@ class RoundedMenuItem extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            width: 2,
+            width:100,
           ),
           IconButton(
             icon: const Icon(Icons.add_box_rounded),
@@ -53,3 +55,4 @@ class RoundedMenuItem extends StatelessWidget {
     );
   }
 }
+
