@@ -8,6 +8,20 @@ import jwt from "jsonwebtoken";
 import { Resolvers } from "../generated/graphql";
 
 export const usersResolver: Resolvers = {
+  User: {
+    bookings: async(parent, args, ctx) => {
+      const bookings = await ctx.prisma.booking.findMany({
+        where: {
+          users: {
+            some: {
+              userId: parent.id,
+            }
+          }
+        }
+      });
+      return bookings;
+    }
+  },
   Query: {
     me: async (parent, args, ctx) => {
       if (ctx.token.userId === null) {

@@ -1,8 +1,11 @@
+scalar Date
+
 type User {
   id: ID!
   email: String!
   firstName: String!
   lastName: String!
+  bookings: [Booking]!
 }
 
 type LoginResponse {
@@ -21,6 +24,44 @@ input CreateMenuItemInput {
   type: MenuItemType!
 }
 
+input CreateBookingInput {
+  tableId: ID!
+  start: Date
+  end: Date
+  restaurantId: ID!
+}
+
+enum ValidationColors {
+  RED
+  GREEN
+  BLUE
+  YELLOW
+}
+
+type ValidationEvent {
+  tableId: String!
+  code: [ValidationColors!]!
+}
+
+input JoinBookingInput {
+  tableId: ID!
+  restaurantId: ID!
+  colorCode: [ValidationColors!]!
+}
+
+type Table {
+  id: ID!
+  name: String!
+}
+
+enum BookingStatus {
+  RESERVED
+  CHECKED_IN
+  READY_TO_ORDER
+  NEEDS_SERVICE
+  DONE
+}
+
 type MenuItem {
   id: ID!
   name: String!
@@ -30,14 +71,59 @@ type MenuItem {
   available: Boolean!
 }
 
-type Query {
-  login(email: String!, password: String!): LoginResponse!
-  me: User
+type Booking {
+  id: ID!
+  table: Table!
+  start: Date!
+  end: Date!
+  status: BookingStatus!
+  items: [BookingItem]!
+}
 
-  getMenu(restaurantId: ID!): [MenuItem]!
+input AddItemToBookingInput {
+  itemId: ID!
+  bookingId: ID!
+  comment: String
+}
+
+input ChangeBookingStatusInput {
+  tableId: ID!
+  status: BookingStatus!
+}
+
+type BookingItem {
+  id: ID!
+  item: MenuItem!
+  comment: String
+}
+
+type Query {
+  """
+  Returns a JWT token for authentication
+  """
+  login(email: String!, password: String!): LoginResponse!
+  """
+  Returns the currently active user object
+  """
+  me: User
+  """
+  Get the booking by its id
+  """
+  booking(bookingId: ID!): Booking
+  """
+  Get the restaurants menu
+  """
+  menu(restaurantId: ID!): [MenuItem]!
+  """
+  Request authentication color code to be shown on the Raspberry PI
+  """
+  promptValidation(tableId: String!): Boolean
 }
 
 type Mutation {
+  """
+  Create a new user
+  """
   createUser(
     email: String!
     firstName: String!
@@ -45,5 +131,32 @@ type Mutation {
     password: String!
   ): User
 
+  """
+  Allows the owner of the booking to activate the booking and check it in onto the table
+  """
+  checkIn(tableId: ID!, code: [ValidationColors!]!): Booking
+  """
+  Add a new item to the restaurants menu
+  """
   addMenuItem(restaurantId: ID!, menuItem: CreateMenuItemInput!): MenuItem
+  """
+  Create a new booking for the table
+  """
+  createBooking(booking: CreateBookingInput!): Booking
+  """
+  Join currently active booking on table with id
+  """
+  joinBooking(data: JoinBookingInput!): Booking
+  """
+  Adds items to booking which is required to be of status CHECKED_IN
+  """
+  addItemToBooking(data: AddItemToBookingInput!): Booking
+  """
+  Change booking status of table
+  """
+  changeBookingStatus(data: ChangeBookingStatusInput!): Booking
+}
+
+type Subscription {
+  validationPrompted(tableId: String!): ValidationEvent!
 }
