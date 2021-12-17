@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 
 final storage = const FlutterSecureStorage();
-const url = 'http://localhost:4000/';
+const url = 'http://localhost:4000/graphql/';
 
 final _httpLink = HttpLink(
   url,
