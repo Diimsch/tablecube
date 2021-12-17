@@ -9,8 +9,8 @@ import 'package:frontend/api.dart';
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
-  var storedToken = await storage.read(key: 'authToken');
   WidgetsFlutterBinding.ensureInitialized();
+  var storedToken = await storage.read(key: 'authToken');
   debugPrint(storedToken);
   final bool isLogged = storedToken != null && storedToken.isNotEmpty;
   final MyApp myApp = MyApp(
