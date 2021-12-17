@@ -5,7 +5,6 @@ import '../select_menu.dart';
 
 /* TODO:
   -add background
-  -fix readmore icon
   -test listview for backend input
  */
 
@@ -47,17 +46,10 @@ class Body extends State<SelectMenuScreen> {
           height: 30,
         ),
         RoundedMenuItem(
-            onPressed: () {
-              setState(() {
-                isReadmore = !isReadmore;
-              });
-            },
-            click: () {},
-            icon: Icon((isReadmore ? Icons.arrow_drop_down_sharp : Icons.arrow_drop_up_sharp))
+          onPressed: () {},
+          click: () {},
         ),
-        buildText(
-          "Steak mit herzhafter Pilzsauce oder so"
-        )
+        buildText("")
       ],
     ));
   }
@@ -66,6 +58,7 @@ class Body extends State<SelectMenuScreen> {
     return Text(
       text,
       style: const TextStyle(fontSize: 25),
+      maxLines: null,
     );
   }
 }
