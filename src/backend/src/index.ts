@@ -21,6 +21,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { WebSocket } from "ws";
 import qs from "querystring";
 import { URL, URLSearchParams } from "url";
+import cors from 'cors';
 
 const prisma = new PrismaClient({
   log: ['query'],
@@ -65,6 +66,7 @@ const processAuthToken = async (token: string | undefined) => {
 async function startApolloServer() {
   // Required logic for integrating with Express
   const app = express();
+  app.use(cors());
   const httpServer = http.createServer(app);
 
   // Same ApolloServer initialization as before, plus the drain plugin.
@@ -125,13 +127,13 @@ async function startApolloServer() {
         },
       },
     ],
+    
   });
 
   // More required logic for integrating with Express
   await server.start();
   server.applyMiddleware({
     app,
-
     // By default, apollo-server hosts its GraphQL endpoint at the
     // server root. However, *other* Apollo Server packages host it at
     // /graphql. Optionally provide this to match apollo-server.
