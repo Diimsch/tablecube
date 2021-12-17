@@ -30,7 +30,7 @@ class Body extends StatelessWidget {
         RoundedPasswordField(
           onChanged: (value) {},
         ),
-        RoundedButton(text: "Select Menu", //TODO: Change! Just for testing
+        RoundedButton(text: "LOGIN",
             click: () {
               Navigator.push(context,
                   MaterialPageRoute(

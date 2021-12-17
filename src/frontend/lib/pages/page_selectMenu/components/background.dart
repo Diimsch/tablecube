@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Background extends StatelessWidget {
-  final Widget child;
-  const Background({Key? key, required this.child}) : super(key: key);
+  final Widget body;
+  const Background({Key? key, required this.body}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; // total height and width of screen
-    return Container(
+    return SizedBox(
         height: size.height,
         width: double.infinity,
         child: Stack(
@@ -21,7 +21,7 @@ class Background extends StatelessWidget {
                 bottom: 0,
                 left: 0,
                 child: Image.asset("assets/images/main_bottom.png")),
-            child
+            body
           ],
         ));
   }
