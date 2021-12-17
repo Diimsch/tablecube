@@ -10,6 +10,7 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
   var storedToken = await storage.read(key: 'authToken');
+  WidgetsFlutterBinding.ensureInitialized();
   debugPrint(storedToken);
   final bool isLogged = storedToken != null && storedToken.isNotEmpty;
   final MyApp myApp = MyApp(
