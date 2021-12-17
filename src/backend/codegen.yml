@@ -6,9 +6,13 @@ generates:
     config:
       useIndexSignature: true
       mapperTypeSuffix: Model
+      scalars:
+        Date: Date
       mappers:
         User: ../../node_modules/.prisma/client#User
         MenuItem: ../../node_modules/.prisma/client#MenuItem
+        BookingItem: ../../node_modules/.prisma/client#ItemsOnBooking
+        Booking: ../../node_modules/.prisma/client#Booking
       contextType: ../types/context#IServerContext
     plugins:
       - "typescript"

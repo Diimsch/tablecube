@@ -35,7 +35,6 @@ model Restaurant {
   menuItems         MenuItem[]
   usersWithRoles    UserRoleInRestaurant[]
   tablePositionGrid TablePosition[]
-  gridSize          Int
 }
 
 model User {
@@ -110,12 +109,12 @@ model UsersAtBooking {
 }
 
 model ItemsOnBooking {
+  id        String   @id @default(uuid())
   booking   Booking  @relation(fields: [bookingId], references: [id])
   bookingId String
   item      MenuItem @relation(fields: [itemId], references: [id])
   itemId    String
-
-  @@id([bookingId, itemId])
+  comment   String?
 }
 
 enum MenuItemType {
