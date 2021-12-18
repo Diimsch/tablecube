@@ -3,13 +3,19 @@ import 'package:frontend/common_components/login_or_signup.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_password_field.dart';
-import 'package:frontend/pages/page_login/login_screen.dart';
+import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_signup/components/background.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/api.dart';
 
 class Body extends StatelessWidget {
   final Widget child;
+  String firstName = '';
+  String lastName = '';
+  String email = '';
+  String password = '';
 
-  const Body({
+  Body({
     Key? key,
     required this.child,
   }) : super(key: key);
@@ -30,21 +36,50 @@ class Body extends StatelessWidget {
           height: size.height * 0.1,
         ),
         RoundedInputField(
-          hintText: "E-mail",
-          onChanged: (value) {},
+            hintText: "First Name",
+            onChanged: (value) {
+              firstName = value;
+            }),
+        RoundedInputField(
+          hintText: "Last Name",
+          onChanged: (value) {
+            lastName = value;
+          },
         ),
-        RoundedPasswordField(onChanged: (value) {}),
-        RoundedButton(text: "SIGNUP", click: () {}),
+        RoundedInputField(
+          hintText: "E-mail",
+          onChanged: (value) {
+            email = value;
+          },
+          icon: Icons.email,
+        ),
+        RoundedPasswordField(onChanged: (value) {
+          password = value;
+        }),
+        RoundedButton(
+            text: "SIGNUP",
+            click: () {
+              if (firstName.isEmpty ||
+                  lastName.isEmpty ||
+                  email.isEmpty ||
+                  password.isEmpty) {
+                Fluttertoast.showToast(
+                  msg: 'Please fill out all required values',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 3,
+                  backgroundColor: warningColor,
+                  webBgColor: warningColorWebToast,
+                );
+              } else {
+                createUser(firstName, lastName, email, password);
+                // sucessfull --> navigate to certain overview
+                // unlucky --> email already in use? or other error --> toast it in
+              }
+            }),
         LoginOrSignupCheck(
           click: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const LoginScreen();
-                },
-              ),
-            );
+            Navigator.pushNamed(context, '/login');
           },
           login: false,
         ),
