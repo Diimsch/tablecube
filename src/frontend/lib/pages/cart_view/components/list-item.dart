@@ -41,6 +41,13 @@ class CartListItem extends StatelessWidget {
                 ]))
           ],
         ),
+        if (item.comment.isNotEmpty)
+          Text(
+            item.comment,
+            maxLines: 5,
+            overflow: TextOverflow.fade,
+            softWrap: true,
+          )
       ],
     ));
   }
