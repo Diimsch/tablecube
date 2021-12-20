@@ -5,7 +5,9 @@ name = "pypi"
 
 [packages]
 keybow = "*"
+"RPi.GPIO" = "*"
 gql = {extras = ["all"], version = "*"}
+
 
 [dev-packages]
 
