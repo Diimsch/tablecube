@@ -1,11 +1,10 @@
-import keybow
+#import keybow
 import argparse
 import time
 from gql import gql, Client
-from gql.transport.aiohttp import AIOHTTPTransport
 from gql.transport.websockets import WebsocketsTransport
 
-keybow.setup(keybow.MINI)
+# keybow.setup(keybow.MINI)
 
 parser = argparse.ArgumentParser(
     description="Restaurant management RPI server")
