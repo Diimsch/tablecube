@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-express";
 import {
   ApolloServerPluginDrainHttpServer,
+  AuthenticationError,
   UserInputError,
 } from "apollo-server-core";
 import express from "express";
@@ -78,22 +79,19 @@ async function startApolloServer() {
       schema,
       // These are imported from `graphql`.
       execute,
-      onConnect: (
+      onConnect: async (
         connectionParams: any,
         webSocket: any,
         connectionContext: any
       ) => {
-        const req = connectionParams.request as IncomingMessage;
-        if(!req.url) {
-          throw new Error("invalid url");
-        }
-        
-        const url = new URL(req.url);
-        const token = url.searchParams.get("token");
+        const token = connectionParams.Authorization;
         if(!token) {
-          throw new Error("token missing");
+          throw new AuthenticationError('missing jwt');
         }
-        jwt.verify(token, process.env.JWT_SECRET ?? "");
+        return {
+          token: await processAuthToken(token),
+          prisma,
+        };
       },
       subscribe,
     },

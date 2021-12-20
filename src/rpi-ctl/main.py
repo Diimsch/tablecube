@@ -1,5 +1,6 @@
 #import keybow
 import argparse
+import asyncio
 import time
 from gql import gql, Client
 from gql.transport.websockets import WebsocketsTransport
@@ -32,6 +33,7 @@ async def main():
             }
             """
         )
+
         async for result in session.subscribe(subscription):
             print(result)
 
@@ -72,3 +74,5 @@ while True:
     keybow.show()
     time.sleep(1.0 / 60.0)
 '''
+
+asyncio.run(main())

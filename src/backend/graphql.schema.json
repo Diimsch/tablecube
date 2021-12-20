@@ -1227,13 +1227,9 @@
               }
             ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ValidationEvent",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "ValidationEvent",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
