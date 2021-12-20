@@ -24,20 +24,47 @@ class Body extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Background(
-        child: Column(
+    return Scaffold(
+        body: Background(
+            child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
             flex: 5,
             child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) => Text("A"))),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                // Display the list item
+                return Dismissible(
+                    key: UniqueKey(),
+
+                    // only allows the user swipe from right to left
+                    direction: DismissDirection.none,
+
+                    // Remove this product from the list
+                    // In production enviroment, you may want to send some request to delete it on server side
+                    onDismissed: (_) {
+                      setState(() {
+                        items.removeAt(index);
+                      });
+                    },
+
+                    // Display item's title, price...
+                    child: CartListItem(
+                      item: items[index],
+                      onDelete: () {
+                        setState(() {
+                          items.removeAt(index);
+                        });
+                      },
+                    ));
+              },
+            )),
         Expanded(
             flex: 1,
             child: TextFieldContainer(
                 child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -54,7 +81,7 @@ class Body extends State<CartScreen> {
               ],
             )))
       ],
-    ));
+    )));
   }
 
   void addToBill() {
@@ -62,10 +89,6 @@ class Body extends State<CartScreen> {
       addItemToBooking(items.first.id, "TODO", items.first.comment);
       items.removeAt(0);
     }
-  }
-
-  void deleteItem(int index) {
-    items.removeAt(index);
   }
 
   double calculateCurrentBalance() {
