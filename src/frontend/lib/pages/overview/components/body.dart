@@ -12,7 +12,7 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
-    if (userType == UserType.user) {
+    if (userType == UserType.NONE) {
       return Background(
           child: SingleChildScrollView(
         child: Column(
@@ -26,17 +26,17 @@ class Body extends StatelessWidget {
               height: size.height * 0.05,
             ),
             RoundedButton(
-                text: "Select item from menu",
+                text: "Select menu items",
                 click: () {
                   navigateTo(context, Container());
                 }),
             RoundedButton(
-                text: "Watch cart",
+                text: "Order",
                 click: () {
                   navigateTo(context, Container());
                 }),
             RoundedButton(
-                text: "Bill and pay",
+                text: "Pay",
                 click: () {
                   navigateTo(context, Container());
                 }),
@@ -44,16 +44,16 @@ class Body extends StatelessWidget {
               height: size.height * 0.05,
             ),
             RoundedButton(
-                text: "Call waiter",
+                text: "Call for help",
                 click: () {
                   callWaiter();
                 }),
           ],
         ),
       ));
-    } else if (userType == UserType.waiter) {
+    } else if (userType == UserType.WAITER) {
       return const Background(child: TableOverviewScreen());
-    } else if (userType == UserType.admin) {
+    } else if (userType == UserType.ADMIN) {
       return Background(
           child: SingleChildScrollView(
         child: Column(

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/bottom_nav_bar/nav.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
+import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/pages/table_overview/table_overview_screen.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -26,20 +30,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'Tablecube',
-      initialRoute: initialRoute,
-      routes: {
-        '/': (context) => const WelcomeScreen(),
-        '/signup': (context) => const SignUpScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const Nav()
-      },
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: primaryColor,
-        scaffoldBackgroundColor: Colors.white,
+    return GraphQLProvider(
+      client: vnClient,
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        title: 'Tablecube',
+        initialRoute: initialRoute,
+        routes: {
+          '/': (context) => const WelcomeScreen(),
+          '/signup': (context) => const SignUpScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/home': (context) => const SelectMenuScreen()
+        },
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: primaryColor,
+          scaffoldBackgroundColor: Colors.white,
+        ),
       ),
     );
   }
