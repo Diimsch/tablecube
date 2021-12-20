@@ -6,7 +6,6 @@ import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -37,8 +36,8 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignUpScreen(),
         '/login': (context) => const LoginScreen(),
         '/scanner': (context) => const QrViewScreen(),
-        '/home': (context) => const Nav(),
         '/cart': (context) => OrderScreen(),
+        '/home': (context) => const Nav()
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
