@@ -52,7 +52,7 @@ export const usersResolver: Resolvers = {
 
       if (
         !user ||
-        !argon2.verify(user.password, args.password, { type: argon2.argon2id })
+        !await argon2.verify(user.password, args.password, { type: argon2.argon2id })
       ) {
         throw new UserInputError("Invalid email or password");
       }
