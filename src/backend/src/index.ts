@@ -84,6 +84,8 @@ async function startApolloServer() {
         webSocket: any,
         connectionContext: any
       ) => {
+        console.log(connectionParams);
+        console.log(connectionContext);
         const token = connectionParams.Authorization;
         if(!token) {
           throw new AuthenticationError('missing jwt');

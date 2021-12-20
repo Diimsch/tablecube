@@ -97,6 +97,18 @@ type BookingItem {
   comment: String
 }
 
+enum UserRoles {
+  WAITER
+  ADMIN
+  NONE
+}
+
+type UserRoleInRestaurant {
+  restaurantId: ID!
+  userId: ID!
+  role: UserRoles!
+}
+
 type Query {
   """
   Returns a JWT token for authentication
@@ -118,6 +130,10 @@ type Query {
   Request authentication color code to be shown on the Raspberry PI
   """
   promptValidation(tableId: String!): Boolean
+  """
+  Get role in Restaurant
+  """
+  roleInRestaurant(restaurantId: ID!): UserRoleInRestaurant!
 }
 
 type Mutation {
