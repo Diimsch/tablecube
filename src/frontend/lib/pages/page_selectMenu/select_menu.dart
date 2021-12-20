@@ -13,6 +13,11 @@ class SelectMenuScreen extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
           backgroundColor: primaryColor,
+          actions: [
+            IconButton(
+                onPressed: (){},
+                icon: const Icon(Icons.shopping_cart_outlined))
+          ],
         ),
         body: const Body());
   }

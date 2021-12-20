@@ -18,7 +18,6 @@ class RoundedMenuItem extends StatefulWidget {
 }
 
 class _ButtonState extends State {
-
   bool _hasBeenPressed = false;
 
   @override
@@ -59,9 +58,12 @@ class _ButtonState extends State {
               ),
             ),
           ),
-          // const SizedBox(
-          //   width: 50,
-          // ),
+          const Text(
+            "\n5,50",
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+            softWrap: true,
+          ),
           IconButton(
             icon: const Icon(Icons.add_box_rounded),
             color: Colors.white,
@@ -69,7 +71,7 @@ class _ButtonState extends State {
             onPressed: () {},
           ),
           _hasBeenPressed
-              ? buildText("Steak in herzhafter Pilzsauce")
+              ? buildText("Steak in herzhafter Pilzsauce und kleinem Salat.")
               : buildText(""),
         ],
       ),
@@ -80,6 +82,7 @@ class _ButtonState extends State {
     return Text(
       text,
       style: const TextStyle(fontSize: 25, color: Colors.white),
+      textAlign: TextAlign.center,
     );
   }
 }
