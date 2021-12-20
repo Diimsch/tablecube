@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'components/body.dart';
 
-class CartScreen extends StatefulWidget {
-  CartScreen({Key? key}) : super(key: key);
+class OrderScreen extends StatefulWidget {
+  OrderScreen({Key? key}) : super(key: key);
 
   final List<MenuItem> items = <MenuItem>[
     MenuItem("1", "Große Cola 0.33l", "", 2.40, true, "", ""),

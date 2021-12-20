@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
-import 'package:frontend/pages/cart_view/cart_screen.dart';
-import 'package:frontend/pages/cart_view/components/list-item.dart';
 import 'package:frontend/pages/overview/components/background.dart';
+
+import '../order_screen.dart';
+import 'list-item.dart';
 
 class MenuItem {
   MenuItem(this.id, this.name, this.description, this.price, this.available,
@@ -18,7 +19,7 @@ class MenuItem {
   String comment;
 }
 
-class Body extends State<CartScreen> {
+class Body extends State<OrderScreen> {
   final List<MenuItem> items;
   Body({required this.items});
 
@@ -50,7 +51,7 @@ class Body extends State<CartScreen> {
                     },
 
                     // Display item's title, price...
-                    child: CartListItem(
+                    child: OrderListItem(
                       item: items[index],
                       onDelete: () {
                         setState(() {

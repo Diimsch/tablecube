@@ -3,10 +3,10 @@ import 'package:frontend/common_components/text_field_container.dart';
 
 import 'body.dart';
 
-class CartListItem extends StatelessWidget {
+class OrderListItem extends StatelessWidget {
   final MenuItem item;
   final VoidCallback onDelete;
-  const CartListItem({Key? key, required this.item, required this.onDelete})
+  const OrderListItem({Key? key, required this.item, required this.onDelete})
       : super(key: key);
 
   @override

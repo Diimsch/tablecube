@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/bottom_nav_bar/nav.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/cart_view/cart_screen.dart';
+import 'package:frontend/pages/order_view/order_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/scanner': (context) => const QrViewScreen(),
         '/home': (context) => const Nav(),
-        '/cart': (context) => CartScreen(),
+        '/cart': (context) => OrderScreen(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
