@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
+import 'package:frontend/pages/cart_view/cart_screen.dart';
 import 'package:frontend/pages/cart_view/components/list-item.dart';
 import 'package:frontend/pages/overview/components/background.dart';
 
@@ -17,9 +18,9 @@ class MenuItem {
   String comment;
 }
 
-class Body extends StatelessWidget {
+class Body extends State<CartScreen> {
   final List<MenuItem> items;
-  const Body({Key? key, required this.items}) : super(key: key);
+  Body({required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +31,8 @@ class Body extends StatelessWidget {
         Expanded(
             flex: 5,
             child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) => CartListItem(
-                item: items[index],
-                onDelete: () {
-                  deleteItem(index);
-                },
-              ),
-            )),
+                itemCount: items.length,
+                itemBuilder: (context, index) => Text("A"))),
         Expanded(
             flex: 1,
             child: TextFieldContainer(

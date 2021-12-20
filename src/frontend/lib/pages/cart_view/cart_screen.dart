@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'components/body.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   CartScreen({Key? key}) : super(key: key);
 
   final List<MenuItem> items = <MenuItem>[
@@ -15,8 +15,13 @@ class CartScreen extends StatelessWidget {
     MenuItem("7", "Jägerschnitzel", "", 10.33, true, "", "")
   ];
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(body: Body(items: items));
+  // }
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Body(items: items));
+  State<StatefulWidget> createState() {
+    return Body(items: items);
   }
 }

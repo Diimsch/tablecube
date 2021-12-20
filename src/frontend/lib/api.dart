@@ -85,10 +85,10 @@ createUser(String firstName, String lastName, String email, String password) {
   client.mutate(options).whenComplete(() => logInUser(email, password));
 }
 
-addItemToBooking(String itemId, String bookingId, String comment) {
+addItemToBooking(String itemId, String bookingId, String comment) async {
   const String addItemToBooking = r'''
     mutation AddItemToBooking($data: {$itemId: String!, $bookingId: String!, $comment: String!}) {
-      createUser(data: {itemId: $itemId, bookingId: $bookingId, comment: $comment}) {
+      addItemToBooking(data: {itemId: $itemId, bookingId: $bookingId, comment: $comment}) {
         itemId
         bookingId
         comment
@@ -101,4 +101,6 @@ addItemToBooking(String itemId, String bookingId, String comment) {
       variables: <String, dynamic>{
         'data': {'itemId': itemId, 'bookingId': bookingId, 'comment': comment}
       });
+
+  // client.mutate(options).catchError();
 }
