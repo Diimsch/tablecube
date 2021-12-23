@@ -18,12 +18,6 @@ allprojects {
     }
 }
 
-android {
-    defaultConfig {
-        minSkdVersion 18
-    }
-}
-
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
