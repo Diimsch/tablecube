@@ -1,88 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/constants.dart';
+import 'package:frontend/common_components/text_field_container.dart';
+import 'package:frontend/pages/order_view/components/body.dart';
 
 class RoundedMenuItem extends StatefulWidget {
   final VoidCallback click;
-  final Color color, textColor;
+  final MenuItem item;
+  final bool addButtonVisible;
 
   const RoundedMenuItem({
     Key? key,
+    required this.item,
     required this.click,
-    this.color = primaryColor,
-    this.textColor = Colors.white,
-    required Null Function() onPressed,
+    this.addButtonVisible = true,
   }) : super(key: key);
 
   @override
-  _ButtonState createState() => _ButtonState();
+  _ButtonState createState() => _ButtonState(
+      item: item, onAddClicked: click, addButtonVisible: addButtonVisible);
 }
 
-class _ButtonState extends State {
+class _ButtonState extends State<RoundedMenuItem> {
+  final MenuItem item;
+  final VoidCallback onAddClicked;
+  final bool addButtonVisible;
   bool _hasBeenPressed = false;
+
+  _ButtonState(
+      {required this.onAddClicked,
+      required this.item,
+      required this.addButtonVisible});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-        color: primaryColor,
-      ),
-      child: Wrap(
-        alignment: WrapAlignment.spaceEvenly,
-        spacing: 50.5,
-        direction: Axis.horizontal,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: TextButton.icon(
-              icon: Icon(_hasBeenPressed
-                  ? Icons.arrow_drop_up_sharp
-                  : Icons.arrow_drop_down_sharp),
-              label: const Text(
-                "Platzhalter",
-                style: TextStyle(fontSize: 20),
+    return TextFieldContainer(
+        child: GestureDetector(
+      onTap: () => {
+        setState(() {
+          _hasBeenPressed = !_hasBeenPressed;
+        })
+      },
+      child: Container(
+          // Container and color are important to make the area clickable
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(_hasBeenPressed
+                          ? Icons.arrow_drop_up_sharp
+                          : Icons.arrow_drop_down_sharp),
+                      Text(
+                        item.name,
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ],
+                  )),
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "${item.price.toStringAsFixed(2)}€",
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      )),
+                  Visibility(
+                      visible: addButtonVisible,
+                      child: IconButton(
+                        icon: const Icon(Icons.add_circle_outline_sharp),
+                        color: Colors.black87,
+                        iconSize: 40,
+                        onPressed: () {
+                          onAddClicked();
+                        },
+                      )),
+                ],
               ),
-              onPressed: () => {
-                setState(() {
-                  _hasBeenPressed = !_hasBeenPressed;
-                })
-              },
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              Visibility(
+                child: Expanded(
+                    child: Text(
+                  item.description,
+                  style: const TextStyle(fontSize: 15),
+                  textAlign: TextAlign.start,
+                )),
+                visible: _hasBeenPressed,
               ),
-            ),
-          ),
-          const Text(
-            "\n5,50",
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-            softWrap: true,
-          ),
-          IconButton(
-            icon: const Icon(Icons.add_box_rounded),
-            color: Colors.white,
-            iconSize: 50,
-            onPressed: () {},
-          ),
-          _hasBeenPressed
-              ? buildText("Steak in herzhafter Pilzsauce und kleinem Salat.")
-              : buildText(""),
-        ],
-      ),
-    );
-  }
-
-  Widget buildText(String text) {
-    return Text(
-      text,
-      style: const TextStyle(fontSize: 25, color: Colors.white),
-      textAlign: TextAlign.center,
-    );
+            ],
+          )),
+    ));
   }
 }

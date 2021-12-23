@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
+import 'package:frontend/pages/order_view/components/body.dart';
 import 'package:frontend/pages/page_selectMenu/components/background.dart';
 
 /* TODO:
@@ -18,35 +19,42 @@ class Body extends StatelessWidget {
           height: 30,
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem(
+              "Hacksteak mit wüzigen Kartoffeln",
+              "Hacksteak mit wüzigen Kartoffeln",
+              "Hacksteak mit wüzigen Kartoffeln",
+              2.2,
+              true,
+              "",
+              ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
         RoundedMenuItem(
-          onPressed: () {},
+          item: MenuItem("", "", "", 2.2, true, "", ""),
           click: () {},
         ),
       ],

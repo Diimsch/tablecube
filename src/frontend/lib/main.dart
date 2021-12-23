@@ -4,15 +4,20 @@ import 'package:frontend/constants.dart';
 import 'package:frontend/pages/order_view/order_screen.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
+import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/qr_view/qr_view_screen.dart';
+import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
+import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 // state
 UserType userType = UserType.none;
+String tableId = '';
+String restaurantId = '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,8 +46,11 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignUpScreen(),
         '/login': (context) => const LoginScreen(),
         '/scanner': (context) => const QrViewScreen(),
-        '/cart': (context) => OrderScreen(),
-        '/home': (context) => const Nav()
+        '/menu': (context) => const SelectMenuScreen(),
+        '/orders': (context) => OrderScreen(),
+        '/home': (context) => const Nav(),
+        '/admin/info': (context) => const RestaurantInfoScreen(),
+        '/admin/menu': (context) => const RestaurantMenuEditScreen(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
