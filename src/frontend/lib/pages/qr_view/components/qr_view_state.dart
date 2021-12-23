@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -33,8 +34,7 @@ class QrViewState extends State<QrViewScreen> {
           Expanded(flex: 5, child: qrViewFrame(context)),
           Expanded(
             flex: 1,
-            child: FittedBox(
-              fit: BoxFit.contain,
+            child: TextFieldContainer(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
