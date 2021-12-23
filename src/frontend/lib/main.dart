@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:frontend/bottom_nav_bar/nav.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/order_view/order_screen.dart';
+import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// state
+UserType userType = UserType.none;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

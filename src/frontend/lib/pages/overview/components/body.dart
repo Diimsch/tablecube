@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
+import 'package:frontend/constants.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_welcome/components/background.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
@@ -28,17 +31,17 @@ class Body extends StatelessWidget {
             RoundedButton(
                 text: "Select item from menu",
                 click: () {
-                  navigateTo(context, Container());
+                  Navigator.pushNamed(context, '/menu');
                 }),
             RoundedButton(
                 text: "Watch cart",
                 click: () {
-                  navigateTo(context, Container());
+                  Navigator.pushNamed(context, '/orders');
                 }),
             RoundedButton(
                 text: "Bill and pay",
                 click: () {
-                  navigateTo(context, Container());
+                  Navigator.pushNamed(context, '/bill');
                 }),
             SizedBox(
               height: size.height * 0.05,
@@ -69,37 +72,38 @@ class Body extends StatelessWidget {
             RoundedButton(
                 text: "Edit restaurant information",
                 click: () {
-                  navigateTo(context, Container());
+                  Navigator.pushNamed(context, '/admin/info');
                 }),
             RoundedButton(
                 text: "Edit menu",
                 click: () {
-                  navigateTo(context, Container());
+                  Navigator.pushNamed(context, '/admin/menu');
                 }),
             RoundedButton(
                 text: "Edit table placement",
                 click: () {
-                  navigateTo(context, Container());
+                  Navigator.pushNamed(context, '/admin/tables');
                 }),
           ],
         ),
       ));
     } else {
-      // error
-      return const Background(child: Text("Error"));
+      Fluttertoast.showToast(
+        msg: 'Something went wrong. Please try again later.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 3,
+        backgroundColor: warningColor,
+        webBgColor: warningColorWebToast,
+      );
+      logOutUser();
+      Navigator.pushNamed(context, '/');
+      return Container();
     }
   }
 
-  void navigateTo(BuildContext context, StatelessWidget widget) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return widget;
-        },
-      ),
-    );
+  void callWaiter() {
+    // TODO: call waiter -> update table status
+    // unlucky -> toast, with try again later or try it with your own voice
   }
-
-  void callWaiter() {}
 }

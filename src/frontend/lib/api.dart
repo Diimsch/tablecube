@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:graphql/client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,14 @@ logInUser(String email, String password) async {
       getToken: () async => 'Bearer ' + result.data?['login']['token'],
     );
 
-    navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil('/home', ModalRoute.withName('/home'));
+    if (userType != UserType.none) {
+      // TODO: logout and toast
+      // return to WelcomeScreen
+    } else {
+      // TODO: update usertype in main.dart
+      navigatorKey.currentState
+          ?.pushNamedAndRemoveUntil('/home', ModalRoute.withName('/home'));
+    }
   }
 }
 
