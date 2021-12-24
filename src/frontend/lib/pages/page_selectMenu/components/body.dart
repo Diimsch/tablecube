@@ -44,26 +44,38 @@ class Body extends StatelessWidget {
         }
 
         // it can be either Map or List
-        List counters = result.data!['menu'];
+        List menuItems = result.data!['menu'];
 
         return ListView.builder(
-            itemCount: counters.length,
+            itemCount: menuItems.length,
             itemBuilder: (context, index) {
-              return Text(counters[index]['name'] +
+              return RoundedMenuItem(
+                menu: menuItems[index],
+                click: () {
+                  debugPrint("222");
+                },
+              );
+
+              /*return Text(counters[index]['name'] +
                   ":" +
-                  counters[index]["description"]);
+                  counters[index]["description"]);*/
             });
       },
     );
-    /*return Background(
-        body: ListView(
+    /* Background(
+            body: ListView(
       children: [
         const SizedBox(
           height: 30,
         ),
         RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
+          menu: [],
+          onPressed: () {
+            debugPrint("asdf");
+          },
+          click: () {
+            debugPrint("222");
+          },
         ),
         RoundedMenuItem(
           onPressed: () {},
