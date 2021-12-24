@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/constants.dart';
 import 'package:frontend/main.dart';
 import 'package:graphql/client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 final storage = const FlutterSecureStorage();
 const url = 'http://localhost:4000/graphql/';
@@ -21,6 +24,20 @@ final GraphQLClient client = GraphQLClient(
   cache: GraphQLCache(),
   link: _link,
 );
+
+final ValueNotifier<GraphQLClient> vnClient =
+    ValueNotifier(GraphQLClient(cache: GraphQLCache(), link: _link));
+
+handleError(OperationException error) {
+  Fluttertoast.showToast(
+    msg: error.graphqlErrors[0].message.toString(),
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.CENTER,
+    timeInSecForIosWeb: 3,
+    backgroundColor: warningColor,
+    webBgColor: warningColorWebToast,
+  );
+}
 
 logInUser(String email, String password) async {
   const String logInUser = r'''
@@ -48,6 +65,8 @@ logInUser(String email, String password) async {
 
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil('/home', ModalRoute.withName('/home'));
+  } else {
+    handleError(result.exception!);
   }
 }
 
@@ -62,7 +81,8 @@ logOutUser() async {
       ?.pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
 }
 
-createUser(String firstName, String lastName, String email, String password) {
+createUser(
+    String firstName, String lastName, String email, String password) async {
   const String createUser = r'''
     mutation CreateUser($email: String!, $firstName: String!, $lastName: String!, $password: String!) {
       createUser(email: $email, firstName: $firstName, lastName: $lastName, password: $password) {
@@ -82,5 +102,11 @@ createUser(String firstName, String lastName, String email, String password) {
     'password': password
   });
 
-  client.mutate(options).whenComplete(() => logInUser(email, password));
+  final QueryResult result = await client.mutate(options);
+
+  if (!result.hasException) {
+    client.mutate(options).whenComplete(() => logInUser(email, password));
+  } else {
+    handleError(result.exception!);
+  }
 }

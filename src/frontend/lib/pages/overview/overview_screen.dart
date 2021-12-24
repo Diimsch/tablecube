@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/pages/overview/components/body.dart';
 
 enum UserType {
-  user,
-  waiter,
-  admin,
+  WAITER,
+  ADMIN,
+  NONE,
 }
 
 class OverviewScreen extends StatelessWidget {
