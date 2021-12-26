@@ -46,8 +46,6 @@ class _ButtonState extends State<RoundedMenuItem> {
         ),
         child: Column(children: [
           Row(
-            //runAlignment: WrapAlignment.center,
-            //crossAxisAlignment: WrapCrossAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ClipRRect(
