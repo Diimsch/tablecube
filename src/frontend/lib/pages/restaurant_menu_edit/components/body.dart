@@ -8,7 +8,8 @@ import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.
 
 class Body extends State<RestaurantMenuEditScreen> {
   final List<MenuItem> items;
-  Body({required this.items});
+  final List<bool> editables;
+  Body({required this.items, required this.editables});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                     onDismissed: (_) {
                       setState(() {
                         items.removeAt(index);
+                        editables.removeAt(index);
                       });
                     },
 
@@ -41,7 +43,8 @@ class Body extends State<RestaurantMenuEditScreen> {
                             child: RoundedMenuItem(
                           item: items[index],
                           addButtonVisible: false,
-                          click: () {/* TODO: Open edit*/},
+                          editable: editables[index],
+                          click: () {},
                         )),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -49,15 +52,24 @@ class Body extends State<RestaurantMenuEditScreen> {
                             Column(
                               children: [
                                 IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.edit_rounded,
-                                      color: Colors.black87,
+                                    onPressed: () {
+                                      setState(() {
+                                        editables[index] = !editables[index];
+                                      });
+                                    },
+                                    icon: Icon(
+                                      editables[index]
+                                          ? Icons.check_outlined
+                                          : Icons.edit_rounded,
+                                      color: editables[index]
+                                          ? Colors.green[800]
+                                          : Colors.black87,
                                     )),
                                 IconButton(
                                     onPressed: () {
                                       setState(() {
                                         items.removeAt(index);
+                                        editables.removeAt(index);
                                       });
                                     },
                                     icon: const Icon(
@@ -66,12 +78,13 @@ class Body extends State<RestaurantMenuEditScreen> {
                                     ))
                               ],
                             ),
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.menu,
-                                  color: Colors.black87,
-                                )),
+                            // TODO: Darg and Drop
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: const Icon(
+                            //       Icons.menu,
+                            //       color: Colors.black87,
+                            //     )),
                           ],
                         )
                       ],
@@ -88,7 +101,8 @@ class Body extends State<RestaurantMenuEditScreen> {
                   icon: const Icon(Icons.add_circle_outline_rounded),
                   onPressed: () {
                     setState(() {
-                      items.add(MenuItem("", "", "", 0.00, true, "", ""));
+                      editables.add(true);
+                      items.add(MenuItem("", "", "Hallo", 0.00, true, "", ""));
                     });
                   },
                 ),

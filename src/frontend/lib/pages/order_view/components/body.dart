@@ -11,9 +11,9 @@ class MenuItem {
   MenuItem(this.id, this.name, this.description, this.price, this.available,
       this.type, this.comment);
   final String id;
-  final String name;
+  String name;
   String description;
-  final double price;
+  double price;
   String type;
   bool available;
   String comment;
