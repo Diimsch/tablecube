@@ -6,6 +6,7 @@ import { bookingResolvers } from "./booking";
 import { menuResolvers } from "./menu";
 import { tablesResolvers } from "./table";
 import { usersResolver } from "./users";
+import { restaurantResolver } from "./restaurant";
 
 const genericResolvers: Resolvers = {
   Date: new GraphQLScalarType({
@@ -26,4 +27,4 @@ const genericResolvers: Resolvers = {
   }),
 };
 
-export default mergeResolvers([usersResolver, bookingResolvers, menuResolvers, tablesResolvers, genericResolvers]);
+export default mergeResolvers([usersResolver, bookingResolvers, menuResolvers, restaurantResolver, tablesResolvers, genericResolvers]);
