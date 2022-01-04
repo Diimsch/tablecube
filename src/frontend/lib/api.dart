@@ -110,3 +110,23 @@ createUser(
     handleError(result.exception!);
   }
 }
+
+addItemToBooking(String itemId, String bookingId, String comment) async {
+  const String addItemToBooking = r'''
+    mutation AddItemToBooking($data: {$itemId: String!, $bookingId: String!, $comment: String!}) {
+      addItemToBooking(data: {itemId: $itemId, bookingId: $bookingId, comment: $comment}) {
+        itemId
+        bookingId
+        comment
+      }
+    }
+  ''';
+
+  final MutationOptions options = MutationOptions(
+      document: gql(addItemToBooking),
+      variables: <String, dynamic>{
+        'data': {'itemId': itemId, 'bookingId': bookingId, 'comment': comment}
+      });
+
+  // client.mutate(options).catchError();
+}
