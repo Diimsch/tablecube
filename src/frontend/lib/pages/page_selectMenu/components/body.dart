@@ -19,6 +19,19 @@ query getMenu($restaurantId: ID!) {
 }
 """;
 
+const String getBillQuery = r"""
+query getMenu($restaurantId: ID!) {
+  menu(restaurantId: $restaurantId) {
+    id
+    name
+    description
+    price
+    type
+    available
+  }
+}
+""";
+
 class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);
 

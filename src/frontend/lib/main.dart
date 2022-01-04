@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/pages/bill_view/bill_view.dart';
 import 'package:frontend/pages/order_view/order_screen.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
           '/overview': (context) => OverviewScreen(),
           '/scanner': (context) => const QrViewScreen(),
           '/cart': (context) => OrderScreen(),
+          '/bill': (context) => const BillScreen(),
           '/admin/info': (context) => const RestaurantInfoScreen(),
           '/admin/menu': (context) => const RestaurantMenuEditScreen(),
         },
