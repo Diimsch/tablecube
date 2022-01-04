@@ -1,8 +1,9 @@
+from typing import final
 import keybow
 import argparse
+import asyncio
 import time
 from gql import gql, Client
-from gql.transport.aiohttp import AIOHTTPTransport
 from gql.transport.websockets import WebsocketsTransport
 
 keybow.setup(keybow.MINI)
@@ -17,9 +18,23 @@ args = vars(parser.parse_args())
 #                             'Authorization': 'Bearer %s' % (args["jwt"])})
 #client = Client(transport=transport, fetch_schema_from_transport=True)
 
+colorDict = dict([
+    ("RED", dict(
+        r=255,
+        g=0,
+        b=0
+    )),
+    ("GREEN", dict(
+        r=0,
+        g=255,
+        b=0
+    )),
+])
+
 
 async def main():
-    transport = WebsocketsTransport(url=args["destination"])
+    transport = WebsocketsTransport(url=args["destination"], init_payload={
+                                    'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(
         transport=transport, fetch_schema_from_transport=True
     ) as session:
@@ -33,27 +48,32 @@ async def main():
             }
             """
         )
-        async for result in session.subscribe(subscription):
-            print(result)
+
+        async for result in session.subscribe(subscription, variable_values={
+            "tableId": "09ff81b3-b498-43ac-96d9-08ae1800882c"
+        }):
+            for color in result.code:
+                print(color)
+                colorData = colorDict.get(color)
+                keybow.set_all(colorData.get(
+                    "r"), colorData.get("g"), colorData.get("b"))
+                await asyncio.sleep(2)
+            keybow.clear()
+            await asyncio.sleep(3)
 
 '''
 
 colorDict = dict([
-    (0, dict(
-        r=80,
-        g=220,
-        b=100
+    ("RED", dict(
+        r=255,
+        g=0,
+        b=0
     )),
-    (1, dict(
-        r=205,
-        g=92,
-        b=92
-    )),
-    (2, dict(
+    ("GREEN", dict(
         r=0,
-        g=142,
-        b=204
-    ))
+        g=255,
+        b=0
+    )),
 ])
 
 
@@ -73,3 +93,16 @@ while True:
     keybow.show()
     time.sleep(1.0 / 60.0)
 '''
+
+
+async def keybow_loop():
+    while True:
+        keybow.show()
+        await asyncio.sleep(1.0 / 60)
+
+loop = asyncio.get_event_loop()
+try:
+    loop.run_until_complete(main())
+    loop.run_until_complete(keybow_loop())
+finally:
+    loop.close()

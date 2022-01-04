@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/pages/order_view/components/body.dart';
 
+final formatCurrency = NumberFormat.simpleCurrency();
+
 class RoundedMenuItem extends StatefulWidget {
   final VoidCallback click;
-  final MenuItem item;
+  final Map<String, dynamic> menu;
   final bool addButtonVisible;
   final bool editable;
 

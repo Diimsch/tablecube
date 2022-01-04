@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/bottom_nav_bar/nav.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/order_view/order_screen.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/pages/table_overview/table_overview_screen.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
 import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      client: vnClient,
       navigatorKey: navigatorKey,
       title: 'Tablecube',
       initialRoute: initialRoute,
