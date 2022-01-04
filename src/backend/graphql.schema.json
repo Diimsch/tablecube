@@ -1185,7 +1185,7 @@
             "deprecationReason": null
           },
           {
-            "name": "restaurants",
+            "name": "restaurant",
             "description": "Returns list of restaurants",
             "args": [],
             "type": {
@@ -1199,6 +1199,39 @@
                   "name": "Restaurant",
                   "ofType": null
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "roleInRestaurant",
+            "description": "Get role in Restaurant",
+            "args": [
+              {
+                "name": "restaurantId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UserRoleInRestaurant",
+                "ofType": null
               }
             },
             "isDeprecated": false,
