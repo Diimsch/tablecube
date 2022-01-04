@@ -2,6 +2,13 @@ import { AuthenticationError } from "apollo-server-errors";
 import { Resolvers } from "../generated/graphql";
 
 export const restaurantResolver: Resolvers = {
+  Restaurant: {
+    tables: async (parent, args, ctx) => { 
+      return await ctx.prisma.table.findMany({
+        where: { restaurantId: parent.id}
+      })
+  },
+  },
   Query: {
     restaurant: async (parent, args, ctx) => {
       const restaurants = await ctx.prisma.restaurant.findMany();
