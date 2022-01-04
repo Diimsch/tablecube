@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../constants.dart';
 import 'components/body.dart';
@@ -16,24 +17,9 @@ class RestaurantMenuEditScreen extends StatefulWidget {
     }
 
     // TODO: get menu list
-    final List<Map<String, dynamic>> items = [
-      {
-        "name": "Fanta",
-        "description": "ABC",
-        "price": 4.00,
-        "available": true,
-        "type": "FOOD"
-      },
-      {
-        "name": "Fisch",
-        "description": "WER",
-        "price": 6.00,
-        "available": true,
-        "type": "FOOD"
-      }
-    ];
-    List<bool> editables = List.generate(items.length, (index) => false);
+    Map<String, dynamic>? item;
+    Map<String, bool> editable = {};
 
-    return Body(items: items, editables: editables);
+    return Body(item: item, editable: editable);
   }
 }
