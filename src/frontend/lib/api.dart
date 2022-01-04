@@ -7,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-final storage = const FlutterSecureStorage();
+const storage = FlutterSecureStorage();
 const url = 'http://localhost:4000/graphql/';
 
 final _httpLink = HttpLink(
@@ -15,7 +15,13 @@ final _httpLink = HttpLink(
 );
 
 var _authLink = AuthLink(
-  getToken: () async => '',
+  getToken: () async {
+    String? token = await storage.read(key: "authToken");
+    if (token == null) {
+      return "";
+    }
+    return 'Bearer ' + token;
+  },
 );
 
 Link _link = _authLink.concat(_httpLink);
@@ -59,10 +65,6 @@ logInUser(String email, String password) async {
     await storage.write(
         key: 'authToken', value: result.data?['login']['token']);
 
-    _authLink = AuthLink(
-      getToken: () async => 'Bearer ' + result.data?['login']['token'],
-    );
-
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil('/home', ModalRoute.withName('/home'));
   } else {
@@ -71,10 +73,6 @@ logInUser(String email, String password) async {
 }
 
 logOutUser() async {
-  _authLink = AuthLink(
-    getToken: () async => '',
-  );
-
   await storage.deleteAll();
 
   navigatorKey.currentState
