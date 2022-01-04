@@ -54,7 +54,13 @@ class Body extends State<RestaurantMenuEditScreen> {
                                 IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        editables[index] = !editables[index];
+                                        if (editables[index]) {
+                                          if (isValid(items[index])) {
+                                            editables[index] = false;
+                                          }
+                                        } else {
+                                          editables[index] = !editables[index];
+                                        }
                                       });
                                     },
                                     icon: Icon(
@@ -115,6 +121,12 @@ class Body extends State<RestaurantMenuEditScreen> {
                 RoundedButton(
                     text: "Save",
                     click: () {
+                      for (var i = 0; i < items.length; i++) {
+                        if (!isValid(items[i])) {
+                          return;
+                        }
+                        editables[i] = false;
+                      }
                       // TODO: Save current list of items
                       // -> return to admin overview
                     }),
@@ -122,5 +134,14 @@ class Body extends State<RestaurantMenuEditScreen> {
             )))
       ],
     )));
+  }
+
+  bool isValid(Map<String, dynamic> item) {
+    return item["name"] != null &&
+        item["name"] != "" &&
+        item["description"] != null &&
+        item["description"] != "" &&
+        item["price"] != null &&
+        item["price"] > 0.0;
   }
 }

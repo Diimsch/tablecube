@@ -38,6 +38,7 @@ class _ButtonState extends State<RoundedMenuItem> {
           color: Colors.transparent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,30 +114,38 @@ class _ButtonState extends State<RoundedMenuItem> {
                       )),
                 ],
               ),
-              Visibility(
-                child: Expanded(
-                    child: widget.editable
-                        ? TextField(
-                            maxLines: 1,
-                            controller: TextEditingController(
-                                text: widget.item["price"].toStringAsFixed(2)),
-                            onChanged: (value) {
-                              widget.item["price"] = double.parse(value);
-                            },
-                            keyboardType: const TextInputType.numberWithOptions(
-                                signed: false, decimal: true),
-                            style: const TextStyle(
-                                fontSize: 15, color: Colors.grey),
-                            decoration: const InputDecoration(
-                                hintText: "Price", border: InputBorder.none),
-                          )
-                        : Text(
-                            widget.item["description"],
-                            style: const TextStyle(fontSize: 15),
-                            textAlign: TextAlign.start,
-                          )),
-                visible: _hasBeenPressed,
-              ),
+              Wrap(
+                children: [
+                  Visibility(
+                    child: Expanded(
+                        child: widget.editable
+                            ? TextField(
+                                maxLines: 1,
+                                controller: TextEditingController(
+                                    text: widget.item["description"]),
+                                onChanged: (value) {
+                                  widget.item["description"] = value;
+                                },
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.grey),
+                                decoration: const InputDecoration(
+                                    hintText: "Description",
+                                    contentPadding: EdgeInsets.only(left: 25),
+                                    border: InputBorder.none),
+                                textAlign: TextAlign.left,
+                              )
+                            : Container(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: Text(
+                                  widget.item["description"],
+                                  style: const TextStyle(fontSize: 15),
+                                  textAlign: TextAlign.left,
+                                ))),
+                    visible: _hasBeenPressed,
+                  ),
+                ],
+              )
             ],
           )),
     ));
