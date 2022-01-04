@@ -4,7 +4,6 @@ import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_restaurantList/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-
 const String getRestaurantsQuery = r"""
 query Query {
   restaurant {
@@ -36,8 +35,6 @@ class Body extends StatelessWidget {
         // it can be either Map or List
         List restaurants = result.data!['restaurant'];
 
-        debugPrint(restaurants.toString());
-
         return ListView.builder(
             itemCount: restaurants.length,
             itemBuilder: (context, index) {
@@ -62,7 +59,10 @@ class Body extends StatelessWidget {
                               primary: primaryColor,
                               backgroundColor: primaryLightColor),
                           child: const Text('Go To Restauarant'),
-                          onPressed: () {/* ... */},
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/overview',
+                                arguments: OverviewArguments('restaurantId'));
+                          },
                         ),
                         const SizedBox(width: 9),
                       ],

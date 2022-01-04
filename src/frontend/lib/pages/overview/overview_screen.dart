@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/constants.dart';
 import 'package:frontend/pages/overview/components/body.dart';
 
-enum UserType {
-  WAITER,
-  ADMIN,
-  NONE,
-}
-
 class OverviewScreen extends StatelessWidget {
-  final UserType userType;
-  const OverviewScreen({Key? key, required this.userType}) : super(key: key);
+  UserType userType;
+  OverviewScreen({Key? key, this.userType = UserType.NONE}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var args = ModalRoute.of(context)!.settings.arguments == null
+        ? "NULL"
+        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+
     return Scaffold(
         body: Body(
       userType: userType,

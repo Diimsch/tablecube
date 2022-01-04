@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_restaurantList/restaurant_list_screen.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
@@ -12,7 +13,7 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var storedToken = await storage.read(key: 'authToken');
-  debugPrint(storedToken);
+
   final bool isLogged = storedToken != null && storedToken.isNotEmpty;
   final MyApp myApp = MyApp(
     initialRoute: isLogged ? '/home' : '/',
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
           '/': (context) => const WelcomeScreen(),
           '/signup': (context) => const SignUpScreen(),
           '/login': (context) => const LoginScreen(),
-          '/home': (context) => const RestaurantListScreen()
+          '/home': (context) => const RestaurantListScreen(),
+          '/overview': (context) => OverviewScreen()
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
