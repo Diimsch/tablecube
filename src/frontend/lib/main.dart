@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/pages/order_view/order_screen.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_restaurantList/restaurant_list_screen.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +41,9 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => const SignUpScreen(),
           '/login': (context) => const LoginScreen(),
           '/home': (context) => const RestaurantListScreen(),
-          '/overview': (context) => OverviewScreen()
+          '/overview': (context) => OverviewScreen(),
+          '/scanner': (context) => const QrViewScreen(),
+          '/cart': (context) => OrderScreen(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

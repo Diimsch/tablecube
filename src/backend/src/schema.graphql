@@ -14,7 +14,6 @@ type Restaurant {
   tables: [Table]
   bookings: [Booking]!
   menuItems: [MenuItem]!
-
 }
 
 type LoginResponse {
@@ -106,6 +105,18 @@ type BookingItem {
   comment: String
 }
 
+enum UserRoles {
+  WAITER
+  ADMIN
+  NONE
+}
+
+type UserRoleInRestaurant {
+  restaurantId: ID!
+  userId: ID!
+  role: UserRoles!
+}
+
 type Query {
   """
   Returns a JWT token for authentication
@@ -131,6 +142,10 @@ type Query {
   Returns list of restaurants
   """
   restaurant: [Restaurant]!
+  """
+  Get role in Restaurant
+  """
+  roleInRestaurant(restaurantId: ID!): UserRoleInRestaurant!
 }
 
 type Mutation {
@@ -171,5 +186,5 @@ type Mutation {
 }
 
 type Subscription {
-  validationPrompted(tableId: String!): ValidationEvent!
+  validationPrompted(tableId: String!): ValidationEvent
 }

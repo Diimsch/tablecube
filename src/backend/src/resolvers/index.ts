@@ -4,6 +4,7 @@ import { GraphQLScalarType, Kind } from "graphql";
 import { Resolvers, Scalars } from "../generated/graphql";
 import { bookingResolvers } from "./booking";
 import { menuResolvers } from "./menu";
+import { restaurantsResolver } from "./restaurant";
 import { tablesResolvers } from "./table";
 import { usersResolver } from "./users";
 import { restaurantResolver } from "./restaurant";

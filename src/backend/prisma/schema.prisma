@@ -17,6 +17,7 @@ generator dbml {
 enum UserRole {
   WAITER
   ADMIN
+  NONE
 }
 
 enum BookingStatus {
