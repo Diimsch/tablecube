@@ -7,6 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 const String getRestaurantsQuery = r"""
 query Query {
   restaurant {
+    id
     name
   }
 }
@@ -61,7 +62,7 @@ class Body extends StatelessWidget {
                           child: const Text('Go To Restauarant'),
                           onPressed: () {
                             Navigator.pushNamed(context, '/overview',
-                                arguments: OverviewArguments('restaurantId'));
+                                arguments: OverviewArguments(restaurants[index]['id']));
                           },
                         ),
                         const SizedBox(width: 9),
