@@ -13,6 +13,8 @@ generates:
         MenuItem: ../../node_modules/.prisma/client#MenuItem
         BookingItem: ../../node_modules/.prisma/client#ItemsOnBooking
         Booking: ../../node_modules/.prisma/client#Booking
+        UserRoleInRestaurant: ../../node_modules/.prisma/client#UserRoleInRestaurant
+        UserRole: ../../node_modules/.prisma/client#UserRole
       contextType: ../types/context#IServerContext
     plugins:
       - "typescript"
