@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
-import 'package:frontend/pages/overview/overview_screen.dart';
 
+import '../../constants.dart';
 import 'components/body.dart';
 
 class RestaurantInfoScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class RestaurantInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (userType != UserType.admin) {
+    if (userType != UserType.ADMIN) {
       // TODO: logout and toast
       // return to WelcomeScreen
     }

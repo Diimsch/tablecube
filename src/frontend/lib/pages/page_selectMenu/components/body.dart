@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
-import 'package:frontend/pages/order_view/components/body.dart';
-import 'package:frontend/pages/page_selectMenu/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 /* TODO:
@@ -30,9 +28,9 @@ class Body extends StatelessWidget {
       options: QueryOptions(
         document: gql(getMenuQuery),
         variables: {
-          'restaurantId': '15727139-d6b4-4aac-b8e2-033ecad4935f',
+          'restaurantId': '0bc67384-f77d-4f8b-a28f-9225f71b909d',
         },
-        pollInterval: Duration(seconds: 10),
+        pollInterval: const Duration(seconds: 10),
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -41,7 +39,7 @@ class Body extends StatelessWidget {
         }
 
         if (result.isLoading) {
-          return Text('Loading');
+          return const Text('Loading');
         }
 
         // it can be either Map or List
@@ -51,10 +49,11 @@ class Body extends StatelessWidget {
             itemCount: menuItems.length,
             itemBuilder: (context, index) {
               return RoundedMenuItem(
-                menu: menuItems[index],
+                item: menuItems[index],
                 click: () {
                   debugPrint("222");
                 },
+                editable: false,
               );
 
               /*return Text(counters[index]['name'] +
@@ -63,40 +62,5 @@ class Body extends StatelessWidget {
             });
       },
     );
-    /* Background(
-            body: ListView(
-      children: [
-        const SizedBox(
-          height: 30,
-        ),
-        RoundedMenuItem(
-          item: MenuItem(
-              "Hacksteak mit wüzigen Kartoffeln",
-              "Hacksteak mit wüzigen Kartoffeln",
-              "Hacksteak mit wüzigen Kartoffeln",
-              2.2,
-              true,
-              "",
-              ""),
-          click: () {},
-          editable: false,
-        ),
-        RoundedMenuItem(
-          item: MenuItem("", "", "", 2.2, true, "", ""),
-          click: () {},
-          editable: false,
-        ),
-        RoundedMenuItem(
-          item: MenuItem("", "", "", 2.2, true, "", ""),
-          click: () {},
-          editable: false,
-        ),
-        RoundedMenuItem(
-          item: MenuItem("", "", "", 2.2, true, "", ""),
-          click: () {},
-          editable: false,
-        ),
-      ],
-    ));*/
   }
 }

@@ -7,7 +7,7 @@ import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.dart';
 
 class Body extends State<RestaurantMenuEditScreen> {
-  final List<MenuItem> items;
+  final List<Map<String, dynamic>> items;
   final List<bool> editables;
   Body({required this.items, required this.editables});
 
@@ -102,7 +102,13 @@ class Body extends State<RestaurantMenuEditScreen> {
                   onPressed: () {
                     setState(() {
                       editables.add(true);
-                      items.add(MenuItem("", "", "Hallo", 0.00, true, "", ""));
+                      items.add({
+                        "name": "",
+                        "description": "",
+                        "price": 0.00,
+                        "available": true,
+                        "type": "FOOD"
+                      });
                     });
                   },
                 ),

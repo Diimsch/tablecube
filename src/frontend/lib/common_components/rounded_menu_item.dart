@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_components/text_field_container.dart';
-import 'package:frontend/pages/order_view/components/body.dart';
-
-final formatCurrency = NumberFormat.simpleCurrency();
 
 class RoundedMenuItem extends StatefulWidget {
   final VoidCallback click;
-  final Map<String, dynamic> menu;
+  final Map<String, dynamic> item;
   final bool addButtonVisible;
   final bool editable;
 
@@ -19,25 +16,13 @@ class RoundedMenuItem extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ButtonState createState() => _ButtonState(
-      item: item,
-      onAddClicked: click,
-      addButtonVisible: addButtonVisible,
-      editable: editable);
+  _ButtonState createState() => _ButtonState();
 }
 
 class _ButtonState extends State<RoundedMenuItem> {
-  final MenuItem item;
-  final VoidCallback onAddClicked;
-  final bool addButtonVisible;
-  final bool editable;
   bool _hasBeenPressed = false;
 
-  _ButtonState(
-      {required this.onAddClicked,
-      required this.item,
-      required this.addButtonVisible,
-      required this.editable});
+  _ButtonState();
 
   @override
   Widget build(BuildContext context) {
@@ -66,15 +51,15 @@ class _ButtonState extends State<RoundedMenuItem> {
                           Icon(_hasBeenPressed
                               ? Icons.arrow_drop_up_sharp
                               : Icons.arrow_drop_down_sharp),
-                          editable
+                          widget.editable
                               ? Expanded(
                                   child: TextField(
-                                  controller:
-                                      TextEditingController(text: item.name),
+                                  controller: TextEditingController(
+                                      text: widget.item["name"]),
                                   maxLines: 1,
                                   keyboardType: TextInputType.text,
                                   onChanged: (value) {
-                                    item.name = value;
+                                    widget.item["name"] = value;
                                   },
                                   style: const TextStyle(
                                       fontSize: 15, color: Colors.grey),
@@ -84,7 +69,7 @@ class _ButtonState extends State<RoundedMenuItem> {
                                 ))
                               : Expanded(
                                   child: Text(
-                                  item.name,
+                                  widget.item["name"],
                                   style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold),
@@ -94,13 +79,14 @@ class _ButtonState extends State<RoundedMenuItem> {
                   Expanded(
                       flex: 1,
                       // padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: editable
+                      child: widget.editable
                           ? TextField(
                               maxLines: 1,
                               controller: TextEditingController(
-                                  text: item.price.toStringAsFixed(2)),
+                                  text:
+                                      widget.item["price"].toStringAsFixed(2)),
                               onChanged: (value) {
-                                item.price = double.parse(value);
+                                widget.item["price"] = double.parse(value);
                               },
                               keyboardType:
                                   const TextInputType.numberWithOptions(
@@ -110,31 +96,45 @@ class _ButtonState extends State<RoundedMenuItem> {
                               decoration: const InputDecoration(
                                   hintText: "Price", border: InputBorder.none),
                             )
-                          : Container(
-                              child: Text(
-                              "${item.price.toStringAsFixed(2)}€",
+                          : Text(
+                              "${widget.item["price"].toStringAsFixed(2)}€",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
-                            ))),
+                            )),
                   Visibility(
-                      visible: addButtonVisible,
+                      visible: widget.addButtonVisible,
                       child: IconButton(
                         icon: const Icon(Icons.add_circle_outline_sharp),
                         color: Colors.black87,
                         iconSize: 40,
                         onPressed: () {
-                          onAddClicked();
+                          widget.click();
                         },
                       )),
                 ],
               ),
               Visibility(
                 child: Expanded(
-                    child: Text(
-                  item.description,
-                  style: const TextStyle(fontSize: 15),
-                  textAlign: TextAlign.start,
-                )),
+                    child: widget.editable
+                        ? TextField(
+                            maxLines: 1,
+                            controller: TextEditingController(
+                                text: widget.item["price"].toStringAsFixed(2)),
+                            onChanged: (value) {
+                              widget.item["price"] = double.parse(value);
+                            },
+                            keyboardType: const TextInputType.numberWithOptions(
+                                signed: false, decimal: true),
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.grey),
+                            decoration: const InputDecoration(
+                                hintText: "Price", border: InputBorder.none),
+                          )
+                        : Text(
+                            widget.item["description"],
+                            style: const TextStyle(fontSize: 15),
+                            textAlign: TextAlign.start,
+                          )),
                 visible: _hasBeenPressed,
               ),
             ],
