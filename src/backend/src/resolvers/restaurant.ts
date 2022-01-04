@@ -1,13 +1,13 @@
-import { BookingStatus, MenuItem, UserRole } from "@prisma/client";
-import { AuthenticationError, UserInputError } from "apollo-server-errors";
-import { Resolvers, UserRoleInRestaurant, UserRoles } from "../generated/graphql";
-import { PubSub } from "graphql-subscriptions";
-import { withFilter } from "graphql-subscriptions";
+import { AuthenticationError } from "apollo-server-errors";
+import { Resolvers } from "../generated/graphql";
 
-const pubsub = new PubSub();
-
-export const restaurantsResolver: Resolvers = {
+export const restaurantResolver: Resolvers = {
   Query: {
+    restaurant: async (parent, args, ctx) => {
+      const restaurants = await ctx.prisma.restaurant.findMany();
+      return restaurants;
+    },
+
     roleInRestaurant: async (parent, args, ctx) => {
       if (ctx.token.userId === null) {
         throw new AuthenticationError("login required");
@@ -23,19 +23,21 @@ export const restaurantsResolver: Resolvers = {
       }
 
       const role = await ctx.prisma.userRoleInRestaurant.findUnique({
-          where: {
-              userId_restaurantId: {
-                  userId: user.id,
-                  restaurantId: args.restaurantId
-              }
-          }
+        where: {
+          userId_restaurantId: {
+            userId: user.id,
+            restaurantId: args.restaurantId,
+          },
+        },
       });
 
-      return role ?? {
+      return (
+        role ?? {
           restaurantId: args.restaurantId,
           userId: user.id,
-          role: "NONE"
-      };
+          role: "NONE",
+        }
+      );
     },
   },
   Mutation: {},

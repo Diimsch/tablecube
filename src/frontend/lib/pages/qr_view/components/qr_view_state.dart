@@ -121,7 +121,7 @@ class QrViewState extends State<QrViewScreen> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return const OverviewScreen(userType: UserType.NONE);
+                return OverviewScreen(userType: UserType.NONE);
               },
             ),
           );

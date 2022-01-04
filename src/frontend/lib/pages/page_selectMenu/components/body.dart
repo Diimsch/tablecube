@@ -29,7 +29,7 @@ class Body extends StatelessWidget {
       options: QueryOptions(
         document: gql(getMenuQuery),
         variables: {
-          'restaurantId': '15727139-d6b4-4aac-b8e2-033ecad4935f',
+          'restaurantId': '0bc67384-f77d-4f8b-a28f-9225f71b909d',
         },
         pollInterval: Duration(seconds: 10),
       ),
@@ -62,50 +62,5 @@ class Body extends StatelessWidget {
             });
       },
     );
-    /* Background(
-            body: ListView(
-      children: [
-        const SizedBox(
-          height: 30,
-        ),
-        RoundedMenuItem(
-          menu: [],
-          onPressed: () {
-            debugPrint("asdf");
-          },
-          click: () {
-            debugPrint("222");
-          },
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-        RoundedMenuItem(
-          onPressed: () {},
-          click: () {},
-        ),
-      ],
-    ));*/
   }
 }

@@ -8,6 +8,14 @@ type User {
   bookings: [Booking]!
 }
 
+type Restaurant {
+  id: ID!
+  name: String!
+  tables: [Table]
+  bookings: [Booking]!
+  menuItems: [MenuItem]!
+}
+
 type LoginResponse {
   token: String!
 }
@@ -130,6 +138,10 @@ type Query {
   Request authentication color code to be shown on the Raspberry PI
   """
   promptValidation(tableId: String!): Boolean
+  """
+  Returns list of restaurants
+  """
+  restaurant: [Restaurant]!
   """
   Get role in Restaurant
   """

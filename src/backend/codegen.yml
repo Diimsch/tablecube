@@ -15,6 +15,7 @@ generates:
         Booking: ../../node_modules/.prisma/client#Booking
         UserRoleInRestaurant: ../../node_modules/.prisma/client#UserRoleInRestaurant
         UserRole: ../../node_modules/.prisma/client#UserRole
+        Restaurant: ../../node_modules/.prisma/client#Restaurant
       contextType: ../types/context#IServerContext
     plugins:
       - "typescript"
