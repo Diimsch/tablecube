@@ -110,6 +110,7 @@ Table MenuItem {
 Enum UserRole {
   WAITER
   ADMIN
+  NONE
 }
 
 Enum BookingStatus {
