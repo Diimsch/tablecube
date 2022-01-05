@@ -56,8 +56,12 @@ async def main():
             for color in result['validationPrompted']['code']:
                 print(color)
                 colorData = colorDict.get(color)
+                print(colorData.get("r"))
+                print(colorData.get("g"))
+                print(colorData.get("B"))
                 keybow.set_all(colorData.get(
                     "r"), colorData.get("g"), colorData.get("b"))
+                keybow.show()
                 await asyncio.sleep(2)
             keybow.clear()
             await asyncio.sleep(3)
@@ -93,17 +97,17 @@ def handle_input(index, state):
 while True:
     keybow.show()
     time.sleep(1.0 / 60.0)
-'''
 
 
 async def keybow_loop():
     while True:
         keybow.show()
         await asyncio.sleep(1.0 / 60)
+'''
 
 loop = asyncio.get_event_loop()
 try:
     loop.run_until_complete(main())
-    loop.run_until_complete(keybow_loop())
+    # loop.run_until_complete(keybow_loop())
 finally:
     loop.close()
