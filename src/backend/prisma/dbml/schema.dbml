@@ -93,6 +93,7 @@ Table ItemsOnBooking {
   item MenuItem [not null]
   itemId String [not null]
   comment String
+  paid Boolean [not null, default: false]
 }
 
 Table MenuItem {

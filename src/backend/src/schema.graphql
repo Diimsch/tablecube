@@ -183,6 +183,10 @@ type Mutation {
   Change booking status of table
   """
   changeBookingStatus(data: ChangeBookingStatusInput!): Booking
+  """
+  Pay item on booking
+  """
+  payItems(bookingItemId: [ID!]!): [BookingItem]!
 }
 
 type Subscription {

@@ -1,4 +1,4 @@
-import { Booking, BookingStatus, MenuItem, UserRole } from "@prisma/client";
+import { Booking, BookingStatus, MenuItem, PrismaClient, UserRole } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
@@ -264,6 +264,59 @@ export const bookingResolvers: Resolvers = {
           id: args.data.bookingId,
         },
       });
+    },
+    payItems: async (parent, args, ctx) => {
+      if (!ctx.token.userId) {
+        throw new AuthenticationError("not signed in");
+      }
+
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.token.userId,
+        },
+        include: {
+          rolesInRestaurants: true,
+        },
+      });
+
+      if (!user) {
+        throw new AuthenticationError("invalid user");
+      }
+
+      await ctx.prisma.itemsOnBooking.updateMany({
+        where: {
+          id: {
+            in: args.bookingItemId,
+          },
+          booking: {
+            users: {
+              every: {
+                userId: user.id
+              }
+            }
+          },
+          paid: false
+        },
+        data: {
+          paid: true,
+        }
+      });
+
+      const bookings = await ctx.prisma.itemsOnBooking.findMany({
+        where: {
+          id: {
+            in: args.bookingItemId,
+          },
+          booking: {
+            users: {
+              every: {
+                userId: user.id
+              }
+            }
+          },
+        },
+      });
+      return bookings;
     },
     checkIn: async (parent, args, ctx) => {
       if (!ctx.token.userId) {
