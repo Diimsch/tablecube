@@ -52,7 +52,8 @@ async def main():
         async for result in session.subscribe(subscription, variable_values={
             "tableId": "09ff81b3-b498-43ac-96d9-08ae1800882c"
         }):
-            for color in result.code:
+
+            for color in result['validationPrompted']['code']:
                 print(color)
                 colorData = colorDict.get(color)
                 keybow.set_all(colorData.get(
