@@ -64,6 +64,7 @@ async def main():
                 keybow.show()
                 await asyncio.sleep(2)
             keybow.clear()
+            keybow.show()
             await asyncio.sleep(3)
 
 '''
