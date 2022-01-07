@@ -5,12 +5,32 @@ import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
-import 'package:frontend/pages/page_selectMenu/components/body.dart';
 import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+const String getBillQuery = r"""
+query($restaurantId: ID!) {
+  menu(restaurantId: $restaurantId) {
+    id
+    name
+    description
+    price
+    available
+    type
+  }
+}
+""";
+
+const String payItems = r"""
+mutation PayItems($bookingItemId: [ID!]!) {
+  payItems(bookingItemId: $bookingItemId) {
+    id
+  }
+}
+""";
+
 class Body extends State<BillScreen> {
-  final List<bool> selected;
+  List<bool> selected;
   bool allSelected;
   double balance;
   Body(
@@ -24,40 +44,24 @@ class Body extends State<BillScreen> {
   Widget build(BuildContext context) {
     return Query(
         options: QueryOptions(
-          document: gql(getMenuQuery),
+          document: gql(getBillQuery),
           variables: {
             'restaurantId': '0bc67384-f77d-4f8b-a28f-9225f71b909d',
           },
-          pollInterval: const Duration(seconds: 10),
+          pollInterval: const Duration(seconds: 30),
         ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
-            Fluttertoast.showToast(
-              msg: "GrapghQL error",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 3,
-              backgroundColor: warningColor,
-              webBgColor: warningColorWebToast,
-            );
+            return Text(result.exception.toString());
           }
 
           if (result.isLoading) {
-            return Scaffold(
-                body: Stack(
-              alignment: FractionalOffset.center,
-              children: const <Widget>[
-                Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: Colors.red,
-                )),
-              ],
-            ));
+            return const Text('Loading');
           }
 
           // it can be either Map or List
-          items = result.data!['menu'];
+          List items = result.data!['menu'];
           calculateBalance();
 
           return Scaffold(
@@ -92,10 +96,10 @@ class Body extends State<BillScreen> {
               Expanded(
                   flex: 6,
                   child: ListView.builder(
-                    itemCount: items?.length,
+                    itemCount: items.length,
                     itemBuilder: (context, index) {
                       // Display the list item
-                      if (items?[index] != null) {
+                      if (items[index] != null) {
                         return TextFieldContainer(
                             child: Row(
                           children: [
@@ -109,7 +113,7 @@ class Body extends State<BillScreen> {
                                 }),
                             Expanded(
                                 child: RoundedMenuItem(
-                              item: items![index],
+                              item: items[index],
                               addButtonVisible: false,
                               editable: false,
                               click: () {},
@@ -140,10 +144,46 @@ class Body extends State<BillScreen> {
                                   Text(balance.toStringAsFixed(2) + "€",
                                       style: const TextStyle(fontSize: 18))
                                 ])),
-                        RoundedButton(
-                            text: "Pay current bill",
-                            click: () {
-                              payCurrentBill();
+                        Mutation(
+                            options: MutationOptions(
+                              document: gql(payItems),
+                              onCompleted: (data) {
+                                if (refetch != null) {
+                                  refetch();
+                                  setState(() {
+                                    selected = List.generate(
+                                        items.length, (index) => true);
+                                  });
+                                }
+                              },
+                            ),
+                            builder:
+                                (RunMutation runMutation, QueryResult? result) {
+                              return RoundedButton(
+                                  text: "Pay current bill",
+                                  click: () {
+                                    if (balance == 0.0) {
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            "You can not pay a bill with zweo balance.",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 3,
+                                        backgroundColor: warningColor,
+                                        webBgColor: warningColorWebToast,
+                                      );
+                                    } else {
+                                      List ids = [];
+                                      for (var i = 0; i < items.length; i++) {
+                                        if (!selected[i]) continue;
+                                        ids.add(items[i]["id"]);
+                                      }
+                                      runMutation({
+                                        "bookingItemId": ids,
+                                        // Zahlungsinformationen
+                                      });
+                                    }
+                                  });
                             }),
                       ])))
             ],
@@ -158,19 +198,6 @@ class Body extends State<BillScreen> {
         balance = balance + items?[i]["price"];
       }
     }
-  }
-
-  void payCurrentBill() {
-    if (balance == 0.0) {
-      Fluttertoast.showToast(
-        msg: "You can not pay a bill with zweo balance.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 3,
-        backgroundColor: warningColor,
-        webBgColor: warningColorWebToast,
-      );
-    } else {}
   }
 
   void setAllValues(bool value) {
