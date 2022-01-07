@@ -116,6 +116,7 @@ model ItemsOnBooking {
   item      MenuItem @relation(fields: [itemId], references: [id])
   itemId    String
   comment   String?
+  paid      Boolean  @default(false)
 }
 
 enum MenuItemType {
