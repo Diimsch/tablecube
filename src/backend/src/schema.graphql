@@ -11,6 +11,10 @@ type User {
 type Restaurant {
   id: ID!
   name: String!
+  description: String!
+  address: String!
+  zipCode: String!
+  city: String!
   tables: [Table]
   bookings: [Booking]!
   menuItems: [MenuItem]!
@@ -117,6 +121,15 @@ type UserRoleInRestaurant {
   role: UserRoles!
 }
 
+input EditRestaurantInfoInput {
+  restaurantId: ID!
+  name: String
+  description: String
+  address: String
+  zipCode: String
+  city: String
+}
+
 type Query {
   """
   Returns a JWT token for authentication
@@ -189,6 +202,10 @@ type Mutation {
   Pay item on booking
   """
   payItems(bookingItemId: [ID!]!): [BookingItem]!
+  """
+  Edit restaurant information
+  """
+  editRestaurantInfo(data: EditRestaurantInfoInput!): Restaurant!
 }
 
 type Subscription {
