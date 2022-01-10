@@ -1,115 +1,153 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/constants.dart';
-import 'package:intl/intl.dart';
-
-final formatCurrency = NumberFormat.simpleCurrency();
+import 'package:frontend/common_components/text_field_container.dart';
 
 class RoundedMenuItem extends StatefulWidget {
   final VoidCallback click;
-  final Map<String, dynamic> menu;
-  final Color color, textColor;
+  final Map<String, dynamic> item;
+  final bool addButtonVisible;
+  final bool editable;
 
   const RoundedMenuItem({
     Key? key,
+    required this.item,
     required this.click,
-    required this.menu,
-    this.color = primaryColor,
-    this.textColor = Colors.white,
+    required this.editable,
+    this.addButtonVisible = true,
   }) : super(key: key);
 
   @override
   _ButtonState createState() => _ButtonState();
 }
 
-/*
-      {
-        "id": "220ad992-e97f-4e29-939c-791c9452605f",
-        "name": "Falafeltasche",
-        "description": "Leckere Falafeltasche mit Salat und Knoblauchsauce",
-        "price": 5,
-        "type": "FOOD",
-        "available": true
-      },
-*/
 class _ButtonState extends State<RoundedMenuItem> {
   bool _hasBeenPressed = false;
 
+  _ButtonState();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15),
-          ),
-          color: primaryColor,
-        ),
-        child: Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(borderRadius),
-                child: TextButton.icon(
-                  icon: Icon(_hasBeenPressed
-                      ? Icons.arrow_drop_up_sharp
-                      : Icons.arrow_drop_down_sharp),
-                  label: Text(
-                    widget.menu["name"],
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () => {
-                    setState(() {
-                      _hasBeenPressed = !_hasBeenPressed;
-                    })
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Colors.white,
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 20),
-                  ),
-                ),
-              ),
+    return TextFieldContainer(
+        child: GestureDetector(
+      onTap: () => {
+        setState(() {
+          _hasBeenPressed = !_hasBeenPressed;
+        })
+      },
+      child: Container(
+          // Container and color are important to make the area clickable
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    formatCurrency.format(widget.menu["price"]),
-                    style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                    //softWrap: true,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_box_rounded),
-                    color: Colors.white,
-                    iconSize: 50,
-                    onPressed: () {
-                      widget.click();
-                    },
+                  Expanded(
+                      flex: 8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(_hasBeenPressed
+                              ? Icons.arrow_drop_up_sharp
+                              : Icons.arrow_drop_down_sharp),
+                          widget.editable
+                              ? Expanded(
+                                  child: TextField(
+                                  controller: TextEditingController(
+                                      text: widget.item["name"]),
+                                  maxLines: 1,
+                                  keyboardType: TextInputType.text,
+                                  onChanged: (value) {
+                                    widget.item["name"] = value;
+                                  },
+                                  style: const TextStyle(
+                                      fontSize: 15, color: Colors.grey),
+                                  decoration: const InputDecoration(
+                                      hintText: "Title",
+                                      border: InputBorder.none),
+                                ))
+                              : Expanded(
+                                  child: Text(
+                                  widget.item["name"],
+                                  style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ))
+                        ],
+                      )),
+                  Expanded(
+                      flex: 1,
+                      // padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: widget.editable
+                          ? TextField(
+                              maxLines: 1,
+                              controller: TextEditingController(
+                                  text:
+                                      widget.item["price"].toStringAsFixed(2)),
+                              onChanged: (value) {
+                                widget.item["price"] = double.parse(value);
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: false, decimal: true),
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.grey),
+                              decoration: const InputDecoration(
+                                  hintText: "Price", border: InputBorder.none),
+                            )
+                          : Text(
+                              "${widget.item["price"].toStringAsFixed(2)}€",
+                              style: const TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            )),
+                  Visibility(
+                      visible: widget.addButtonVisible,
+                      child: IconButton(
+                        icon: const Icon(Icons.add_circle_outline_sharp),
+                        color: Colors.black87,
+                        iconSize: 40,
+                        onPressed: () {
+                          widget.click();
+                        },
+                      )),
+                ],
+              ),
+              Wrap(
+                children: [
+                  Visibility(
+                    child: Expanded(
+                        child: widget.editable
+                            ? TextField(
+                                maxLines: 1,
+                                controller: TextEditingController(
+                                    text: widget.item["description"]),
+                                onChanged: (value) {
+                                  widget.item["description"] = value;
+                                },
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.grey),
+                                decoration: const InputDecoration(
+                                    hintText: "Description",
+                                    contentPadding: EdgeInsets.only(left: 25),
+                                    border: InputBorder.none),
+                                textAlign: TextAlign.left,
+                              )
+                            : Container(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: Text(
+                                  widget.item["description"],
+                                  style: const TextStyle(fontSize: 15),
+                                  textAlign: TextAlign.left,
+                                ))),
+                    visible: _hasBeenPressed,
                   ),
                 ],
               )
             ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _hasBeenPressed
-                  ? buildText(widget.menu["description"])
-                  : const SizedBox.shrink()
-            ],
-          )
-        ]));
-  }
-
-  Widget buildText(String text) {
-    return Expanded(
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-            child: Text(text,
-                style: const TextStyle(fontSize: 15, color: Colors.white),
-                textAlign: TextAlign.center)));
+          )),
+    ));
   }
 }
