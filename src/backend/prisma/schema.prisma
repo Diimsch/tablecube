@@ -31,6 +31,10 @@ enum BookingStatus {
 model Restaurant {
   id                String                 @id @default(uuid())
   name              String
+  description       String
+  zipCode           String
+  city              String
+  address           String
   tables            Table[]
   bookings          Booking[]
   menuItems         MenuItem[]

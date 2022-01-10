@@ -1,4 +1,5 @@
-import { AuthenticationError } from "apollo-server-errors";
+import { UserRole } from "@prisma/client";
+import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import { Resolvers } from "../generated/graphql";
 
 export const restaurantResolver: Resolvers = {
@@ -47,5 +48,48 @@ export const restaurantResolver: Resolvers = {
       );
     },
   },
-  Mutation: {},
+  Mutation: {
+    editRestaurantInfo: async (parent, args, ctx) => {
+      if (ctx.token.userId === null) {
+        throw new AuthenticationError("login required");
+      }
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.token.userId,
+        },
+        include: {
+          rolesInRestaurants: true,
+        },
+      });
+
+      if (!user) {
+        throw new AuthenticationError("user doesn't exist");
+      }
+
+      if (
+        !user.rolesInRestaurants.find(
+          (roles) =>
+            roles.restaurantId === args.data.restaurantId &&
+            roles.role === UserRole.ADMIN
+        )
+      ) {
+        throw new UserInputError("no permissions for specified restaurant.");
+      }
+
+      const updatedRestaurant = await ctx.prisma.restaurant.update({
+        where: {
+          id: args.data.restaurantId
+        },
+        data: {
+          name: args.data.name ?? undefined,
+          description: args.data.description ?? undefined,
+          address: args.data.address ?? undefined,
+          city: args.data.city ?? undefined,
+          zipCode: args.data.zipCode ?? undefined
+        }
+      });
+
+      return updatedRestaurant;
+    }
+  },
 };

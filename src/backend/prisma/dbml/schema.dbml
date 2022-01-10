@@ -5,6 +5,10 @@
 Table Restaurant {
   id String [pk]
   name String [not null]
+  description String [not null]
+  zipCode String [not null]
+  city String [not null]
+  address String [not null]
   tables Table [not null]
   bookings Booking [not null]
   menuItems MenuItem [not null]
