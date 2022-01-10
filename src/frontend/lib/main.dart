@@ -23,6 +23,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var storedToken = await storage.read(key: 'authToken');
 
+  debugPrint(storedToken);
+
   final bool isLogged = storedToken != null && storedToken.isNotEmpty;
   final MyApp myApp = MyApp(
     initialRoute: isLogged ? '/home' : '/',
