@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
 
 import '../../constants.dart';
+import 'components/body.dart';
 
-class TableOverviewScreen extends StatelessWidget {
-  const TableOverviewScreen({Key? key}) : super(key: key);
+class RestaurantInfoScreen extends StatelessWidget {
+  const RestaurantInfoScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (userType != UserType.WAITER) {
+    if (userType != UserType.ADMIN) {
       // TODO: logout and toast
       // return to WelcomeScreen
     }
-    return const Scaffold();
+    return Scaffold(body: Body());
   }
 }

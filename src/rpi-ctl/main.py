@@ -52,13 +52,19 @@ async def main():
         async for result in session.subscribe(subscription, variable_values={
             "tableId": "09ff81b3-b498-43ac-96d9-08ae1800882c"
         }):
-            for color in result.code:
+
+            for color in result['validationPrompted']['code']:
                 print(color)
                 colorData = colorDict.get(color)
+                print(colorData.get("r"))
+                print(colorData.get("g"))
+                print(colorData.get("B"))
                 keybow.set_all(colorData.get(
                     "r"), colorData.get("g"), colorData.get("b"))
+                keybow.show()
                 await asyncio.sleep(2)
             keybow.clear()
+            keybow.show()
             await asyncio.sleep(3)
 
 '''
@@ -92,17 +98,17 @@ def handle_input(index, state):
 while True:
     keybow.show()
     time.sleep(1.0 / 60.0)
-'''
 
 
 async def keybow_loop():
     while True:
         keybow.show()
         await asyncio.sleep(1.0 / 60)
+'''
 
 loop = asyncio.get_event_loop()
 try:
     loop.run_until_complete(main())
-    loop.run_until_complete(keybow_loop())
+    # loop.run_until_complete(keybow_loop())
 finally:
     loop.close()

@@ -114,7 +114,10 @@ class QrViewState extends State<QrViewScreen> {
       setState(() {
         // only allow qr code and do not execute request multiple times
         if (!requestLoading && scanData.format == BarcodeFormat.qrcode) {
-          // TODO: make request to login on table nad loading icon
+          // TODO: check qr information on context and decide which routing
+          // only restaurantid on qr code and userType == ADMIN - > AdminOverview
+          // only restaurantid on qr code and userType == WAITER - > WaiterOverview
+          // restaurantid and tableId on qr code - > UserOverview
           requestLoading = true;
 
           Navigator.push(

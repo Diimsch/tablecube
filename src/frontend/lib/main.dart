@@ -9,12 +9,21 @@ import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.dart';
+import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// state
+UserType userType = UserType.NONE;
+String tableId = '';
+String restaurantId = '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var storedToken = await storage.read(key: 'authToken');
+
+  debugPrint(storedToken);
 
   final bool isLogged = storedToken != null && storedToken.isNotEmpty;
   final MyApp myApp = MyApp(
@@ -44,6 +53,8 @@ class MyApp extends StatelessWidget {
           '/overview': (context) => OverviewScreen(),
           '/scanner': (context) => const QrViewScreen(),
           '/cart': (context) => OrderScreen(),
+          '/admin/info': (context) => const RestaurantInfoScreen(),
+          '/admin/menu': (context) => const RestaurantMenuEditScreen(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
