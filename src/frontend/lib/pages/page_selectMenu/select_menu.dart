@@ -1,24 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:frontend/pages/page_selectMenu/components/body.dart';
-import '../../constants.dart';
+import 'dart:html';
 
-class SelectMenuScreen extends StatelessWidget {
-  const SelectMenuScreen({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:frontend/constants.dart';
+import 'package:frontend/pages/page_selectMenu/components/order_body.dart';
+import 'package:frontend/pages/page_selectMenu/components/select_body.dart';
+
+class SelectMenuScreen extends StatefulWidget {
+  SelectMenuScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Select Menu Item"),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: primaryColor,
-          actions: [
-            IconButton(
-                onPressed: (){},
-                icon: const Icon(Icons.shopping_cart_outlined))
-          ],
-        ),
-        body: const Body());
+  // ignore: no_logic_in_create_state
+  State<StatefulWidget> createState() {
+    if (window.location.href.endsWith("/menu")) {
+      return SelectBody(items: selectedItems);
+    } else {
+      return OrderBody(items: selectedItems);
+    }
   }
 }

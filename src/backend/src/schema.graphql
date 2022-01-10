@@ -103,6 +103,7 @@ type BookingItem {
   id: ID!
   item: MenuItem!
   comment: String
+  paid: Boolean!
 }
 
 enum UserRoles {
@@ -167,6 +168,8 @@ type Mutation {
   Add a new item to the restaurants menu
   """
   addMenuItem(restaurantId: ID!, menuItem: CreateMenuItemInput!): MenuItem
+  updateMenuItem(menuItemId: ID!, menuItem: CreateMenuItemInput!): MenuItem
+  delMenuItem(menuItemId: ID!): MenuItem
   """
   Create a new booking for the table
   """

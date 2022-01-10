@@ -9,20 +9,26 @@ import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getBillQuery = r"""
-query($restaurantId: ID!) {
-  menu(restaurantId: $restaurantId) {
-    id
-    name
-    description
-    price
-    available
-    type
+query Query($bookingId: ID!) {
+  booking(bookingId: $bookingId) {
+    items {
+      id
+      item {
+        id
+        name
+        description
+        price
+        type
+        available
+      }
+      paid
+    }
   }
 }
 """;
 
 const String payItems = r"""
-mutation PayItems($bookingItemId: [ID!]!) {
+mutation Mutation($bookingItemId: [ID!]!) {
   payItems(bookingItemId: $bookingItemId) {
     id
   }
@@ -38,15 +44,17 @@ class Body extends State<BillScreen> {
       required this.balance,
       required this.allSelected});
 
-  List<Map<String, dynamic>>? items;
-
   @override
   Widget build(BuildContext context) {
+    var args = ModalRoute.of(context)!.settings.arguments == null
+        ? OverviewArguments('null', 'null')
+        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+
     return Query(
         options: QueryOptions(
           document: gql(getBillQuery),
           variables: {
-            'restaurantId': '0bc67384-f77d-4f8b-a28f-9225f71b909d',
+            'bookingId': args.bookingId,
           },
           pollInterval: const Duration(seconds: 30),
         ),
@@ -61,8 +69,10 @@ class Body extends State<BillScreen> {
           }
 
           // it can be either Map or List
-          List items = result.data!['menu'];
-          calculateBalance();
+          List items = result.data!['booking']["items"];
+
+          items = items.where((i) => i["paid"] == false).toList();
+          calculateBalance(items);
 
           return Scaffold(
               body: Background(
@@ -99,7 +109,7 @@ class Body extends State<BillScreen> {
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       // Display the list item
-                      if (items[index] != null) {
+                      if (items.isNotEmpty) {
                         return TextFieldContainer(
                             child: Row(
                           children: [
@@ -108,12 +118,12 @@ class Body extends State<BillScreen> {
                                 onChanged: (value) {
                                   setState(() {
                                     selected[index] = value!;
-                                    calculateBalance();
+                                    calculateBalance(items);
                                   });
                                 }),
                             Expanded(
                                 child: RoundedMenuItem(
-                              item: items[index],
+                              item: items[index]["item"],
                               addButtonVisible: false,
                               editable: false,
                               click: () {},
@@ -191,11 +201,11 @@ class Body extends State<BillScreen> {
         });
   }
 
-  void calculateBalance() {
+  void calculateBalance(List items) {
     balance = 0.0;
-    for (var i = 0; i < (items?.length ?? 0); i++) {
+    for (var i = 0; i < (items.length); i++) {
       if (selected[i]) {
-        balance = balance + items?[i]["price"];
+        balance = balance + items[i]["item"]["price"];
       }
     }
   }
