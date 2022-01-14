@@ -35,11 +35,11 @@ colorDict = dict([
     )),
 ])
 
-indexToStatusDict = dict(
-    [0, 'NEEDS_SERVICE'],
-    [1, 'PROMPT_CODE'],
-    [2, 'DONE']
-)
+indexToStatusDict = dict([
+    (0, 'NEEDS_SERVICE'),
+    (1, 'PROMPT_CODE'),
+    (2, 'DONE')
+])
 
 transport = RequestsHTTPTransport(url=args["destination"], verify=True, retries=3, headers={
     'Authorization': 'Bearer %s' % (args["jwt"])
