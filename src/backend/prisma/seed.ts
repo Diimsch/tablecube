@@ -17,6 +17,10 @@ async function main() {
     const restaurant = await prisma.restaurant.create({
         data: {
             name: "Test Restaurant",
+            description: 'Test restaurant',
+            zipCode: '12345',
+            city: 'Aalen',
+            address: 'Hs aalen str.'
         },
     });
 
