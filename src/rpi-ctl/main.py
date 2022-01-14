@@ -41,7 +41,7 @@ indexToStatusDict = dict([
     (2, 'DONE')
 ])
 
-transport = RequestsHTTPTransport(url=args["destination"], verify=True, retries=3, headers={
+transport = RequestsHTTPTransport(url='http://%s' % args["destination"], verify=True, retries=3, headers={
     'Authorization': 'Bearer %s' % (args["jwt"])
 })
 
@@ -92,7 +92,7 @@ def handle_input(index, state):
 
 
 async def main():
-    transport = WebsocketsTransport(url=args["destination"], init_payload={
+    transport = WebsocketsTransport(url='ws://%s' % args["destination"], init_payload={
                                     'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(
         transport=transport, fetch_schema_from_transport=True
