@@ -16,6 +16,9 @@ query Query {
       id
       name
     }
+    bookings {
+      id
+    }
   }
 }
 """;
@@ -57,8 +60,11 @@ class Body extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.food_bank),
                       title: Text(restaurants[index]['name']),
-                      subtitle: Text('Tables: ' +
-                          restaurants[index]['tables'].length.toString()),
+                      subtitle: Text(
+                          restaurants[index]['bookings'].length.toString() +
+                              ' out of ' +
+                              restaurants[index]['tables'].length.toString() +
+                              ' Table(s) available'),
                     ),
                     Row(children: [
                       const SizedBox(width: 70),
