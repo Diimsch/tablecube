@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/constants.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -7,6 +8,10 @@ query Query {
   restaurant {
     id
     name
+    description
+    city
+    zipCode
+    address
     tables {
       id
       name
@@ -32,7 +37,7 @@ class Body extends StatelessWidget {
         }
 
         if (result.isLoading) {
-          return const Text('Loading');
+          return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
         }
 
         // it can be either Map or List
@@ -55,6 +60,22 @@ class Body extends StatelessWidget {
                       subtitle: Text('Tables: ' +
                           restaurants[index]['tables'].length.toString()),
                     ),
+                    Row(children: [
+                      const SizedBox(width: 70),
+                      Text(restaurants[index]['zipCode'] ?? '',
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(color: Colors.grey)),
+                      const SizedBox(width: 5),
+                      Text(restaurants[index]['city'] ?? '',
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(color: Colors.grey)),
+                    ]),
+                    Row(children: [
+                      const SizedBox(width: 70),
+                      Text(restaurants[index]['address'] ?? '',
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(color: Colors.grey)),
+                    ]),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
@@ -66,8 +87,7 @@ class Body extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushNamed(context, '/overview',
                                 arguments: OverviewArguments(
-                                    restaurants[index]['id'],
-                                    "95f099e5-057a-45f0-b14a-0b62df4862d2"));
+                                    restaurants[index]['id'], "12345123"));
                           },
                         ),
                         const SizedBox(width: 9),

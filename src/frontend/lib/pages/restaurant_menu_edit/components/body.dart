@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
@@ -86,7 +87,7 @@ class Body extends State<RestaurantMenuEditScreen> {
           }
 
           if (result.isLoading) {
-            return const Text('Loading');
+          return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
           // it can be either Map or List
