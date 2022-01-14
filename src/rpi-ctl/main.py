@@ -1,3 +1,5 @@
+from base64 import decode
+from re import M
 from typing import final
 import keybow
 import argparse
@@ -5,6 +7,8 @@ import asyncio
 import time
 from gql import gql, Client
 from gql.transport.websockets import WebsocketsTransport
+from gql.transport.requests import RequestsHTTPTransport
+import jwt
 
 keybow.setup(keybow.MINI)
 
@@ -14,9 +18,9 @@ parser.add_argument('-d', '--destination', help="Backend url", required=True)
 parser.add_argument('--jwt', help="JWT for authentication", required=True)
 args = vars(parser.parse_args())
 
-# transport = AIOHTTPTransport(url=args['destination'], headers={
-#                             'Authorization': 'Bearer %s' % (args["jwt"])})
-#client = Client(transport=transport, fetch_schema_from_transport=True)
+
+decodedJwt = jwt.decode(args["jwt"], options={
+                        "verify_signature": False}, algorithm="HS256")
 
 colorDict = dict([
     ("RED", dict(
@@ -30,6 +34,46 @@ colorDict = dict([
         b=0
     )),
 ])
+
+indexToStatusDict = dict(
+    [0, 'NEEDS_SERVICE'],
+    [1, 'READY_TO_ORDER'],
+    [2, 'DONE']
+)
+
+transport = RequestsHTTPTransport(url=args["destination"], verify=True, retries=3, headers={
+    'Authorization': 'Bearer %s' % (args["jwt"])
+})
+
+client = Client(transport=transport, fetch_schema_from_transport=True)
+
+changleTableStatusMutation = gql(
+    """
+mutation ChangeBookingStatus($data: ChangeBookingStatusInput!) {
+  changeBookingStatus(data: $data) {
+    id
+    start
+    end
+    status
+  }
+}
+"""
+)
+
+
+@keybow.on()
+def handle_input(index, state):
+    if state:
+        return
+
+    result = client.execute(changleTableStatusMutation, variable_values={
+        "data": {
+            "tableId": decodedJwt.get("sub"),
+            "status": indexToStatusDict.get(index)
+        }
+    })
+
+    print(result)
 
 
 async def main():
@@ -50,7 +94,7 @@ async def main():
         )
 
         async for result in session.subscribe(subscription, variable_values={
-            "tableId": "09ff81b3-b498-43ac-96d9-08ae1800882c"
+            "tableId": decodedJwt.get("sub")
         }):
 
             for color in result['validationPrompted']['code']:
