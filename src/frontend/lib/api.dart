@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/main.dart';
-import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:graphql/client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -108,24 +107,4 @@ createUser(
   } else {
     handleError(result.exception!);
   }
-}
-
-addItemToBooking(String itemId, String bookingId, String comment) async {
-  const String addItemToBooking = r'''
-    mutation AddItemToBooking($data: {$itemId: String!, $bookingId: String!, $comment: String!}) {
-      addItemToBooking(data: {itemId: $itemId, bookingId: $bookingId, comment: $comment}) {
-        itemId
-        bookingId
-        comment
-      }
-    }
-  ''';
-
-  final MutationOptions options = MutationOptions(
-      document: gql(addItemToBooking),
-      variables: <String, dynamic>{
-        'data': {'itemId': itemId, 'bookingId': bookingId, 'comment': comment}
-      });
-
-  // client.mutate(options).catchError();
 }

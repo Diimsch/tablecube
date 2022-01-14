@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/page_restaurantList/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getRestaurantsQuery = r"""
@@ -54,7 +52,8 @@ class Body extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.food_bank),
                       title: Text(restaurants[index]['name']),
-                      subtitle: Text('Tables: ' + restaurants[index]['tables'].length.toString()),
+                      subtitle: Text('Tables: ' +
+                          restaurants[index]['tables'].length.toString()),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -66,7 +65,9 @@ class Body extends StatelessWidget {
                           child: const Text('Go To Restauarant'),
                           onPressed: () {
                             Navigator.pushNamed(context, '/overview',
-                                arguments: OverviewArguments(restaurants[index]['id']));
+                                arguments: OverviewArguments(
+                                    restaurants[index]['id'],
+                                    "95f099e5-057a-45f0-b14a-0b62df4862d2"));
                           },
                         ),
                         const SizedBox(width: 9),

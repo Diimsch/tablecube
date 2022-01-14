@@ -107,6 +107,7 @@ type BookingItem {
   id: ID!
   item: MenuItem!
   comment: String
+  paid: Boolean!
 }
 
 enum UserRoles {

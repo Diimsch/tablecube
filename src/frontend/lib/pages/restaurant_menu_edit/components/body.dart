@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
-import 'package:frontend/pages/order_view/components/body.dart';
+import 'package:frontend/constants.dart';
 import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -67,11 +67,15 @@ class Body extends State<RestaurantMenuEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var args = ModalRoute.of(context)!.settings.arguments == null
+        ? OverviewArguments('null', 'null')
+        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+
     return Query(
         options: QueryOptions(
           document: gql(getMenuQuery),
           variables: {
-            'restaurantId': '15727139-d6b4-4aac-b8e2-033ecad4935f',
+            'restaurantId': "65a2929f-66aa-465b-88c0-be6ef3a10504",
           },
           pollInterval: const Duration(seconds: 60),
         ),

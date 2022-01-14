@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/order_view/order_screen.dart';
+import 'package:frontend/pages/bill_view/bill_view.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_restaurantList/restaurant_list_screen.dart';
+import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
@@ -17,7 +18,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 // state
 UserType userType = UserType.NONE;
 String tableId = '';
-String restaurantId = '';
+String restaurantId = '65a2929f-66aa-465b-88c0-be6ef3a10504';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +53,9 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const RestaurantListScreen(),
           '/overview': (context) => OverviewScreen(),
           '/scanner': (context) => const QrViewScreen(),
-          '/cart': (context) => OrderScreen(),
+          '/cart': (context) => SelectMenuScreen(),
+          '/bill': (context) => const BillScreen(),
+          '/menu': (context) => SelectMenuScreen(),
           '/admin/info': (context) => const RestaurantInfoScreen(),
           '/admin/menu': (context) => const RestaurantMenuEditScreen(),
         },

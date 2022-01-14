@@ -20,7 +20,7 @@ class OverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null')
+        ? OverviewArguments('null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
     debugPrint(args.restaurantId);
@@ -38,7 +38,7 @@ class OverviewScreen extends StatelessWidget {
         }
 
         if (result.isLoading) {
-          return Text('Loading');
+          return const Text('Loading');
         }
 
         // it can be either Map or List
@@ -46,10 +46,7 @@ class OverviewScreen extends StatelessWidget {
         UserType f = UserType.values.firstWhere(
             (e) => e.toString() == 'UserType.' + userTypeFetch,
             orElse: () => UserType.NONE);
-        return Scaffold(
-            body: Body(
-          userType: f,
-        ));
+        return Scaffold(body: Body(userType: f, args: args));
       },
     );
   }

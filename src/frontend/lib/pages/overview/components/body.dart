@@ -3,13 +3,23 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/page_welcome/components/background.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+const String updateBookingStatus = r"""
+mutation ChangeBookingStatus($data: ChangeBookingStatusInput!) {
+  changeBookingStatus(data: $data) {
+    id
+  }
+}
+""";
 
 class Body extends StatelessWidget {
   final UserType userType;
-  const Body({Key? key, required this.userType}) : super(key: key);
+  final OverviewArguments args;
+  const Body({Key? key, required this.userType, required this.args})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +41,46 @@ class Body extends StatelessWidget {
             RoundedButton(
                 text: "Select menu items",
                 click: () {
-                  Navigator.pushNamed(context, '/menu');
+                  Navigator.pushNamed(context, '/menu', arguments: args);
                 }),
             RoundedButton(
                 text: "Order",
                 click: () {
-                  Navigator.pushNamed(context, '/orders');
+                  Navigator.pushNamed(context, '/cart', arguments: args);
                 }),
             RoundedButton(
                 text: "Pay",
                 click: () {
-                  Navigator.pushNamed(context, '/bill');
+                  Navigator.pushNamed(context, '/bill', arguments: args);
                 }),
             SizedBox(
               height: size.height * 0.05,
             ),
-            RoundedButton(
-                text: "Call for help",
-                click: () {
-                  callWaiter();
+            Mutation(
+                options: MutationOptions(
+                  document: gql(updateBookingStatus),
+                  onCompleted: (data) {
+                    Fluttertoast.showToast(
+                      msg: 'Waiter was called.',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 3,
+                      backgroundColor: okColor,
+                      webBgColor: okColorWebToast,
+                    );
+                  },
+                ),
+                builder: (RunMutation runMutation, QueryResult? result) {
+                  return RoundedButton(
+                      text: "Call waiter",
+                      click: () {
+                        runMutation({
+                          "data": {
+                            "bookingId": args.bookingId,
+                            "status": "NEEDS_SERVICE"
+                          }
+                        });
+                      });
                 }),
           ],
         ),
@@ -72,17 +103,18 @@ class Body extends StatelessWidget {
             RoundedButton(
                 text: "Edit restaurant information",
                 click: () {
-                  Navigator.pushNamed(context, '/admin/info');
+                  Navigator.pushNamed(context, '/admin/info', arguments: args);
                 }),
             RoundedButton(
                 text: "Edit menu",
                 click: () {
-                  Navigator.pushNamed(context, '/admin/menu');
+                  Navigator.pushNamed(context, '/admin/menu', arguments: args);
                 }),
             RoundedButton(
                 text: "Edit table placement",
                 click: () {
-                  Navigator.pushNamed(context, '/admin/tables');
+                  Navigator.pushNamed(context, '/admin/tables',
+                      arguments: args);
                 }),
           ],
         ),
@@ -100,10 +132,5 @@ class Body extends StatelessWidget {
       Navigator.pushNamed(context, '/');
       return Container();
     }
-  }
-
-  void callWaiter() {
-    // TODO: call waiter -> update table status
-    // unlucky -> toast, with try again later or try it with your own voice
   }
 }
