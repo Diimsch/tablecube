@@ -18,12 +18,6 @@ export const tablesResolvers: Resolvers = {
   },
   Query: {
     promptValidation: async (parent, args, ctx) => {
-      /*
-      if (ctx.token.userId !== "TABLE") {
-        throw new AuthenticationError("only accessible by table control");
-      }
-      */
-
       const booking = await ctx.prisma.booking.findFirst({
         where: {
           tableId: args.tableId,

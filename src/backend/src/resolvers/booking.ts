@@ -39,13 +39,9 @@ export const bookingResolvers: Resolvers = {
   },
   Query: {
     booking: async (parent, args, ctx): Promise<Booking> => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -78,13 +74,9 @@ export const bookingResolvers: Resolvers = {
   },
   Mutation: {
     createBooking: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -173,13 +165,9 @@ export const bookingResolvers: Resolvers = {
       return booking;
     },
     joinBooking: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -219,13 +207,9 @@ export const bookingResolvers: Resolvers = {
       return booking;
     },
     addItemToBooking: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -266,13 +250,9 @@ export const bookingResolvers: Resolvers = {
       });
     },
     payItems: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -319,13 +299,9 @@ export const bookingResolvers: Resolvers = {
       return bookings;
     },
     checkIn: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -373,35 +349,39 @@ export const bookingResolvers: Resolvers = {
       return booking;
     },
     changeBookingStatus: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
+      let bookings: Booking[];
+      if(ctx.token.type === "HUMAN") {
+        bookings = await ctx.prisma.booking.findMany({
+          where: {
+            tableId: args.data.tableId,
+            users: {
+              every: {
+                userId: ctx.token.userId!
+              }
+            },
+            status: {
+              notIn: ["DONE", "RESERVED"],
+            },
+          },
+        });
+      } else {
+        if(ctx.token.userId !== args.data.tableId) {
+          throw new AuthenticationError("table can't access out of scope data");
+        }
 
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.token.userId,
-        },
-        include: {
-          rolesInRestaurants: true,
-        },
-      });
-
-      if (!user) {
-        throw new AuthenticationError("invalid user");
+        bookings = await ctx.prisma.booking.findMany({
+          where: {
+            tableId: args.data.tableId,
+            status: {
+              notIn: ["DONE", "RESERVED"],
+            },
+          },
+        });
       }
 
       if(args.data.status === BookingStatus.RESERVED || args.data.status === BookingStatus.CHECKED_IN) {
         throw new UserInputError("cant use reserved or checked_in state in this method");
       }
-
-      let bookings = await ctx.prisma.booking.findMany({
-        where: {
-          tableId: args.data.tableId,
-          status: {
-            notIn: ["DONE", "RESERVED"],
-          },
-        },
-      });
 
       if(bookings.length < 1) {
         throw new UserInputError("couldn't find active booking for specified table");

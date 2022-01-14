@@ -37,7 +37,7 @@ colorDict = dict([
 
 indexToStatusDict = dict(
     [0, 'NEEDS_SERVICE'],
-    [1, 'READY_TO_ORDER'],
+    [1, 'PROMPT_CODE'],
     [2, 'DONE']
 )
 
@@ -60,18 +60,33 @@ mutation ChangeBookingStatus($data: ChangeBookingStatusInput!) {
 """
 )
 
+promptValidationCodeQuery = gql(
+    """
+query Query($tableId: String!) {
+  promptValidation(tableId: $tableId)
+}
+    """
+)
+
 
 @keybow.on()
 def handle_input(index, state):
     if state:
         return
 
-    result = client.execute(changleTableStatusMutation, variable_values={
-        "data": {
+    task = indexToStatusDict.get(index)
+
+    if task == "PROMPT_CODE":
+        result = client.execute(promptValidationCodeQuery, variable_values={
             "tableId": decodedJwt.get("sub"),
-            "status": indexToStatusDict.get(index)
-        }
-    })
+        })
+    else:
+        result = client.execute(changleTableStatusMutation, variable_values={
+            "data": {
+                "tableId": decodedJwt.get("sub"),
+                "status": indexToStatusDict.get(index)
+            }
+        })
 
     print(result)
 

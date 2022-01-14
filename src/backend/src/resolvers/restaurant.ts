@@ -17,12 +17,9 @@ export const restaurantResolver: Resolvers = {
     },
 
     roleInRestaurant: async (parent, args, ctx) => {
-      if (ctx.token.userId === null) {
-        throw new AuthenticationError("login required");
-      }
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
       });
 
@@ -50,12 +47,9 @@ export const restaurantResolver: Resolvers = {
   },
   Mutation: {
     editRestaurantInfo: async (parent, args, ctx) => {
-      if (ctx.token.userId === null) {
-        throw new AuthenticationError("login required");
-      }
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
