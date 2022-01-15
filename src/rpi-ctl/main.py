@@ -174,7 +174,7 @@ async def main():
     ) as session:
         subscription = gql(
             """
-            subscription ValidationPrompted($tableId: String!) {
+            subscription ValidationPrompted($tableId: ID!) {
                 validationPrompted(tableId: $tableId) {
                     __typename
                     tableId
@@ -186,7 +186,7 @@ async def main():
 
         tableStatus = gql(
             """
-subscription TableUpdated($tableId: String!) {
+subscription TableUpdated($tableId: ID!) {
   tableUpdated(tableId: $tableId) {
     __typename
     tableId
