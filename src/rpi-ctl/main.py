@@ -120,6 +120,9 @@ query Table($tableId: ID!) {
 @keybow.on()
 def handle_input(index, state):
     global promptedValidation
+    if status == "DONE":
+        return
+
     if not state:
         if not promptedValidation:
             setBaseColors(status)
@@ -194,6 +197,7 @@ subscription TableUpdated($tableId: String!) {
         )
 
         global promptedValidation
+        global status
 
         tableStatusEvents = session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
@@ -208,12 +212,18 @@ subscription TableUpdated($tableId: String!) {
         table = await session.execute(tableQuery, variable_values={
             "tableId": decodedJwt.get("sub")
         })
-        setBaseColors(table.get("status"))
+
+        occupyingBooking = table.get("occupyingBooking")
+        if occupyingBooking is not None:
+            status = occupyingBooking.get("status")
+        setBaseColors(status)
 
         async with combinedEvents.stream() as streamer:
             async for result in streamer:
+                if result.get('tableId') != decodedJwt.get("sub"):
+                    continue
+
                 if result.get('__typename') == "ValidationEvent":
-                    global status
                     status = result.get("status")
                     if not promptedValidation:
                         setBaseColors(status)
