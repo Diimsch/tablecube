@@ -33,6 +33,16 @@ colorDict = dict([
         g=255,
         b=0
     )),
+    ("BLUE", dict(
+        r=0,
+        g=0,
+        b=255
+    )),
+    ("YELLOW", dict(
+        r=255,
+        g=255,
+        b=0
+    )),
 ])
 
 indexToStatusDict = dict([
