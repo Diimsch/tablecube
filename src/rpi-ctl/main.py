@@ -207,13 +207,13 @@ subscription TableUpdated($tableId: ID!) {
 
         combinedEvents = stream.merge(tableStatusEvents, colorPromptEvents)
 
-        table = await session.execute(tableQuery, variable_values={
+        tableRes = await session.execute(tableQuery, variable_values={
             "tableId": decodedJwt.get("sub")
         })
 
-        occupyingBooking = table.get("occupyingBooking")
+        occupyingBooking = tableRes["table"]["occupyingBooking"]
         if occupyingBooking is not None:
-            status = occupyingBooking.get("status")
+            status = occupyingBooking["status"]
         setBaseColors(status)
 
         async with combinedEvents.stream() as streamer:
