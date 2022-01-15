@@ -11,6 +11,7 @@ from gql.transport.requests import RequestsHTTPTransport
 from gql.transport.exceptions import TransportQueryError
 import jwt
 import os
+from aiostream import stream
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -172,6 +173,7 @@ async def main():
             """
             subscription ValidationPrompted($tableId: String!) {
                 validationPrompted(tableId: $tableId) {
+                    __typename
                     tableId
                     code
                 }
@@ -183,6 +185,7 @@ async def main():
             """
 subscription TableUpdated($tableId: String!) {
   tableUpdated(tableId: $tableId) {
+    __typename
     tableId
     status
   }
@@ -191,35 +194,50 @@ subscription TableUpdated($tableId: String!) {
         )
 
         global promptedValidation
-        async for result in session.subscribe(tableStatus, variable_values={
+
+        asyncio.create_task(lambda: async for result in session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
         }):
             global status
-            status = result.get("status")
+            status=result.get("status")
             if not promptedValidation:
                 setBaseColors(status)
-            pass
+            pass)
 
-        async for result in session.subscribe(subscription, variable_values={
+        tableStatusEvents = session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
-        }):
+        })
 
-            for color in result['validationPrompted']['code']:
-                colorData = colorDict.get(color)
-                keybow.set_all(colorData.get(
-                    "r"), colorData.get("g"), colorData.get("b"))
-                keybow.show()
-                await asyncio.sleep(1.5)
-                keybow.clear()
-                keybow.show()
-                await asyncio.sleep(0.7)
-            setBaseColors(status)
-            promptedValidation = False
+        colorPromptEvents = session.subscribe(subscription, variable_values={
+            "tableId": decodedJwt.get("sub")
+        })
+
+        combinedEvents = stream.merge(tableStatusEvents, colorPromptEvents)
 
         table = await session.execute(tableQuery, {
             "tableId": decodedJwt.get("sub")
         })
         setBaseColors(table.get("status"))
+
+        async with combinedEvents.stream() as streamer:
+            async for result in streamer:
+                if result.get('__typename') == "ValidationEvent":
+                    global status
+                    status = result.get("status")
+                    if not promptedValidation:
+                        setBaseColors(status)
+                else:
+                    for color in result['validationPrompted']['code']:
+                        colorData = colorDict.get(color)
+                        keybow.set_all(colorData.get(
+                            "r"), colorData.get("g"), colorData.get("b"))
+                        keybow.show()
+                        await asyncio.sleep(1.5)
+                        keybow.clear()
+                        keybow.show()
+                        await asyncio.sleep(0.7)
+                    setBaseColors(status)
+                    promptedValidation = False
 
 loop = asyncio.get_event_loop()
 try:

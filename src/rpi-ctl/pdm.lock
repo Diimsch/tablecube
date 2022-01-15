@@ -1,4 +1,9 @@
 [[package]]
+name = "aiostream"
+version = "0.4.4"
+summary = "Generator-based operators for asynchronous iteration"
+
+[[package]]
 name = "certifi"
 version = "2021.10.8"
 summary = "Python package for providing Mozilla's CA Bundle."
@@ -126,9 +131,12 @@ dependencies = [
 
 [metadata]
 lock_version = "3.1"
-content_hash = "sha256:cc36bcb22acabffc400c095fdd4da8ad85a2669c92158f2ab77e3d7a40d037d2"
+content_hash = "sha256:7cdeac67c5fc1fe795fe55551de3b3451b6470e9a447fe5c48a05f27e1a0733c"
 
 [metadata.files]
+"aiostream 0.4.4" = [
+    {file = "aiostream-0.4.4.tar.gz", hash = "sha256:31a505fef567a6d0c3fba2bb14f10bd3da2fb90724167a31605ee8c412455292"},
+]
 "certifi 2021.10.8" = [
     {file = "certifi-2021.10.8-py2.py3-none-any.whl", hash = "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"},
     {file = "certifi-2021.10.8.tar.gz", hash = "sha256:78884e7c1d4b00ce3cea67b44566851c4343c120abd683433ce934a68ea58872"},
