@@ -166,7 +166,6 @@ async def main():
                 keybow.show()
                 await asyncio.sleep(0.7)
             setBaseColors()
-            await asyncio.sleep(3)
             global promptedValidation
             promptedValidation = False
 
