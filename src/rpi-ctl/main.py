@@ -205,7 +205,7 @@ subscription TableUpdated($tableId: String!) {
 
         combinedEvents = stream.merge(tableStatusEvents, colorPromptEvents)
 
-        table = await session.execute(tableQuery, {
+        table = await session.execute(tableQuery, variable_values={
             "tableId": decodedJwt.get("sub")
         })
         setBaseColors(table.get("status"))
