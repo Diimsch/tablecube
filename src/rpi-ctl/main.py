@@ -103,6 +103,9 @@ def handle_input(index, state):
             setBaseColors()
         return
 
+    if promptedValidation:
+        return
+
     task = indexValues[index]
     keybow.set_led(index, 0, 0, 0)
     keybow.show()
