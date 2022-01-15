@@ -160,7 +160,7 @@ def setBaseColors(status):
     if status == "DONE":
         keybow.set_all(0, 255, 0)
     elif status == "RESERVED":
-        keybow.set_all(128, 255, 0)
+        keybow.set_all(255, 127, 0)
     else:
         for i, colors in enumerate(standardColors):
             keybow.set_led(i, colors.get(
