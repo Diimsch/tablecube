@@ -29,6 +29,24 @@ export const tablesResolvers: Resolvers = {
       });
       return bookings;
     },
+    occupyingBooking: async (parent, args, ctx) => {
+      const current = new Date();
+      const booking = await ctx.prisma.booking.findFirst({
+        where: {
+          restaurantId: parent.id,
+          status: {
+            not: "DONE",
+          },
+          start: {
+            lt: current
+          },
+          end: {
+            gte: current
+          },
+        },
+      });
+      return booking;
+    }
   },
   Subscription: {
     validationPrompted: {
@@ -38,6 +56,13 @@ export const tablesResolvers: Resolvers = {
         return msg;
       },
     },
+    tableUpdated: {
+      // @ts-ignore
+      subscribe: () => pubsub.asyncIterator("TABLE_UPDATED"),
+      resolve: (msg: any) => {
+        return msg;
+      }
+    }
   },
   Query: {
     table: async (parent, args, ctx) => {

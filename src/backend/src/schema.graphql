@@ -17,6 +17,7 @@ type Restaurant {
   city: String!
   tables: [Table]
   bookings: [Booking]!
+  occupyingBookings: [Booking]!
   menuItems: [MenuItem]!
 }
 
@@ -55,6 +56,11 @@ type ValidationEvent {
   code: [ValidationColors!]!
 }
 
+type TableUpdateEvent {
+  tableId: String!
+  status: BookingStatus!
+}
+
 input JoinBookingInput {
   tableId: ID!
   restaurantId: ID!
@@ -65,6 +71,7 @@ type Table {
   id: ID!
   name: String!
   bookings: [Booking]!
+  occupyingBooking: Booking
 }
 
 enum BookingStatus {
@@ -216,4 +223,5 @@ type Mutation {
 
 type Subscription {
   validationPrompted(tableId: String!): ValidationEvent
+  tableUpdated(tableId: String!): TableUpdateEvent
 }
