@@ -74,6 +74,7 @@ standardColors = [
 indexValues = ['NEEDS_SERVICE', 'PROMPT_CODE', 'DONE']
 
 promptedValidation = False
+status = 'DONE'
 
 transport = RequestsHTTPTransport(url='http://%s' % args["destination"], verify=True, retries=3, headers={
     'Authorization': 'Bearer %s' % (args["jwt"])
@@ -102,13 +103,25 @@ query Query($tableId: String!) {
     """
 )
 
+table = gql(
+    """
+query Table($tableId: ID!) {
+  table(tableId: $tableId) {
+    occupyingBooking {
+      status
+    }
+  }
+}
+    """
+)
+
 
 @keybow.on()
 def handle_input(index, state):
     global promptedValidation
     if not state:
         if not promptedValidation:
-            setBaseColors()
+            setBaseColors(status)
         return
 
     if promptedValidation:
@@ -139,9 +152,13 @@ def handle_input(index, state):
         print(err.errors)
 
 
-def setBaseColors():
-    for i, colors in enumerate(standardColors):
-        keybow.set_led(i, colors.get("r"), colors.get("g"), colors.get("b"))
+def setBaseColors(status):
+    if status == "DONE":
+        keybow.set_all(0, 255, 0)
+    else:
+        for i, colors in enumerate(standardColors):
+            keybow.set_led(i, colors.get(
+                "r"), colors.get("g"), colors.get("b"))
     keybow.show()
 
 
@@ -163,6 +180,26 @@ async def main():
             """
         )
 
+        tableStatus = gql(
+            """
+subscription TableUpdated($tableId: String!) {
+  tableUpdated(tableId: $tableId) {
+    tableId
+    status
+  }
+}
+            """
+        )
+
+        async for result in session.subscribe(tableStatus, variable_values={
+            "tableId": decodedJwt.get("sub")
+        }):
+            global status
+            status = result.get("status")
+            if not promptedValidation:
+                setBaseColors(status)
+            pass
+
         async for result in session.subscribe(subscription, variable_values={
             "tableId": decodedJwt.get("sub")
         }):
@@ -176,52 +213,12 @@ async def main():
                 keybow.clear()
                 keybow.show()
                 await asyncio.sleep(0.7)
-            setBaseColors()
+            setBaseColors(status)
             global promptedValidation
             promptedValidation = False
-
-'''
-
-colorDict = dict([
-    ("RED", dict(
-        r=255,
-        g=0,
-        b=0
-    )),
-    ("GREEN", dict(
-        r=0,
-        g=255,
-        b=0
-    )),
-])
-
-
-@keybow.on()
-def handle_input(index, state):
-    print("{}: Key {} has been {}".format(
-        time.time(),
-        index,
-        'pressed' if state else 'released'))
-
-    if state:
-        colors = colorDict.get(index)
-        keybow.set_all(colors.get("r"), colors.get("g"), colors.get("b"))
-
-
-while True:
-    keybow.show()
-    time.sleep(1.0 / 60.0)
-
-
-async def keybow_loop():
-    while True:
-        keybow.show()
-        await asyncio.sleep(1.0 / 60)
-'''
 
 loop = asyncio.get_event_loop()
 try:
     loop.run_until_complete(main())
-    # loop.run_until_complete(keybow_loop())
 finally:
     loop.close()
