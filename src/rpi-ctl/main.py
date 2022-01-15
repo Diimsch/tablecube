@@ -195,15 +195,6 @@ subscription TableUpdated($tableId: String!) {
 
         global promptedValidation
 
-        asyncio.create_task(lambda: async for result in session.subscribe(tableStatus, variable_values={
-            "tableId": decodedJwt.get("sub")
-        }):
-            global status
-            status=result.get("status")
-            if not promptedValidation:
-                setBaseColors(status)
-            pass)
-
         tableStatusEvents = session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
         })
