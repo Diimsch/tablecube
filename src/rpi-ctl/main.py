@@ -132,6 +132,8 @@ async def main():
                     "r"), colorData.get("g"), colorData.get("b"))
                 keybow.show()
                 await asyncio.sleep(2)
+                keybow.clear()
+                await asyncio.sleep(2)
             keybow.clear()
             keybow.show()
             await asyncio.sleep(3)
