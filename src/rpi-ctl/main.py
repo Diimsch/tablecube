@@ -191,6 +191,7 @@ subscription TableUpdated($tableId: String!) {
             """
         )
 
+        global promptedValidation
         async for result in session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
         }):
@@ -214,7 +215,6 @@ subscription TableUpdated($tableId: String!) {
                 keybow.show()
                 await asyncio.sleep(0.7)
             setBaseColors(status)
-            global promptedValidation
             promptedValidation = False
 
 loop = asyncio.get_event_loop()
