@@ -8,6 +8,7 @@ import time
 from gql import gql, Client
 from gql.transport.websockets import WebsocketsTransport
 from gql.transport.requests import RequestsHTTPTransport
+from gql.transport.exceptions import TransportQueryError
 import jwt
 
 keybow.setup(keybow.MINI)
@@ -110,22 +111,25 @@ def handle_input(index, state):
     keybow.set_led(index, 0, 0, 0)
     keybow.show()
 
-    if task == "PROMPT_CODE":
-        if promptedValidation == True:
-            return
-        promptedValidation = True
-        result = client.execute(promptValidationCodeQuery, variable_values={
-            "tableId": decodedJwt.get("sub"),
-        })
-        if result.get("promptValidation") == False:
-            promptedValidation = False
-    else:
-        result = client.execute(changleTableStatusMutation, variable_values={
-            "data": {
+    try:
+        if task == "PROMPT_CODE":
+            if promptedValidation == True:
+                return
+            promptedValidation = True
+            result = client.execute(promptValidationCodeQuery, variable_values={
                 "tableId": decodedJwt.get("sub"),
-                "status": task
-            }
-        })
+            })
+            if result.get("promptValidation") == False:
+                promptedValidation = False
+        else:
+            result = client.execute(changleTableStatusMutation, variable_values={
+                "data": {
+                    "tableId": decodedJwt.get("sub"),
+                    "status": task
+                }
+            })
+    except TransportQueryError as err:
+        print(err.errors)
 
 
 def setBaseColors():
