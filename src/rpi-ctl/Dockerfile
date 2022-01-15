@@ -2,6 +2,7 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 
+RUN apk --no-cache add curl
 RUN curl -sSL https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py | python3 -
 
 COPY pyproject.toml .
