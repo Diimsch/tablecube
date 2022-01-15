@@ -163,7 +163,6 @@ def setBaseColors(status):
 
 
 async def main():
-    setBaseColors()
     transport = WebsocketsTransport(url='ws://%s' % args["destination"], init_payload={
                                     'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(
