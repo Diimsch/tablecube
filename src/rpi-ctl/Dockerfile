@@ -2,15 +2,12 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 
-RUN apk --no-cache add curl
-RUN curl -sSL https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py | python3 -
-RUN export PATH=/root/.local/bin:$PATH
-
-COPY pyproject.toml .
-COPY pdm.lock .
-
-RUN pdm install
+# install PDM
+RUN pip install -U pip setuptools wheel
+RUN pip install pdm
 
 COPY . .
+
+RUN pdm install
 
 CMD ["pdm", "run", "python3", "main.py"]
