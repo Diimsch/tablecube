@@ -148,10 +148,10 @@ async def main():
                 keybow.set_all(colorData.get(
                     "r"), colorData.get("g"), colorData.get("b"))
                 keybow.show()
-                await asyncio.sleep(2)
+                await asyncio.sleep(1.5)
                 keybow.clear()
                 keybow.show()
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.7)
             setBaseColors()
             await asyncio.sleep(3)
 
