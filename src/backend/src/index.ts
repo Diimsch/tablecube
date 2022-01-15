@@ -54,9 +54,9 @@ const processAuthToken = async (token: string | undefined): Promise<ITokenData> 
     const decodedToken = jwt.verify(
       parsedToken,
       process.env.JWT_SECRET ?? ""
-    ) as JwtPayload & { type?: "string" };
+    ) as JwtPayload & { type?: string };
 
-    if(!!decodedToken.type && !["HUMAN", "ROBOT"].find((val) => val === decodedToken.type)) {
+    if(!!decodedToken.type && decodedToken.type !== "ROBOT" && decodedToken.type !== "HUMAN") {
       throw new UserInputError("token is lacking type claim or its invalid");
     }
 
@@ -92,8 +92,6 @@ async function startApolloServer() {
         webSocket: any,
         connectionContext: any
       ) => {
-        console.log(connectionParams);
-        console.log(connectionContext);
         const token = connectionParams.Authorization;
         if(!token) {
           throw new AuthenticationError('missing jwt');

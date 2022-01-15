@@ -30,7 +30,7 @@ const genericResolvers: Resolvers = {
 import { allow, and, rule, shield } from 'graphql-shield'
 
 const isAuthenticated = rule()(async (parent, args, ctx, info) => {
-  return !!ctx.token.userId;
+  return ctx.token.userId != null;
 });
 
 const isHuman = rule()(async (parent, args, ctx, info) => {
@@ -45,6 +45,7 @@ export const permissions = shield({
   Query: {
     me: and(isAuthenticated, isHuman),
     booking: and(isAuthenticated, isHuman),
+    table: isAuthenticated,
     menu: allow,
     promptValidation: isAuthenticated,
     restaurant: allow,
@@ -63,6 +64,8 @@ export const permissions = shield({
     payItems: and(isAuthenticated, isHuman),
     editRestaurantInfo: and(isAuthenticated, isHuman),
   }
+}, {
+  debug: true
 });
 
 export default mergeResolvers([usersResolver, bookingResolvers, menuResolvers, restaurantResolver, tablesResolvers, genericResolvers]);

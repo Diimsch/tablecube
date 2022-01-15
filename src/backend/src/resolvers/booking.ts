@@ -82,7 +82,7 @@ export const bookingResolvers: Resolvers = {
           rolesInRestaurants: true,
         },
       });
-
+      
       if (!user) {
         throw new AuthenticationError("invalid user");
       }

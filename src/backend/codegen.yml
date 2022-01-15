@@ -16,6 +16,7 @@ generates:
         UserRoleInRestaurant: ../../node_modules/.prisma/client#UserRoleInRestaurant
         UserRole: ../../node_modules/.prisma/client#UserRole
         Restaurant: ../../node_modules/.prisma/client#Restaurant
+        Table: ../../node_modules/.prisma/client#Table
       contextType: ../types/context#IServerContext
     plugins:
       - "typescript"

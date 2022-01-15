@@ -64,6 +64,7 @@ input JoinBookingInput {
 type Table {
   id: ID!
   name: String!
+  bookings: [Booking]!
 }
 
 enum BookingStatus {
@@ -144,6 +145,10 @@ type Query {
   Get the booking by its id
   """
   booking(bookingId: ID!): Booking
+  """
+  Get table by its id
+  """
+  table(tableId: ID!): Table
   """
   Get the restaurants menu
   """
