@@ -103,7 +103,7 @@ query Query($tableId: String!) {
     """
 )
 
-table = gql(
+tableQuery = gql(
     """
 query Table($tableId: ID!) {
   table(tableId: $tableId) {
@@ -163,11 +163,17 @@ def setBaseColors(status):
 
 
 async def main():
+    setBaseColors()
     transport = WebsocketsTransport(url='ws://%s' % args["destination"], init_payload={
                                     'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(
         transport=transport, fetch_schema_from_transport=True
     ) as session:
+        table = session.execute(tableQuery, {
+            "tableId": decodedJwt.get("sub")
+        })
+        setBaseColors(table.get("status"))
+
         subscription = gql(
             """
             subscription ValidationPrompted($tableId: String!) {
