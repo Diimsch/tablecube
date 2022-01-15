@@ -45,11 +45,25 @@ colorDict = dict([
     )),
 ])
 
-indexToStatusDict = dict([
-    (0, 'NEEDS_SERVICE'),
-    (1, 'PROMPT_CODE'),
-    (2, 'DONE')
-])
+standardColors = [
+    dict(
+        r=255,
+        g=127,
+        b=0
+    ),
+    dict(
+        r=127,
+        g=0,
+        b=255
+    ),
+    dict(
+        r=255,
+        g=0,
+        b=0
+    )
+]
+
+indexValues = ['NEEDS_SERVICE', 'PROMPT_CODE', 'DONE']
 
 transport = RequestsHTTPTransport(url='http://%s' % args["destination"], verify=True, retries=3, headers={
     'Authorization': 'Bearer %s' % (args["jwt"])
@@ -84,7 +98,7 @@ def handle_input(index, state):
     if state:
         return
 
-    task = indexToStatusDict.get(index)
+    task = indexValues[index]
 
     if task == "PROMPT_CODE":
         result = client.execute(promptValidationCodeQuery, variable_values={
@@ -94,14 +108,21 @@ def handle_input(index, state):
         result = client.execute(changleTableStatusMutation, variable_values={
             "data": {
                 "tableId": decodedJwt.get("sub"),
-                "status": indexToStatusDict.get(index)
+                "status": task
             }
         })
 
     print(result)
 
 
+def setBaseColors():
+    for i, colors in enumerate(standardColors):
+        keybow.set_led(i, colors.get("r"), colors.get("g"), colors.get("b"))
+    keybow.show()
+
+
 async def main():
+    setBaseColors()
     transport = WebsocketsTransport(url='ws://%s' % args["destination"], init_payload={
                                     'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(
@@ -131,8 +152,7 @@ async def main():
                 keybow.clear()
                 keybow.show()
                 await asyncio.sleep(1)
-            keybow.clear()
-            keybow.show()
+            setBaseColors()
             await asyncio.sleep(3)
 
 '''
