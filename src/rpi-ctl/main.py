@@ -123,18 +123,14 @@ async def main():
         }):
 
             for color in result['validationPrompted']['code']:
-                print(color)
                 colorData = colorDict.get(color)
-                print(colorData.get("r"))
-                print(colorData.get("g"))
-                print(colorData.get("B"))
                 keybow.set_all(colorData.get(
                     "r"), colorData.get("g"), colorData.get("b"))
                 keybow.show()
                 await asyncio.sleep(2)
                 keybow.clear()
                 keybow.show()
-                await asyncio.sleep(2)
+                await asyncio.sleep(1)
             keybow.clear()
             keybow.show()
             await asyncio.sleep(3)
