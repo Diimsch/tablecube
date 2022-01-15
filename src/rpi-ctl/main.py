@@ -176,7 +176,6 @@ async def main():
             """
             subscription ValidationPrompted($tableId: ID!) {
                 validationPrompted(tableId: $tableId) {
-                    __typename
                     tableId
                     code
                 }
@@ -188,7 +187,6 @@ async def main():
             """
 subscription TableUpdated($tableId: ID!) {
   tableUpdated(tableId: $tableId) {
-    __typename
     tableId
     status
   }
@@ -220,14 +218,15 @@ subscription TableUpdated($tableId: ID!) {
 
         async with combinedEvents.stream() as streamer:
             async for result in streamer:
-                if result.get('tableId') != decodedJwt.get("sub"):
-                    continue
-
-                if result.get('__typename') == "ValidationEvent":
-                    status = result.get("status")
+                if "tableUpdated" in result:
+                    if result.get["tableUpdated"]["tableId"] != decodedJwt.get("sub"):
+                        continue
+                    status = result["tableUpdated"]["status"]
                     if not promptedValidation:
                         setBaseColors(status)
                 else:
+                    if result.get["validationPrompted"]["tableId"] != decodedJwt.get("sub"):
+                        continue
                     for color in result['validationPrompted']['code']:
                         colorData = colorDict.get(color)
                         keybow.set_all(colorData.get(
