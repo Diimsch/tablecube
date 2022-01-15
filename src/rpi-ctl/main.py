@@ -219,13 +219,13 @@ subscription TableUpdated($tableId: ID!) {
         async with combinedEvents.stream() as streamer:
             async for result in streamer:
                 if "tableUpdated" in result:
-                    if result.get["tableUpdated"]["tableId"] != decodedJwt.get("sub"):
+                    if result["tableUpdated"]["tableId"] != decodedJwt.get("sub"):
                         continue
                     status = result["tableUpdated"]["status"]
                     if not promptedValidation:
                         setBaseColors(status)
                 else:
-                    if result.get["validationPrompted"]["tableId"] != decodedJwt.get("sub"):
+                    if result["validationPrompted"]["tableId"] != decodedJwt.get("sub"):
                         continue
                     for color in result['validationPrompted']['code']:
                         colorData = colorDict.get(color)
