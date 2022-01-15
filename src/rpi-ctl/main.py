@@ -10,14 +10,21 @@ from gql.transport.websockets import WebsocketsTransport
 from gql.transport.requests import RequestsHTTPTransport
 from gql.transport.exceptions import TransportQueryError
 import jwt
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 keybow.setup(keybow.MINI)
 
 parser = argparse.ArgumentParser(
     description="Restaurant management RPI server")
-parser.add_argument('-d', '--destination', help="Backend url", required=True)
-parser.add_argument('--jwt', help="JWT for authentication", required=True)
+parser.add_argument('-d', '--destination', help="Backend url",
+                    default=os.environ.get("DESTINATION"))
+parser.add_argument('--jwt', help="JWT for authentication",
+                    default=os.environ.get("JWT"))
 args = vars(parser.parse_args())
+if not args.jwt or not args.destination:
+    exit(parser.print_usage())
 
 
 decodedJwt = jwt.decode(args["jwt"], options={

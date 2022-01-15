@@ -5,7 +5,7 @@ description = ""
 authors = [
     {name = "Adrian Busse", email = "git@adrianmxb.com"},
 ]
-dependencies = ["keybow", "RPi.GPIO", "gql[websockets,requests]", "pyjwt"]
+dependencies = ["keybow", "RPi.GPIO", "gql[websockets,requests]", "pyjwt", "python-dotenv"]
 requires-python = ">=3.9"
 license = {text = "MIT"}
 
