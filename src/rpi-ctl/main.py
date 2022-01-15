@@ -65,6 +65,8 @@ standardColors = [
 
 indexValues = ['NEEDS_SERVICE', 'PROMPT_CODE', 'DONE']
 
+promptedValidation = False
+
 transport = RequestsHTTPTransport(url='http://%s' % args["destination"], verify=True, retries=3, headers={
     'Authorization': 'Bearer %s' % (args["jwt"])
 })
@@ -95,15 +97,21 @@ query Query($tableId: String!) {
 
 @keybow.on()
 def handle_input(index, state):
+    global promptedValidation
     if state:
         return
 
     task = indexValues[index]
 
     if task == "PROMPT_CODE":
+        if promptedValidation == True:
+            return
+        promptedValidation = True
         result = client.execute(promptValidationCodeQuery, variable_values={
             "tableId": decodedJwt.get("sub"),
         })
+        if result.get("promptValidation") == False:
+            promptedValidation = False
     else:
         result = client.execute(changleTableStatusMutation, variable_values={
             "data": {
@@ -154,6 +162,8 @@ async def main():
                 await asyncio.sleep(0.7)
             setBaseColors()
             await asyncio.sleep(3)
+            global promptedValidation
+            promptedValidation = False
 
 '''
 
