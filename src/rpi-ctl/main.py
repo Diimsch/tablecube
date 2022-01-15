@@ -168,11 +168,6 @@ async def main():
     async with Client(
         transport=transport, fetch_schema_from_transport=True
     ) as session:
-        table = session.execute(tableQuery, {
-            "tableId": decodedJwt.get("sub")
-        })
-        setBaseColors(table.get("status"))
-
         subscription = gql(
             """
             subscription ValidationPrompted($tableId: String!) {
@@ -220,6 +215,11 @@ subscription TableUpdated($tableId: String!) {
                 await asyncio.sleep(0.7)
             setBaseColors(status)
             promptedValidation = False
+
+        table = await session.execute(tableQuery, {
+            "tableId": decodedJwt.get("sub")
+        })
+        setBaseColors(table.get("status"))
 
 loop = asyncio.get_event_loop()
 try:
