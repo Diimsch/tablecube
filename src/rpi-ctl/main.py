@@ -98,10 +98,12 @@ query Query($tableId: String!) {
 @keybow.on()
 def handle_input(index, state):
     global promptedValidation
-    if state:
-        return
+    if state == False:
+        setBaseColors()
 
     task = indexValues[index]
+    keybow.set_led(index, 0, 0, 0)
+    keybow.show()
 
     if task == "PROMPT_CODE":
         if promptedValidation == True:
@@ -119,8 +121,6 @@ def handle_input(index, state):
                 "status": task
             }
         })
-
-    print(result)
 
 
 def setBaseColors():
