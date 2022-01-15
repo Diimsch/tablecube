@@ -23,7 +23,7 @@ parser.add_argument('-d', '--destination', help="Backend url",
 parser.add_argument('--jwt', help="JWT for authentication",
                     default=os.environ.get("JWT"))
 args = vars(parser.parse_args())
-if not args.jwt or not args.destination:
+if not "jwt" in args or not "destination" in args:
     exit(parser.print_usage())
 
 
