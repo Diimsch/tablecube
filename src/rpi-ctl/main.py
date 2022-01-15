@@ -98,7 +98,7 @@ query Query($tableId: String!) {
 @keybow.on()
 def handle_input(index, state):
     global promptedValidation
-    if state == False:
+    if state == False and not promptedValidation:
         setBaseColors()
         return
 
