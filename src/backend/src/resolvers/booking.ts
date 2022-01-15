@@ -3,6 +3,7 @@ import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
 import { generateValidatorCode } from "../utils";
+import { pubsub } from "./table";
 
 export const bookingResolvers: Resolvers = {
   BookingItem: {
@@ -82,7 +83,7 @@ export const bookingResolvers: Resolvers = {
           rolesInRestaurants: true,
         },
       });
-      
+
       if (!user) {
         throw new AuthenticationError("invalid user");
       }
@@ -161,6 +162,13 @@ export const bookingResolvers: Resolvers = {
         },
       });
       console.log(`validation data for ${booking.id}: ${validatorColorCode}`);
+
+      if(current >= booking.start && current < booking.end) {
+        pubsub.publish("TABLE_UPDATED", {
+          tableId: booking.tableId,
+          status: booking.status
+        });
+      }
 
       return booking;
     },
@@ -346,6 +354,11 @@ export const bookingResolvers: Resolvers = {
         },
       });
 
+      pubsub.publish("TABLE_UPDATED", {
+        tableId: args.tableId,
+        status: booking.status
+      });
+
       return booking;
     },
     changeBookingStatus: async (parent, args, ctx) => {
@@ -394,6 +407,11 @@ export const bookingResolvers: Resolvers = {
         data: {
           status: args.data.status,
         },
+      });
+
+      pubsub.publish("TABLE_UPDATED", {
+        tableId: booking.tableId,
+        status: booking.status
       });
 
       return booking;

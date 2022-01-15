@@ -14,15 +14,24 @@ export const restaurantResolver: Resolvers = {
       const bookings = await ctx.prisma.booking.findMany({
         where: {
           restaurantId: parent.id,
-          status: {
-            not: "DONE",
-          },
-          start: {
-            lt: current
-          },
-          end: {
-            gte: current
-          },
+          OR: [
+            {
+              status: {
+                notIn: ["DONE", "RESERVED"]
+              }
+            },
+            {
+              status: {
+                not: "DONE",
+              },
+              start: {
+                lt: current
+              },
+              end: {
+                gte: current
+              },
+            }
+          ]
         },
       });
       return bookings;

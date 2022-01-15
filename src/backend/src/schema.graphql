@@ -222,6 +222,6 @@ type Mutation {
 }
 
 type Subscription {
-  validationPrompted(tableId: String!): ValidationEvent
-  tableUpdated(tableId: String!): TableUpdateEvent
+  validationPrompted(tableId: ID!): ValidationEvent
+  tableUpdated(tableId: ID!): TableUpdateEvent
 }

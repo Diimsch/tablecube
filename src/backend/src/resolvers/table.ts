@@ -4,7 +4,7 @@ import { Resolvers } from "../generated/graphql";
 import { PubSub } from "graphql-subscriptions";
 import { withFilter } from "graphql-subscriptions";
 
-const pubsub = new PubSub();
+export const pubsub = new PubSub();
 
 export const tablesResolvers: Resolvers = {
   Table: {
@@ -31,18 +31,28 @@ export const tablesResolvers: Resolvers = {
     },
     occupyingBooking: async (parent, args, ctx) => {
       const current = new Date();
+      console.log(current);
       const booking = await ctx.prisma.booking.findFirst({
         where: {
-          restaurantId: parent.id,
-          status: {
-            not: "DONE",
-          },
-          start: {
-            lt: current
-          },
-          end: {
-            gte: current
-          },
+          tableId: parent.id,
+          OR: [
+            {
+              status: {
+                notIn: ["DONE", "RESERVED"]
+              }
+            },
+            {
+              status: {
+                not: "DONE",
+              },
+              start: {
+                lt: current
+              },
+              end: {
+                gte: current
+              },
+            }
+          ]
         },
       });
       return booking;
