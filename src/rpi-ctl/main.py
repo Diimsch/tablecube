@@ -100,6 +100,7 @@ def handle_input(index, state):
     global promptedValidation
     if state == False:
         setBaseColors()
+        return
 
     task = indexValues[index]
     keybow.set_led(index, 0, 0, 0)
