@@ -98,8 +98,9 @@ query Query($tableId: String!) {
 @keybow.on()
 def handle_input(index, state):
     global promptedValidation
-    if state == False and not promptedValidation:
-        setBaseColors()
+    if not state:
+        if not promptedValidation:
+            setBaseColors()
         return
 
     task = indexValues[index]
