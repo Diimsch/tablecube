@@ -336,11 +336,27 @@ export const bookingResolvers: Resolvers = {
             in: args.bookingItemId,
           },
           booking: {
-            users: {
-              every: {
-                userId: user.id,
+            OR: [
+              {
+                users: {
+                  every: {
+                    userId: user.id,
+                  },
+                },
               },
-            },
+              {
+                restaurant: {
+                  usersWithRoles: {
+                    every: {
+                      userId: user.id,
+                      role: {
+                        in: ["ADMIN", "WAITER"],
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           },
         },
       });
