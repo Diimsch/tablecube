@@ -76,7 +76,7 @@ class Body extends State<BillScreen> {
           calculateBalance(items);
 
           return Scaffold(
-             appBar: AppBar(
+              appBar: AppBar(
                 title: const Text("Pay"),
                 centerTitle: true,
                 elevation: 0,
@@ -84,127 +84,130 @@ class Body extends State<BillScreen> {
               ),
               body: Background(
                   child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  allSelected
-                      ? IconButton(
-                          tooltip: "Deselect all",
-                          icon:
-                              const Icon(Icons.indeterminate_check_box_rounded),
-                          iconSize: 30,
-                          color: primaryColor,
-                          padding: const EdgeInsets.all(10),
-                          onPressed: () {
-                            setAllValues(false);
-                          })
-                      : IconButton(
-                          tooltip: "Deselect all",
-                          icon: const Icon(Icons.library_add_check_rounded),
-                          iconSize: 30,
-                          color: primaryColor,
-                          padding: const EdgeInsets.all(10),
-                          onPressed: () {
-                            setAllValues(true);
-                          })
-                ],
-              ),
-              Expanded(
-                  flex: 6,
-                  child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      // Display the list item
-                      if (items.isNotEmpty) {
-                        return TextFieldContainer(
-                            child: Row(
-                          children: [
-                            Checkbox(
-                                value: selected[index],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selected[index] = value!;
-                                    calculateBalance(items);
-                                  });
-                                }),
-                            Expanded(
-                                child: RoundedMenuItem(
-                              item: items[index]["item"],
-                              addButtonVisible: false,
-                              editable: false,
-                              click: () {},
-                            ))
-                          ],
-                        ));
-                      } else {
-                        return Container();
-                      }
-                    },
-                  )),
-              Expanded(
-                  flex: 1,
-                  child: TextFieldContainer(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                        Container(
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "Selected balance: ",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(balance.toStringAsFixed(2) + "€",
-                                      style: const TextStyle(fontSize: 18))
-                                ])),
-                        Mutation(
-                            options: MutationOptions(
-                              document: gql(payItems),
-                              onCompleted: (data) {
-                                if (refetch != null) {
-                                  refetch();
-                                  setState(() {
-                                    selected = List.generate(
-                                        items.length, (index) => true);
-                                  });
-                                }
-                              },
-                            ),
-                            builder:
-                                (RunMutation runMutation, QueryResult? result) {
-                              return RoundedButton(
-                                  text: "Pay current bill",
-                                  click: () {                        
-                                    if (balance == 0.0) {
-                                      Fluttertoast.showToast(
-                                        msg:
-                                            "You can not pay a bill with zweo balance.",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.CENTER,
-                                        timeInSecForIosWeb: 3,
-                                        backgroundColor: warningColor,
-                                        webBgColor: warningColorWebToast,
-                                      );
-                                    } else {
-                                      List ids = [];
-                                      for (var i = 0; i < items.length; i++) {
-                                        if (!selected[i]) continue;
-                                        ids.add(items[i]["id"]);
-                                      }
-                                      runMutation({
-                                        "bookingItemId": ids,
-                                        // Zahlungsinformationen
+                  Row(
+                    children: [
+                      allSelected
+                          ? IconButton(
+                              tooltip: "Deselect all",
+                              icon: const Icon(
+                                  Icons.indeterminate_check_box_rounded),
+                              iconSize: 30,
+                              color: primaryColor,
+                              padding: const EdgeInsets.all(10),
+                              onPressed: () {
+                                setAllValues(false);
+                              })
+                          : IconButton(
+                              tooltip: "Deselect all",
+                              icon: const Icon(Icons.library_add_check_rounded),
+                              iconSize: 30,
+                              color: primaryColor,
+                              padding: const EdgeInsets.all(10),
+                              onPressed: () {
+                                setAllValues(true);
+                              })
+                    ],
+                  ),
+                  Expanded(
+                      flex: 6,
+                      child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          // Display the list item
+                          if (items.isNotEmpty) {
+                            return TextFieldContainer(
+                                child: Row(
+                              children: [
+                                Checkbox(
+                                    value: selected[index],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selected[index] = value!;
+                                        calculateBalance(items);
+                                      });
+                                    }),
+                                Expanded(
+                                    child: RoundedMenuItem(
+                                  item: items[index]["item"],
+                                  addButtonVisible: false,
+                                  editable: false,
+                                  click: () {},
+                                ))
+                              ],
+                            ));
+                          } else {
+                            return Container();
+                          }
+                        },
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: TextFieldContainer(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                            Container(
+                                padding:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Selected balance: ",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      Text(balance.toStringAsFixed(2) + "€",
+                                          style: const TextStyle(fontSize: 18))
+                                    ])),
+                            Mutation(
+                                options: MutationOptions(
+                                  document: gql(payItems),
+                                  onCompleted: (data) {
+                                    if (refetch != null) {
+                                      refetch();
+                                      setState(() {
+                                        selected = List.generate(
+                                            items.length, (index) => true);
                                       });
                                     }
-                                  });
-                            }),
-                      ])))
-            ],
-          )));
+                                  },
+                                ),
+                                builder: (RunMutation runMutation,
+                                    QueryResult? result) {
+                                  return RoundedButton(
+                                      text: "Pay current bill",
+                                      click: () {
+                                        if (balance == 0.0) {
+                                          Fluttertoast.showToast(
+                                            msg:
+                                                "You can not pay a bill with zweo balance.",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 3,
+                                            backgroundColor: warningColor,
+                                            webBgColor: warningColorWebToast,
+                                          );
+                                        } else {
+                                          List ids = [];
+                                          for (var i = 0;
+                                              i < items.length;
+                                              i++) {
+                                            if (!selected[i]) continue;
+                                            ids.add(items[i]["id"]);
+                                          }
+                                          runMutation({
+                                            "bookingItemId": ids,
+                                            // Zahlungsinformationen
+                                          });
+                                        }
+                                      });
+                                }),
+                          ])))
+                ],
+              )));
         });
   }
 
