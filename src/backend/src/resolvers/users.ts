@@ -24,12 +24,9 @@ export const usersResolver: Resolvers = {
   },
   Query: {
     me: async (parent, args, ctx) => {
-      if (ctx.token.userId === null) {
-        throw new AuthenticationError("login required");
-      }
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
       });
 

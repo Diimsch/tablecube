@@ -4,15 +4,42 @@ import { Resolvers } from "../generated/graphql";
 
 export const restaurantResolver: Resolvers = {
   Restaurant: {
-    bookings: async (parent, args, ctx) => {
-        return await ctx.prisma.booking.findMany({
-          where: { restaurantId: parent.id}
-        })
-    },
-    tables: async (parent, args, ctx) => { 
+    tables: async (parent, args, ctx) => {
       return await ctx.prisma.table.findMany({
-        where: { restaurantId: parent.id}
-      })
+        where: { restaurantId: parent.id },
+      });
+    },
+    occupyingBookings: async (parent, args, ctx) => {
+      const current = new Date();
+      const bookings = await ctx.prisma.booking.findMany({
+        where: {
+          restaurantId: parent.id,
+          OR: [
+            {
+              status: {
+                notIn: ["DONE", "RESERVED"],
+              },
+            },
+            {
+              status: {
+                not: "DONE",
+              },
+              start: {
+                lt: current,
+              },
+              end: {
+                gte: current,
+              },
+            },
+          ],
+        },
+      });
+      return bookings;
+    },
+    bookings: async (parent, args, ctx) => {
+      return await ctx.prisma.booking.findMany({
+        where: { restaurantId: parent.id },
+      });
     },
   },
   Query: {
@@ -22,12 +49,9 @@ export const restaurantResolver: Resolvers = {
     },
 
     roleInRestaurant: async (parent, args, ctx) => {
-      if (ctx.token.userId === null) {
-        throw new AuthenticationError("login required");
-      }
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
       });
 
@@ -55,12 +79,9 @@ export const restaurantResolver: Resolvers = {
   },
   Mutation: {
     editRestaurantInfo: async (parent, args, ctx) => {
-      if (ctx.token.userId === null) {
-        throw new AuthenticationError("login required");
-      }
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -83,18 +104,18 @@ export const restaurantResolver: Resolvers = {
 
       const updatedRestaurant = await ctx.prisma.restaurant.update({
         where: {
-          id: args.data.restaurantId
+          id: args.data.restaurantId,
         },
         data: {
           name: args.data.name ?? undefined,
           description: args.data.description ?? undefined,
           address: args.data.address ?? undefined,
           city: args.data.city ?? undefined,
-          zipCode: args.data.zipCode ?? undefined
-        }
+          zipCode: args.data.zipCode ?? undefined,
+        },
       });
 
       return updatedRestaurant;
-    }
+    },
   },
 };

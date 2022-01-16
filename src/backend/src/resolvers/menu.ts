@@ -15,13 +15,9 @@ export const menuResolvers: Resolvers = {
   },
   Mutation: {
     addMenuItem: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -56,13 +52,9 @@ export const menuResolvers: Resolvers = {
       return menuItem;
     },
     updateMenuItem: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -108,13 +100,9 @@ export const menuResolvers: Resolvers = {
       return updatedItem;
     },
     delMenuItem: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,

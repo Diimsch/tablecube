@@ -7,4 +7,5 @@ export interface IServerContext {
 
 export interface ITokenData {
     userId: string | null;
+    type: "HUMAN" | "ROBOT";
 }

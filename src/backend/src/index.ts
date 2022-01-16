@@ -12,8 +12,8 @@ import http, { IncomingMessage } from "http";
 import { DocumentNode, GraphQLScalarType, Kind } from "graphql";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { join } from "path";
-import resolvers from "./resolvers";
-import { IServerContext } from "./types/context";
+import resolvers, { permissions } from "./resolvers";
+import { IServerContext, ITokenData } from "./types/context";
 
 import { createServer } from "http";
 import { execute, subscribe } from "graphql";
@@ -23,6 +23,7 @@ import { WebSocket } from "ws";
 import qs from "querystring";
 import { URL, URLSearchParams } from "url";
 import cors from 'cors';
+import { applyMiddleware } from "graphql-middleware";
 
 const prisma = new PrismaClient({
   log: ['query'],
@@ -36,10 +37,11 @@ const typeDefs = sources
   .map((source) => source.document)
   .filter((d) => d !== undefined) as DocumentNode[];
 
-const processAuthToken = async (token: string | undefined) => {
+const processAuthToken = async (token: string | undefined): Promise<ITokenData> => {
   if (!token) {
     return {
       userId: null,
+      type: "HUMAN"
     };
   }
   try {
@@ -52,14 +54,20 @@ const processAuthToken = async (token: string | undefined) => {
     const decodedToken = jwt.verify(
       parsedToken,
       process.env.JWT_SECRET ?? ""
-    ) as JwtPayload;
+    ) as JwtPayload & { type?: string };
+
+    if(!!decodedToken.type && decodedToken.type !== "ROBOT" && decodedToken.type !== "HUMAN") {
+      throw new UserInputError("token is lacking type claim or its invalid");
+    }
 
     return {
       userId: decodedToken.sub ?? null,
+      type: decodedToken.type as "HUMAN" | "ROBOT" ?? "HUMAN"
     };
   } catch (e) {
     return {
       userId: null,
+      type: "HUMAN",
     };
   }
 };
@@ -71,7 +79,7 @@ async function startApolloServer() {
   const httpServer = http.createServer(app);
 
   // Same ApolloServer initialization as before, plus the drain plugin.
-  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  let schema = applyMiddleware(makeExecutableSchema({ typeDefs, resolvers }), permissions);
 
   const subscriptionServer = SubscriptionServer.create(
     {
@@ -84,8 +92,6 @@ async function startApolloServer() {
         webSocket: any,
         connectionContext: any
       ) => {
-        console.log(connectionParams);
-        console.log(connectionContext);
         const token = connectionParams.Authorization;
         if(!token) {
           throw new AuthenticationError('missing jwt');

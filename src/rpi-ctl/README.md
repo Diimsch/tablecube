@@ -2,7 +2,8 @@
 
 ## Requirements:
 
-Have Raspberry PI Zero with KEYBOW MINI connected
+Have Raspberry PI with KEYBOW MINI connected
+The RPI Controller can't be used on a normal computer as the raspberry pi dependency cannot be solved without special preinstalled raspberry pi libraries.
 
 ## Setup:
 

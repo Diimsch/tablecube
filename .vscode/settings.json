@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/rpi-ctl/__pypackages__/3.9/lib"
+    ]
+}

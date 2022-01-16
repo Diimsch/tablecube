@@ -1,8 +1,9 @@
-import { Booking, BookingStatus, MenuItem, PrismaClient, UserRole } from "@prisma/client";
+import { Booking, BookingStatus, ItemsOnBooking, MenuItem, PrismaClient, UserRole } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
 import { generateValidatorCode } from "../utils";
+import { pubsub } from "./table";
 
 export const bookingResolvers: Resolvers = {
   BookingItem: {
@@ -39,13 +40,9 @@ export const bookingResolvers: Resolvers = {
   },
   Query: {
     booking: async (parent, args, ctx): Promise<Booking> => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -78,13 +75,9 @@ export const bookingResolvers: Resolvers = {
   },
   Mutation: {
     createBooking: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -170,16 +163,19 @@ export const bookingResolvers: Resolvers = {
       });
       console.log(`validation data for ${booking.id}: ${validatorColorCode}`);
 
+      if(current >= booking.start && current < booking.end) {
+        pubsub.publish("TABLE_UPDATED", {
+          tableId: booking.tableId,
+          status: booking.status
+        });
+      }
+
       return booking;
     },
     joinBooking: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -219,13 +215,9 @@ export const bookingResolvers: Resolvers = {
       return booking;
     },
     addItemToBooking: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -266,13 +258,9 @@ export const bookingResolvers: Resolvers = {
       });
     },
     payItems: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -319,13 +307,9 @@ export const bookingResolvers: Resolvers = {
       return bookings;
     },
     checkIn: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
-
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: ctx.token.userId,
+          id: ctx.token.userId!,
         },
         include: {
           rolesInRestaurants: true,
@@ -370,53 +354,77 @@ export const bookingResolvers: Resolvers = {
         },
       });
 
+      pubsub.publish("TABLE_UPDATED", {
+        tableId: args.tableId,
+        status: booking.status
+      });
+
       return booking;
     },
     changeBookingStatus: async (parent, args, ctx) => {
-      if (!ctx.token.userId) {
-        throw new AuthenticationError("not signed in");
-      }
+      let booking: Booking & { items: ItemsOnBooking[] } | null;
+      if(ctx.token.type === "HUMAN") {
+        booking = await ctx.prisma.booking.findFirst({
+          where: {
+            tableId: args.data.tableId,
+            users: {
+              every: {
+                userId: ctx.token.userId!
+              }
+            },
+            status: {
+              notIn: ["DONE", "RESERVED"],
+            },
+          },
+          include: {
+            items: true
+          }
+        });
+      } else {
+        if(ctx.token.userId !== args.data.tableId) {
+          throw new AuthenticationError("table can't access out of scope data");
+        }
 
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.token.userId,
-        },
-        include: {
-          rolesInRestaurants: true,
-        },
-      });
-
-      if (!user) {
-        throw new AuthenticationError("invalid user");
+        booking = await ctx.prisma.booking.findFirst({
+          where: {
+            tableId: args.data.tableId,
+            status: {
+              notIn: ["DONE", "RESERVED"],
+            },
+          },
+          include: {
+            items: true
+          }
+        });
       }
 
       if(args.data.status === BookingStatus.RESERVED || args.data.status === BookingStatus.CHECKED_IN) {
         throw new UserInputError("cant use reserved or checked_in state in this method");
       }
 
-      let bookings = await ctx.prisma.booking.findMany({
-        where: {
-          tableId: args.data.tableId,
-          status: {
-            notIn: ["DONE", "RESERVED"],
-          },
-        },
-      });
-
-      if(bookings.length < 1) {
+      if(!booking) {
         throw new UserInputError("couldn't find active booking for specified table");
       }
 
-      const booking = await ctx.prisma.booking.update({
+      if(args.data.status === "DONE" && !booking.items.every((item) => item.paid)) {
+        throw new UserInputError("cant set status to done while table still has unpaid items");
+      }
+
+      const updatedBooking = await ctx.prisma.booking.update({
         where: {
-          id: bookings[0].id,
+          id: booking.id,
         },
         data: {
           status: args.data.status,
         },
       });
 
-      return booking;
+      pubsub.publish("TABLE_UPDATED", {
+        tableId: updatedBooking.tableId,
+        status: updatedBooking.status
+      });
+
+      return updatedBooking;
     },
   },
 };
