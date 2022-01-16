@@ -228,19 +228,34 @@ export const bookingResolvers: Resolvers = {
         throw new AuthenticationError("invalid user");
       }
 
-      const isAtBooking = await ctx.prisma.usersAtBooking.findUnique({
+      const booking = await ctx.prisma.booking.findFirst({
         where: {
-          userId_bookingId: {
-            bookingId: args.data.bookingId,
-            userId: user.id,
-          },
-        },
+          id: args.data.bookingId
+        }
       });
 
-      if (!isAtBooking) {
+      if(!booking) {
         throw new UserInputError(
           "booking doesn't exist or user not part of booking"
         );
+      }
+
+      const role = user.rolesInRestaurants.find((userRole) => userRole.restaurantId === booking.restaurantId);
+      if(!role || role.role === "NONE") {
+        const isAtBooking = await ctx.prisma.usersAtBooking.findUnique({
+          where: {
+            userId_bookingId: {
+              bookingId: args.data.bookingId,
+              userId: user.id,
+            },
+          },
+        });
+  
+        if (!isAtBooking) {
+          throw new UserInputError(
+            "booking doesn't exist or user not part of booking"
+          );
+        }
       }
 
       await ctx.prisma.itemsOnBooking.create({
