@@ -16,6 +16,9 @@ services:
     ports:
       - 8080:8080
   backend:
+    restart: always
+    depends_on:
+      - db
     build: .
     ports:
       - 80:4000
