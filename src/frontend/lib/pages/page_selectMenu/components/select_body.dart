@@ -50,6 +50,12 @@ class SelectBody extends State<SelectMenuScreen> {
         List menuItems = result.data!['menu'];
 
         return Scaffold(
+            appBar: AppBar(
+              title: const Text("Menu items"),
+              centerTitle: true,
+              elevation: 0,
+              backgroundColor: primaryColor,
+            ),
             body: ListView.builder(
                 itemCount: menuItems.length,
                 itemBuilder: (context, index) {

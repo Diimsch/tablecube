@@ -41,6 +41,7 @@ dependencies:
   flutter_svg: ^1.0.0
   qr_code_scanner: ^0.6.1
   intl: ^0.17.0
+  expandable: ^5.0.1
 
 dev_dependencies:
   flutter_test:
