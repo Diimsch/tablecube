@@ -24,7 +24,6 @@ class OverviewScreen extends StatelessWidget {
         ? OverviewArguments('null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
-    debugPrint('helo: $args.restaurantId');
     return Query(
       options: QueryOptions(
         document: gql(getRoleInRestaurant),

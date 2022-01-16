@@ -136,6 +136,7 @@ class TableOverviewScreen extends StatelessWidget {
                   child: InkWell(
             splashColor: primaryLightColor,
             onTap: () {
+              selectedItems.clear();
               Navigator.pushNamed(context, '/service',
                   arguments: OverviewArguments(restaurantId, "12345123"));
             },

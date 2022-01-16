@@ -95,7 +95,6 @@ class OrderBody extends State<SelectMenuScreen> {
                               if (data == null) {
                                 return;
                               }
-                              debugPrint('data: $data');
                               Fluttertoast.showToast(
                                 msg: "Items added to bill",
                                 toastLength: Toast.LENGTH_SHORT,
