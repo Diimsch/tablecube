@@ -22,4 +22,4 @@ RUN npm run build
 COPY ./src/schema.graphql ./dist
 
 EXPOSE 4000
-CMD [ "node", "dist/index.js" ]
+CMD [ "node", "src/dist/index.js" ]
