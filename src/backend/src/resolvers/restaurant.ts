@@ -4,11 +4,16 @@ import { Resolvers } from "../generated/graphql";
 
 export const restaurantResolver: Resolvers = {
   Restaurant: {
+    bookings: async (parent, args, ctx) => {
+        return await ctx.prisma.booking.findMany({
+          where: { restaurantId: parent.id}
+        })
+    },
     tables: async (parent, args, ctx) => { 
       return await ctx.prisma.table.findMany({
         where: { restaurantId: parent.id}
       })
-  },
+    },
   },
   Query: {
     restaurant: async (parent, args, ctx) => {

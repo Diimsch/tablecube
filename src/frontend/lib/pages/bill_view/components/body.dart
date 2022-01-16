@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
@@ -65,7 +66,7 @@ class Body extends State<BillScreen> {
           }
 
           if (result.isLoading) {
-            return const Text('Loading');
+            return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
           // it can be either Map or List
