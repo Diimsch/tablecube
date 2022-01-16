@@ -19,7 +19,7 @@ COPY . .
 RUN npm run codegen
 RUN npm run build
 
-COPY ./src/schema.graphql ./dist
+COPY ./src/schema.graphql ./dist/src
 
 EXPOSE 4000
 CMD [ "node", "dist/src/index.js" ]
