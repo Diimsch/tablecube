@@ -178,7 +178,7 @@ class Body extends State<BillScreen> {
                                 (RunMutation runMutation, QueryResult? result) {
                               return RoundedButton(
                                   text: "Pay current bill",
-                                  click: () {
+                                  click: () {                        
                                     if (balance == 0.0) {
                                       Fluttertoast.showToast(
                                         msg:

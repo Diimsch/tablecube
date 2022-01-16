@@ -48,7 +48,7 @@ class TableServiceScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              "Select an option",
+              "Select an option for Customer",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(
@@ -77,7 +77,7 @@ class TableServiceScreen extends StatelessWidget {
                   document: gql(updateBookingStatus),
                   onCompleted: (data) {
                     Fluttertoast.showToast(
-                      msg: 'Waiter was called.',
+                      msg: 'Service has been finished.',
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
                       timeInSecForIosWeb: 3,
@@ -88,12 +88,13 @@ class TableServiceScreen extends StatelessWidget {
                 ),
                 builder: (RunMutation runMutation, QueryResult? result) {
                   return RoundedButton(
-                      text: "Call waiter",
+                      text: "Service Finished",
                       click: () {
+                        // TODO: replace hardcoded tableID
                         runMutation({
                           "data": {
-                            "bookingId": args.bookingId,
-                            "status": "NEEDS_SERVICE"
+                            "tableId": 'c823d232-8700-42e8-ad5c-e0813cf807e9',
+                            "status": "CHECKED_IN"
                           }
                         });
                       });

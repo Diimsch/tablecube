@@ -82,8 +82,9 @@ class Body extends StatelessWidget {
                         text: "Call waiter",
                         click: () {
                           runMutation({
+                            //TODO: replace hardcoded tableID with the one from QR Code 
                             "data": {
-                              "bookingId": args.bookingId,
+                              "tableId": 'c823d232-8700-42e8-ad5c-e0813cf807e9',
                               "status": "NEEDS_SERVICE"
                             }
                           });
