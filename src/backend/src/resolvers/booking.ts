@@ -404,14 +404,43 @@ export const bookingResolvers: Resolvers = {
     changeBookingStatus: async (parent, args, ctx) => {
       let booking: (Booking & { items: ItemsOnBooking[] }) | null;
       if (ctx.token.type === "HUMAN") {
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            id: ctx.token.userId!,
+          },
+          include: {
+            rolesInRestaurants: true,
+          },
+        });
+
+        if (!user) {
+          throw new AuthenticationError("invalid user");
+        }
+
         booking = await ctx.prisma.booking.findFirst({
           where: {
             tableId: args.data.tableId,
-            users: {
-              every: {
-                userId: ctx.token.userId!,
+            OR: [
+              {
+                users: {
+                  every: {
+                    userId: ctx.token.userId!,
+                  },
+                },
               },
-            },
+              {
+                restaurant: {
+                  usersWithRoles: {
+                    every: {
+                      userId: user.id,
+                      role: {
+                        in: ["ADMIN", "WAITER"],
+                      },
+                    },
+                  },
+                },
+              },
+            ],
             status: {
               notIn: ["DONE", "RESERVED"],
             },
@@ -438,18 +467,19 @@ export const bookingResolvers: Resolvers = {
         });
       }
 
-      if (
-        args.data.status === BookingStatus.RESERVED ||
-        args.data.status === BookingStatus.CHECKED_IN
-      ) {
-        throw new UserInputError(
-          "cant use reserved or checked_in state in this method"
-        );
-      }
-
       if (!booking) {
         throw new UserInputError(
           "couldn't find active booking for specified table"
+        );
+      }
+
+      if (
+        args.data.status === BookingStatus.RESERVED ||
+        (args.data.status === BookingStatus.CHECKED_IN &&
+          (booking.status === "DONE" || booking.status === "RESERVED"))
+      ) {
+        throw new UserInputError(
+          "cant use reserved or checked_in state in this method"
         );
       }
 
