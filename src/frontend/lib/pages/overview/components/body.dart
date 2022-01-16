@@ -20,73 +20,82 @@ class Body extends StatelessWidget {
   final OverviewArguments args;
   const Body({Key? key, required this.userType, required this.args})
       : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
     if (userType == UserType.NONE) {
-      return Background(
-          child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              "Select an option",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: size.height * 0.05,
-            ),
-            RoundedButton(
-                text: "Select menu items",
-                click: () {
-                  Navigator.pushNamed(context, '/menu', arguments: args);
-                }),
-            RoundedButton(
-                text: "Order",
-                click: () {
-                  Navigator.pushNamed(context, '/cart', arguments: args);
-                }),
-            RoundedButton(
-                text: "Pay",
-                click: () {
-                  Navigator.pushNamed(context, '/bill', arguments: args);
-                }),
-            SizedBox(
-              height: size.height * 0.05,
-            ),
-            Mutation(
-                options: MutationOptions(
-                  document: gql(updateBookingStatus),
-                  onCompleted: (data) {
-                    Fluttertoast.showToast(
-                      msg: 'Waiter was called.',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 3,
-                      backgroundColor: okColor,
-                      webBgColor: okColorWebToast,
-                    );
-                  },
-                ),
-                builder: (RunMutation runMutation, QueryResult? result) {
-                  return RoundedButton(
-                      text: "Call waiter",
-                      click: () {
-                        runMutation({
-                          "data": {
-                            "bookingId": args.bookingId,
-                            "status": "NEEDS_SERVICE"
-                          }
-                        });
-                      });
-                }),
-          ],
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Table Options"),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: primaryColor,
         ),
-      ));
+        body: Background(
+            child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                "Select an option",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: size.height * 0.05,
+              ),
+              RoundedButton(
+                  text: "Select menu items",
+                  click: () {
+                    Navigator.pushNamed(context, '/menu', arguments: args);
+                  }),
+              RoundedButton(
+                  text: "Order",
+                  click: () {
+                    Navigator.pushNamed(context, '/cart', arguments: args);
+                  }),
+              RoundedButton(
+                  text: "Pay",
+                  click: () {
+                    Navigator.pushNamed(context, '/bill', arguments: args);
+                  }),
+              SizedBox(
+                height: size.height * 0.05,
+              ),
+              Mutation(
+                  options: MutationOptions(
+                    document: gql(updateBookingStatus),
+                    onCompleted: (data) {
+                      Fluttertoast.showToast(
+                        msg: 'Waiter was called.',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 3,
+                        backgroundColor: okColor,
+                        webBgColor: okColorWebToast,
+                      );
+                    },
+                  ),
+                  builder: (RunMutation runMutation, QueryResult? result) {
+                    return RoundedButton(
+                        text: "Call waiter",
+                        click: () {
+                          runMutation({
+                            "data": {
+                              "bookingId": args.bookingId,
+                              "status": "NEEDS_SERVICE"
+                            }
+                          });
+                        });
+                  }),
+            ],
+          ),
+        )),
+      );
     } else if (userType == UserType.WAITER) {
-      return Background(child: TableOverviewScreen(restaurantId: args.restaurantId));
+      return Background(
+          child: TableOverviewScreen(restaurantId: args.restaurantId));
     } else if (userType == UserType.ADMIN) {
       return Background(
           child: SingleChildScrollView(
