@@ -1,4 +1,4 @@
-import { Booking, BookingStatus, MenuItem, PrismaClient, UserRole } from "@prisma/client";
+import { Booking, BookingStatus, ItemsOnBooking, MenuItem, PrismaClient, UserRole } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
@@ -362,9 +362,9 @@ export const bookingResolvers: Resolvers = {
       return booking;
     },
     changeBookingStatus: async (parent, args, ctx) => {
-      let bookings: Booking[];
+      let booking: Booking & { items: ItemsOnBooking[] } | null;
       if(ctx.token.type === "HUMAN") {
-        bookings = await ctx.prisma.booking.findMany({
+        booking = await ctx.prisma.booking.findFirst({
           where: {
             tableId: args.data.tableId,
             users: {
@@ -376,19 +376,25 @@ export const bookingResolvers: Resolvers = {
               notIn: ["DONE", "RESERVED"],
             },
           },
+          include: {
+            items: true
+          }
         });
       } else {
         if(ctx.token.userId !== args.data.tableId) {
           throw new AuthenticationError("table can't access out of scope data");
         }
 
-        bookings = await ctx.prisma.booking.findMany({
+        booking = await ctx.prisma.booking.findFirst({
           where: {
             tableId: args.data.tableId,
             status: {
               notIn: ["DONE", "RESERVED"],
             },
           },
+          include: {
+            items: true
+          }
         });
       }
 
@@ -396,13 +402,17 @@ export const bookingResolvers: Resolvers = {
         throw new UserInputError("cant use reserved or checked_in state in this method");
       }
 
-      if(bookings.length < 1) {
+      if(!booking) {
         throw new UserInputError("couldn't find active booking for specified table");
       }
 
-      const booking = await ctx.prisma.booking.update({
+      if(args.data.status === "DONE" && !booking.items.every((item) => item.paid)) {
+        throw new UserInputError("cant set status to done while table still has unpaid items");
+      }
+
+      const updatedBooking = await ctx.prisma.booking.update({
         where: {
-          id: bookings[0].id,
+          id: booking.id,
         },
         data: {
           status: args.data.status,
@@ -410,11 +420,11 @@ export const bookingResolvers: Resolvers = {
       });
 
       pubsub.publish("TABLE_UPDATED", {
-        tableId: booking.tableId,
-        status: booking.status
+        tableId: updatedBooking.tableId,
+        status: updatedBooking.status
       });
 
-      return booking;
+      return updatedBooking;
     },
   },
 };
