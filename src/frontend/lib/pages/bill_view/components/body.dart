@@ -70,12 +70,18 @@ class Body extends State<BillScreen> {
           }
 
           // it can be either Map or List
-          List items = result.data!['booking']["items"];
+          List items = result.data!['booking']?["items"] ?? List.empty();
 
           items = items.where((i) => i["paid"] == false).toList();
           calculateBalance(items);
 
           return Scaffold(
+             appBar: AppBar(
+                title: const Text("Pay"),
+                centerTitle: true,
+                elevation: 0,
+                backgroundColor: primaryColor,
+              ),
               body: Background(
                   child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

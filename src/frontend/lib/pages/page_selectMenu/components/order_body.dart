@@ -34,108 +34,115 @@ class OrderBody extends State<SelectMenuScreen> {
     calculateCurrentBalance();
 
     return Scaffold(
+        appBar: AppBar(
+          title: const Text("Cart"),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: primaryColor,
+        ),
         body: Background(
             child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-            flex: 5,
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                // Display the list item
-                return Dismissible(
-                    key: UniqueKey(),
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+                flex: 5,
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    // Display the list item
+                    return Dismissible(
+                        key: UniqueKey(),
 
-                    // only allows the user swipe from right to left
-                    direction: DismissDirection.none,
+                        // only allows the user swipe from right to left
+                        direction: DismissDirection.none,
 
-                    // Remove this product from the list
-                    // In production enviroment, you may want to send some request to delete it on server side
-                    onDismissed: (_) {
-                      setState(() {
-                        items.removeAt(index);
-                      });
-                    },
-
-                    // Display item's title, price...
-                    child: OrderListItem(
-                      item: items[index],
-                      onDelete: () {
-                        setState(() {
-                          items.removeAt(index);
-                        });
-                      },
-                    ));
-              },
-            )),
-        Expanded(
-            flex: 1,
-            child: TextFieldContainer(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text("Current balance:"),
-                    Text(balance.toStringAsFixed(2) + "€")
-                  ],
-                ),
-                Mutation(
-                    options: MutationOptions(
-                        document: gql(addItemToBooking),
-                        onCompleted: (dynamic data) {
-                          if (data == null) {
-                            return;
-                          }
-                          debugPrint('data: $data');
-                          Fluttertoast.showToast(
-                            msg: "Items added to bill",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 3,
-                            backgroundColor: okColor,
-                            webBgColor: okColorWebToast,
-                          );
+                        // Remove this product from the list
+                        // In production enviroment, you may want to send some request to delete it on server side
+                        onDismissed: (_) {
                           setState(() {
-                            items.clear();
-                            calculateCurrentBalance();
+                            items.removeAt(index);
                           });
                         },
-                        onError: (error) => {
-                              items = backup,
-                              handleError(error as OperationException)
-                            }),
-                    builder: (RunMutation runMutation, QueryResult? result) {
-                      return RoundedButton(
-                          text: "Add items to bill",
-                          click: () {
-                            if (balance == 0.0) {
+
+                        // Display item's title, price...
+                        child: OrderListItem(
+                          item: items[index],
+                          onDelete: () {
+                            setState(() {
+                              items.removeAt(index);
+                            });
+                          },
+                        ));
+                  },
+                )),
+            Expanded(
+                flex: 1,
+                child: TextFieldContainer(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text("Current balance:"),
+                        Text(balance.toStringAsFixed(2) + "€")
+                      ],
+                    ),
+                    Mutation(
+                        options: MutationOptions(
+                            document: gql(addItemToBooking),
+                            onCompleted: (dynamic data) {
+                              if (data == null) {
+                                return;
+                              }
+                              debugPrint('data: $data');
                               Fluttertoast.showToast(
-                                msg: "No items in list to order.",
+                                msg: "Items added to bill",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.CENTER,
                                 timeInSecForIosWeb: 3,
-                                backgroundColor: warningColor,
-                                webBgColor: warningColorWebToast,
+                                backgroundColor: okColor,
+                                webBgColor: okColorWebToast,
                               );
-                            } else {
-                              for (var i = 0; i < items.length; i++) {
-                                runMutation({
-                                  "data": {
-                                    "itemId": items[i]["id"],
-                                    "bookingId": args.bookingId
+                              setState(() {
+                                items.clear();
+                                calculateCurrentBalance();
+                              });
+                            },
+                            onError: (error) => {
+                                  items = backup,
+                                  handleError(error as OperationException)
+                                }),
+                        builder:
+                            (RunMutation runMutation, QueryResult? result) {
+                          return RoundedButton(
+                              text: "Add items to bill",
+                              click: () {
+                                if (balance == 0.0) {
+                                  Fluttertoast.showToast(
+                                    msg: "No items in list to order.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 3,
+                                    backgroundColor: warningColor,
+                                    webBgColor: warningColorWebToast,
+                                  );
+                                } else {
+                                  for (var i = 0; i < items.length; i++) {
+                                    runMutation({
+                                      "data": {
+                                        "itemId": items[i]["id"],
+                                        "bookingId": args.bookingId
+                                      }
+                                    });
                                   }
-                                });
-                              }
-                            }
-                          });
-                    }),
-              ],
-            )))
-      ],
-    )));
+                                }
+                              });
+                        }),
+                  ],
+                )))
+          ],
+        )));
   }
 
   void calculateCurrentBalance() {

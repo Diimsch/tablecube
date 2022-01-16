@@ -16,8 +16,12 @@ query Query {
       id
       name
     }
-    bookings {
-      id
+    occupyingBookings {
+      table {
+        occupyingBooking {
+          id
+        }
+      }
     }
   }
 }
@@ -45,7 +49,6 @@ class Body extends StatelessWidget {
 
         // it can be either Map or List
         List restaurants = result.data!['restaurant'];
-
         return ListView.builder(
             itemCount: restaurants.length,
             itemBuilder: (context, index) {
@@ -61,7 +64,7 @@ class Body extends StatelessWidget {
                       leading: const Icon(Icons.food_bank),
                       title: Text(restaurants[index]['name']),
                       subtitle: Text(
-                          restaurants[index]['bookings'].length.toString() +
+                          (restaurants[index]['tables'].length - restaurants[index]['occupyingBookings'].length).toString() +
                               ' out of ' +
                               restaurants[index]['tables'].length.toString() +
                               ' Table(s) available'),

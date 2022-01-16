@@ -20,7 +20,7 @@ class Body extends StatelessWidget {
   final OverviewArguments args;
   const Body({Key? key, required this.userType, required this.args})
       : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; // total height and width of screen
@@ -86,7 +86,8 @@ class Body extends StatelessWidget {
         ),
       ));
     } else if (userType == UserType.WAITER) {
-      return const Background(child: TableOverviewScreen());
+      // Navigator.pushNamed(context, '/overview/info', arguments: args);
+      return Background(child: TableOverviewScreen(restaurantId: args.restaurantId));
     } else if (userType == UserType.ADMIN) {
       return Background(
           child: SingleChildScrollView(
