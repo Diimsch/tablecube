@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum UserType {
-  WAITER,
-  ADMIN,
-  NONE,
-  SERVICE
-}
+enum UserType { WAITER, ADMIN, NONE }
 
 const primaryColor = Color(0xFF4D74FF);
 const primaryLightColor = Color(0xFFdee5ff);
@@ -15,7 +10,6 @@ const warningColorWebToast = '#dd8d94';
 const okColor = Color(0xFF689f7f);
 const okColorWebToast = '#689f7f';
 const warningColorOrange = Color(0xFFdbac2d);
-
 
 const borderRadius = 29.0;
 const iconSize = 48.0;

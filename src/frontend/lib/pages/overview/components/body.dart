@@ -86,7 +86,6 @@ class Body extends StatelessWidget {
         ),
       ));
     } else if (userType == UserType.WAITER) {
-      // Navigator.pushNamed(context, '/overview/info', arguments: args);
       return Background(child: TableOverviewScreen(restaurantId: args.restaurantId));
     } else if (userType == UserType.ADMIN) {
       return Background(

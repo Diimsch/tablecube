@@ -77,9 +77,6 @@ class TableOverviewScreen extends StatelessWidget {
                   .toList() ??
               [];
 
-          debugPrint('hello: $availableTables.toString()');
-          debugPrint(selectedRestaurant[0]['tables'].toString());
-
           return Column(
             children: [
               Card(
