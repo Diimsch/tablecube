@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
@@ -29,7 +30,7 @@ class OrderBody extends State<SelectMenuScreen> {
         ? OverviewArguments('null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
-    backup = items;
+    backup = List<Map<String, dynamic>>.from(items);
     calculateCurrentBalance();
 
     return Scaffold(
@@ -84,7 +85,11 @@ class OrderBody extends State<SelectMenuScreen> {
                 Mutation(
                     options: MutationOptions(
                         document: gql(addItemToBooking),
-                        onCompleted: (data) {
+                        onCompleted: (dynamic data) {
+                          if (data == null) {
+                            return;
+                          }
+                          debugPrint('data: $data');
                           Fluttertoast.showToast(
                             msg: "Items added to bill",
                             toastLength: Toast.LENGTH_SHORT,
@@ -93,18 +98,14 @@ class OrderBody extends State<SelectMenuScreen> {
                             backgroundColor: okColor,
                             webBgColor: okColorWebToast,
                           );
+                          setState(() {
+                            items.clear();
+                            calculateCurrentBalance();
+                          });
                         },
                         onError: (error) => {
                               items = backup,
-                              Fluttertoast.showToast(
-                                msg:
-                                    "Something went wrong. Please try again later.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 3,
-                                backgroundColor: warningColor,
-                                webBgColor: warningColorWebToast,
-                              )
+                              handleError(error as OperationException)
                             }),
                     builder: (RunMutation runMutation, QueryResult? result) {
                       return RoundedButton(
@@ -128,10 +129,6 @@ class OrderBody extends State<SelectMenuScreen> {
                                   }
                                 });
                               }
-                              setState(() {
-                                items.clear();
-                                calculateCurrentBalance();
-                              });
                             }
                           });
                     }),

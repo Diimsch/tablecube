@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/constants.dart';
@@ -23,7 +24,7 @@ class OverviewScreen extends StatelessWidget {
         ? OverviewArguments('null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
-    debugPrint(args.restaurantId);
+    debugPrint('helo: $args.restaurantId');
     return Query(
       options: QueryOptions(
         document: gql(getRoleInRestaurant),
@@ -38,7 +39,7 @@ class OverviewScreen extends StatelessWidget {
         }
 
         if (result.isLoading) {
-          return const Text('Loading');
+          return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
         }
 
         // it can be either Map or List

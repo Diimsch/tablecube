@@ -17,25 +17,30 @@ export const restaurantResolver: Resolvers = {
           OR: [
             {
               status: {
-                notIn: ["DONE", "RESERVED"]
-              }
+                notIn: ["DONE", "RESERVED"],
+              },
             },
             {
               status: {
                 not: "DONE",
               },
               start: {
-                lt: current
+                lt: current,
               },
               end: {
-                gte: current
+                gte: current,
               },
-            }
-          ]
+            },
+          ],
         },
       });
       return bookings;
-    }
+    },
+    bookings: async (parent, args, ctx) => {
+      return await ctx.prisma.booking.findMany({
+        where: { restaurantId: parent.id },
+      });
+    },
   },
   Query: {
     restaurant: async (parent, args, ctx) => {
