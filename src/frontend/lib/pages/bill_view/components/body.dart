@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
@@ -76,6 +78,11 @@ class Body extends State<BillScreen> {
 
           return Scaffold(
               appBar: AppBar(
+                actions: [
+                  AccountBubble(click: () {
+                    logOutUser();
+                  })
+                ],
                 title: const Text("Pay"),
                 centerTitle: true,
                 elevation: 0,

@@ -1,6 +1,8 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/main.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -38,6 +40,11 @@ class TableOverviewScreen extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          AccountBubble(click: () {
+            logOutUser();
+          })
+        ],
         title: const Text('Table Overview'),
         centerTitle: true,
         elevation: 0,
@@ -139,7 +146,8 @@ class TableOverviewScreen extends StatelessWidget {
             onTap: () {
               selectedItems.clear();
               Navigator.pushNamed(context, '/service',
-                  arguments: OverviewArguments(restaurantId, '', tables[index]['occupyingBooking']['id'].toString()));
+                  arguments: OverviewArguments(restaurantId, '',
+                      tables[index]['occupyingBooking']['id'].toString()));
             },
             child: Column(
               mainAxisSize: MainAxisSize.min,

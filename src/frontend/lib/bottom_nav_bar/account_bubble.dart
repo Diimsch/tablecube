@@ -11,6 +11,7 @@ class AccountBubble extends StatelessWidget {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
     return IconButton(
+      tooltip: "Logout",
       iconSize: iconSize,
       splashRadius: splashRadius,
       onPressed: click,
