@@ -69,7 +69,7 @@ class Body extends State<RestaurantMenuEditScreen> {
   @override
   Widget build(BuildContext context) {
     var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null')
+        ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
     return Query(
@@ -87,7 +87,7 @@ class Body extends State<RestaurantMenuEditScreen> {
           }
 
           if (result.isLoading) {
-          return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
+            return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
           // it can be either Map or List
@@ -249,6 +249,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                                         options: MutationOptions(
                                           document: gql(addMenuItemMutation),
                                           onCompleted: (data) {
+                                            showFeedback("Item added.");
                                             if (refetch != null) {
                                               refetch();
                                             }

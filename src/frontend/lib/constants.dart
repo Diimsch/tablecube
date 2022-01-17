@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum UserType { WAITER, ADMIN, NONE }
 
@@ -22,7 +23,28 @@ final List<Map<String, dynamic>> selectedItems = [];
 
 class OverviewArguments {
   String restaurantId;
+  String tableId;
   String bookingId;
 
-  OverviewArguments(this.restaurantId, this.bookingId);
+  OverviewArguments(this.restaurantId, this.tableId, this.bookingId);
+}
+
+showErrorMessage(String msg) {
+  Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 3,
+      backgroundColor: warningColor,
+      webBgColor: warningColorWebToast);
+}
+
+showFeedback(String msg) {
+  Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 3,
+      backgroundColor: okColor,
+      webBgColor: okColorWebToast);
 }

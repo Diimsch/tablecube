@@ -12,6 +12,7 @@ query Restaurant {
     id
     name
     tables {
+      id
       name
       occupyingBooking {
         id
@@ -138,7 +139,7 @@ class TableOverviewScreen extends StatelessWidget {
             onTap: () {
               selectedItems.clear();
               Navigator.pushNamed(context, '/service',
-                  arguments: OverviewArguments(restaurantId, tables[index]['occupyingBooking']['id'].toString()));
+                  arguments: OverviewArguments(restaurantId, tables[index]['occupyingBooking']['id'].toString(), ''));
             },
             child: Column(
               mainAxisSize: MainAxisSize.min,

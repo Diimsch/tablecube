@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_multiline_input_field.dart';
@@ -72,14 +71,7 @@ class Body extends StatelessWidget {
                   restaurantStreetNr.isEmpty ||
                   restaurantZipCode.isEmpty ||
                   restaurantCity.isEmpty) {
-                Fluttertoast.showToast(
-                  msg: 'Please fill out all required values',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 3,
-                  backgroundColor: warningColor,
-                  webBgColor: warningColorWebToast,
-                );
+                showErrorMessage('Please fill out all required values');
               } else {
                 // TODO: save restaurant information
                 // sucessfull --> back to overview

@@ -5,7 +5,6 @@ import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_password_field.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_signup/components/background.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
 
 class Body extends StatelessWidget {
@@ -63,18 +62,9 @@ class Body extends StatelessWidget {
                   lastName.isEmpty ||
                   email.isEmpty ||
                   password.isEmpty) {
-                Fluttertoast.showToast(
-                  msg: 'Please fill out all required values',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 3,
-                  backgroundColor: warningColor,
-                  webBgColor: warningColorWebToast,
-                );
+                showErrorMessage("Please fill out all required values!");
               } else {
                 createUser(firstName, lastName, email, password);
-                // sucessfull --> navigate to certain overview
-                // unlucky --> email already in use? or other error --> toast it in
               }
             }),
         LoginOrSignupCheck(

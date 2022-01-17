@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
@@ -48,14 +47,14 @@ class Body extends State<BillScreen> {
   @override
   Widget build(BuildContext context) {
     var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null')
+        ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
     return Query(
         options: QueryOptions(
           document: gql(getBillQuery),
           variables: {
-            'bookingId': args.bookingId,
+            'bookingId': args.tableId,
           },
           pollInterval: const Duration(seconds: 30),
         ),
@@ -163,6 +162,7 @@ class Body extends State<BillScreen> {
                             options: MutationOptions(
                               document: gql(payItems),
                               onCompleted: (data) {
+                                showFeedback("Items payed.");
                                 if (refetch != null) {
                                   refetch();
                                   setState(() {
@@ -178,15 +178,8 @@ class Body extends State<BillScreen> {
                                   text: "Pay current bill",
                                   click: () {
                                     if (balance == 0.0) {
-                                      Fluttertoast.showToast(
-                                        msg:
-                                            "You can not pay a bill with zweo balance.",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.CENTER,
-                                        timeInSecForIosWeb: 3,
-                                        backgroundColor: warningColor,
-                                        webBgColor: warningColorWebToast,
-                                      );
+                                      showErrorMessage(
+                                          "You can not pay a bill with zweo balance.");
                                     } else {
                                       List ids = [];
                                       for (var i = 0; i < items.length; i++) {

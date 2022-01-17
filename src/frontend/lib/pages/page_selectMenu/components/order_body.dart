@@ -10,9 +10,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'list-item.dart';
 
-const String addItemToBooking = r"""
-mutation AddItemToBooking($data: AddItemToBookingInput!) {
-  addItemToBooking(data: $data) {
+const String addItemToTable = r"""
+mutation AddItemToTable($data: AddItemToTableInput!) {
+  addItemToTable(data: $data) {
     id
   }
 }
@@ -27,7 +27,7 @@ class OrderBody extends State<SelectMenuScreen> {
   @override
   Widget build(BuildContext context) {
     var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null')
+        ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
     backup = List<Map<String, dynamic>>.from(items);
@@ -88,7 +88,7 @@ class OrderBody extends State<SelectMenuScreen> {
                 ),
                 Mutation(
                     options: MutationOptions(
-                        document: gql(addItemToBooking),
+                        document: gql(addItemToTable),
                         onCompleted: (dynamic data) {
                           if (data == null) {
                             return;

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/main.dart';
 import 'package:graphql/client.dart';
@@ -35,14 +34,12 @@ final ValueNotifier<GraphQLClient> vnClient =
     ValueNotifier(GraphQLClient(cache: GraphQLCache(), link: _link));
 
 handleError(OperationException error) {
-  Fluttertoast.showToast(
-    msg: error.graphqlErrors[0].message.toString(),
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.CENTER,
-    timeInSecForIosWeb: 3,
-    backgroundColor: warningColor,
-    webBgColor: warningColorWebToast,
-  );
+  if (error.graphqlErrors.isEmpty) {
+    showErrorMessage(
+        "Ein Fehler ist aufgetreten. Bitte versuche es später erneut.");
+  } else {
+    showErrorMessage(error.graphqlErrors[0].message.toString());
+  }
 }
 
 logInUser(String email, String password) async {

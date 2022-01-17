@@ -11,6 +11,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 import 'package:frontend/pages/table_overview/table_service_screen.dart';
+import 'package:frontend/pages/select_color/color_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.dart';
 import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
@@ -54,11 +55,12 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/home': (context) => const RestaurantListScreen(),
           '/service': (context) => const TableServiceScreen(),
-          '/overview': (context) => OverviewScreen(),
           '/scanner': (context) => const QrViewScreen(),
           '/cart': (context) => SelectMenuScreen(screen: '/cart'),
           '/bill': (context) => const BillScreen(),
           '/menu': (context) => SelectMenuScreen(screen: '/menu'),
+          '/color': (context) => const ColorScreen(),
+          '/overview': (context) => OverviewScreen(),
           '/admin/info': (context) => const RestaurantInfoScreen(),
           '/admin/menu': (context) => const RestaurantMenuEditScreen()
         },
