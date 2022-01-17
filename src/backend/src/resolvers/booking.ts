@@ -312,7 +312,7 @@ export const bookingResolvers: Resolvers = {
               {
                 restaurant: {
                   usersWithRoles: {
-                    every: {
+                    some: {
                       userId: user.id,
                       role: {
                         in: ["ADMIN", "WAITER"],
@@ -347,7 +347,7 @@ export const bookingResolvers: Resolvers = {
               {
                 restaurant: {
                   usersWithRoles: {
-                    every: {
+                    some: {
                       userId: user.id,
                       role: {
                         in: ["ADMIN", "WAITER"],
@@ -447,7 +447,7 @@ export const bookingResolvers: Resolvers = {
               {
                 restaurant: {
                   usersWithRoles: {
-                    every: {
+                    some: {
                       userId: user.id,
                       role: {
                         in: ["ADMIN", "WAITER"],

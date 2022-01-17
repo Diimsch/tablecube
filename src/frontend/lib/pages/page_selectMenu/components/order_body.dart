@@ -75,71 +75,68 @@ class OrderBody extends State<SelectMenuScreen> {
                         ));
                   },
                 )),
-            Expanded(
-                flex: 1,
-                child: TextFieldContainer(
-                    child: Column(
+            TextFieldContainer(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text("Current balance:"),
-                        Text(balance.toStringAsFixed(2) + "€")
-                      ],
-                    ),
-                    Mutation(
-                        options: MutationOptions(
-                            document: gql(addItemToBooking),
-                            onCompleted: (dynamic data) {
-                              if (data == null) {
-                                return;
-                              }
+                    const Text("Current balance:"),
+                    Text(balance.toStringAsFixed(2) + "€")
+                  ],
+                ),
+                Mutation(
+                    options: MutationOptions(
+                        document: gql(addItemToBooking),
+                        onCompleted: (dynamic data) {
+                          if (data == null) {
+                            return;
+                          }
+                          Fluttertoast.showToast(
+                            msg: "Items added to bill",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 3,
+                            backgroundColor: okColor,
+                            webBgColor: okColorWebToast,
+                          );
+                          setState(() {
+                            items.clear();
+                            calculateCurrentBalance();
+                          });
+                        },
+                        onError: (error) => {
+                              items = backup,
+                              handleError(error as OperationException)
+                            }),
+                    builder: (RunMutation runMutation, QueryResult? result) {
+                      return RoundedButton(
+                          text: "Add items to bill",
+                          click: () {
+                            if (balance == 0.0) {
                               Fluttertoast.showToast(
-                                msg: "Items added to bill",
+                                msg: "No items in list to order.",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.CENTER,
                                 timeInSecForIosWeb: 3,
-                                backgroundColor: okColor,
-                                webBgColor: okColorWebToast,
+                                backgroundColor: warningColor,
+                                webBgColor: warningColorWebToast,
                               );
-                              setState(() {
-                                items.clear();
-                                calculateCurrentBalance();
-                              });
-                            },
-                            onError: (error) => {
-                                  items = backup,
-                                  handleError(error as OperationException)
-                                }),
-                        builder:
-                            (RunMutation runMutation, QueryResult? result) {
-                          return RoundedButton(
-                              text: "Add items to bill",
-                              click: () {
-                                if (balance == 0.0) {
-                                  Fluttertoast.showToast(
-                                    msg: "No items in list to order.",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                    timeInSecForIosWeb: 3,
-                                    backgroundColor: warningColor,
-                                    webBgColor: warningColorWebToast,
-                                  );
-                                } else {
-                                  for (var i = 0; i < items.length; i++) {
-                                    runMutation({
-                                      "data": {
-                                        "itemId": items[i]["id"],
-                                        "bookingId": args.bookingId
-                                      }
-                                    });
+                            } else {
+                              for (var i = 0; i < items.length; i++) {
+                                runMutation({
+                                  "data": {
+                                    "itemId": items[i]["id"],
+                                    "bookingId": args.bookingId
                                   }
-                                }
-                              });
-                        }),
-                  ],
-                )))
+                                });
+                              }
+                            }
+                          });
+                    }),
+              ],
+            ))
           ],
         )));
   }

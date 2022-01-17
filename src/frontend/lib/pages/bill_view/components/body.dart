@@ -76,7 +76,7 @@ class Body extends State<BillScreen> {
           calculateBalance(items);
 
           return Scaffold(
-             appBar: AppBar(
+              appBar: AppBar(
                 title: const Text("Pay"),
                 centerTitle: true,
                 elevation: 0,
@@ -84,67 +84,65 @@ class Body extends State<BillScreen> {
               ),
               body: Background(
                   child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  allSelected
-                      ? IconButton(
-                          tooltip: "Deselect all",
-                          icon:
-                              const Icon(Icons.indeterminate_check_box_rounded),
-                          iconSize: 30,
-                          color: primaryColor,
-                          padding: const EdgeInsets.all(10),
-                          onPressed: () {
-                            setAllValues(false);
-                          })
-                      : IconButton(
-                          tooltip: "Deselect all",
-                          icon: const Icon(Icons.library_add_check_rounded),
-                          iconSize: 30,
-                          color: primaryColor,
-                          padding: const EdgeInsets.all(10),
-                          onPressed: () {
-                            setAllValues(true);
-                          })
-                ],
-              ),
-              Expanded(
-                  flex: 6,
-                  child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      // Display the list item
-                      if (items.isNotEmpty) {
-                        return TextFieldContainer(
-                            child: Row(
-                          children: [
-                            Checkbox(
-                                value: selected[index],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selected[index] = value!;
-                                    calculateBalance(items);
-                                  });
-                                }),
-                            Expanded(
-                                child: RoundedMenuItem(
-                              item: items[index]["item"],
-                              addButtonVisible: false,
-                              editable: false,
-                              click: () {},
-                            ))
-                          ],
-                        ));
-                      } else {
-                        return Container();
-                      }
-                    },
-                  )),
-              Expanded(
-                  flex: 1,
-                  child: TextFieldContainer(
+                  Row(
+                    children: [
+                      allSelected
+                          ? IconButton(
+                              tooltip: "Deselect all",
+                              icon: const Icon(
+                                  Icons.indeterminate_check_box_rounded),
+                              iconSize: 30,
+                              color: primaryColor,
+                              padding: const EdgeInsets.all(10),
+                              onPressed: () {
+                                setAllValues(false);
+                              })
+                          : IconButton(
+                              tooltip: "Deselect all",
+                              icon: const Icon(Icons.library_add_check_rounded),
+                              iconSize: 30,
+                              color: primaryColor,
+                              padding: const EdgeInsets.all(10),
+                              onPressed: () {
+                                setAllValues(true);
+                              })
+                    ],
+                  ),
+                  Expanded(
+                      flex: 5,
+                      child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          // Display the list item
+                          if (items.isNotEmpty) {
+                            return TextFieldContainer(
+                                child: Row(
+                              children: [
+                                Checkbox(
+                                    value: selected[index],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selected[index] = value!;
+                                        calculateBalance(items);
+                                      });
+                                    }),
+                                Expanded(
+                                    child: RoundedMenuItem(
+                                  item: items[index]["item"],
+                                  addButtonVisible: false,
+                                  editable: false,
+                                  click: () {},
+                                ))
+                              ],
+                            ));
+                          } else {
+                            return Container();
+                          }
+                        },
+                      )),
+                  TextFieldContainer(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -178,7 +176,7 @@ class Body extends State<BillScreen> {
                                 (RunMutation runMutation, QueryResult? result) {
                               return RoundedButton(
                                   text: "Pay current bill",
-                                  click: () {                        
+                                  click: () {
                                     if (balance == 0.0) {
                                       Fluttertoast.showToast(
                                         msg:
@@ -202,9 +200,9 @@ class Body extends State<BillScreen> {
                                     }
                                   });
                             }),
-                      ])))
-            ],
-          )));
+                      ]))
+                ],
+              )));
         });
   }
 

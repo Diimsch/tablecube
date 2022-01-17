@@ -77,7 +77,7 @@ class TableOverviewScreen extends StatelessWidget {
                   .toList() ??
               [];
 
-          return Column(
+          return ListView(
             children: [
               Card(
                 child: ExpandablePanel(
@@ -138,7 +138,7 @@ class TableOverviewScreen extends StatelessWidget {
             onTap: () {
               selectedItems.clear();
               Navigator.pushNamed(context, '/service',
-                  arguments: OverviewArguments(restaurantId, "12345123"));
+                  arguments: OverviewArguments(restaurantId, tables[index]['occupyingBooking']['id'].toString()));
             },
             child: Column(
               mainAxisSize: MainAxisSize.min,
