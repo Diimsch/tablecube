@@ -19,53 +19,50 @@ class Body extends StatelessWidget {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
     return Background(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
       children: <Widget>[
-        ListView(
-          children: [
-            const Text(
-              "Restaurant information",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: size.height * 0.1,
-            ),
-            RoundedInputField(
-                hintText: "Restaurant name",
-                icon: Icons.store_mall_directory,
-                onChanged: (value) {
-                  restaurantName = value;
-                }),
-            RoundedInputField(
-              hintText: "Street and number",
-              icon: Icons.store_mall_directory,
-              onChanged: (value) {
-                restaurantStreetNr = value;
-              },
-            ),
-            RoundedInputField(
-              hintText: "Zip code",
-              icon: Icons.store_mall_directory,
-              onChanged: (value) {
-                restaurantZipCode = value;
-              },
-            ),
-            RoundedInputField(
-              hintText: "City",
-              icon: Icons.store_mall_directory,
-              onChanged: (value) {
-                restaurantCity = value;
-              },
-            ),
-            RoundedMultilineInputField(
-              hintText: "Description",
-              icon: Icons.info_outlined,
-              onChanged: (value) {
-                restaurantDescription = value;
-              },
-            ),
-          ],
+        const Center(
+          child: Text(
+            "Restaurant information",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: size.height * 0.1,
+        ),
+        RoundedInputField(
+            hintText: "Restaurant name",
+            icon: Icons.store_mall_directory,
+            onChanged: (value) {
+              restaurantName = value;
+            }),
+        RoundedInputField(
+          hintText: "Street and number",
+          icon: Icons.store_mall_directory,
+          onChanged: (value) {
+            restaurantStreetNr = value;
+          },
+        ),
+        RoundedInputField(
+          hintText: "Zip code",
+          icon: Icons.store_mall_directory,
+          onChanged: (value) {
+            restaurantZipCode = value;
+          },
+        ),
+        RoundedInputField(
+          hintText: "City",
+          icon: Icons.store_mall_directory,
+          onChanged: (value) {
+            restaurantCity = value;
+          },
+        ),
+        RoundedMultilineInputField(
+          hintText: "Description",
+          icon: Icons.info_outlined,
+          onChanged: (value) {
+            restaurantDescription = value;
+          },
         ),
         RoundedButton(
             text: "Save",

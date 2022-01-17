@@ -214,81 +214,78 @@ class Body extends State<RestaurantMenuEditScreen> {
                     },
                   )),
               if (item != null)
-                Expanded(
-                    flex: 1,
-                    child: Dismissible(
-                        key: UniqueKey(),
-                        direction: DismissDirection.none,
-                        onDismissed: (_) {
-                          /*
+                Dismissible(
+                    key: UniqueKey(),
+                    direction: DismissDirection.none,
+                    onDismissed: (_) {
+                      /*
                             setState(() {
                               menuItems.removeAt(index);
                               editables.removeAt(index);
                             });
                             */
-                        },
+                    },
 
-                        // Display item's title, price...
-                        child: TextFieldContainer(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                    // Display item's title, price...
+                    child: TextFieldContainer(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                            child: RoundedMenuItem(
+                          item: item!,
+                          addButtonVisible: false,
+                          editable: true,
+                          click: () {},
+                        )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                                child: RoundedMenuItem(
-                              item: item!,
-                              addButtonVisible: false,
-                              editable: true,
-                              click: () {},
-                            )),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Column(
                               children: [
-                                Column(
-                                  children: [
-                                    Mutation(
-                                        options: MutationOptions(
-                                          document: gql(addMenuItemMutation),
-                                          onCompleted: (data) {
-                                            showFeedback("Item added.");
-                                            if (refetch != null) {
-                                              refetch();
-                                            }
+                                Mutation(
+                                    options: MutationOptions(
+                                      document: gql(addMenuItemMutation),
+                                      onCompleted: (data) {
+                                        showFeedback("Item added.");
+                                        if (refetch != null) {
+                                          refetch();
+                                        }
 
-                                            setState(() {
-                                              item = null;
+                                        setState(() {
+                                          item = null;
+                                        });
+                                      },
+                                    ),
+                                    builder: (RunMutation runMutation,
+                                        QueryResult? result) {
+                                      return IconButton(
+                                          onPressed: () {
+                                            runMutation({
+                                              'restaurantId':
+                                                  '15727139-d6b4-4aac-b8e2-033ecad4935f',
+                                              'menuItem': {
+                                                'name': item!['name'],
+                                                'description': item!['name'],
+                                                'price': item!['price'],
+                                                'type': "FOOD",
+                                              }
                                             });
                                           },
-                                        ),
-                                        builder: (RunMutation runMutation,
-                                            QueryResult? result) {
-                                          return IconButton(
-                                              onPressed: () {
-                                                runMutation({
-                                                  'restaurantId':
-                                                      '15727139-d6b4-4aac-b8e2-033ecad4935f',
-                                                  'menuItem': {
-                                                    'name': item!['name'],
-                                                    'description':
-                                                        item!['name'],
-                                                    'price': item!['price'],
-                                                    'type': "FOOD",
-                                                  }
-                                                });
-                                              },
-                                              icon: Icon(Icons.check_outlined,
-                                                  color: Colors.green[800]));
-                                        }),
-                                    IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            item = null;
-                                          });
-                                        },
-                                        icon: const Icon(
-                                          Icons.delete_outline_rounded,
-                                          color: Color.fromARGB(255, 255, 0, 0),
-                                        ))
-                                    /*
+                                          icon: Icon(Icons.check_outlined,
+                                              color: Colors.green[800]));
+                                    }),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        item = null;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete_outline_rounded,
+                                      color: Color.fromARGB(255, 255, 0, 0),
+                                    ))
+                                /*
                                     Mutation(
                                         options: MutationOptions(
                                           document: gql(delMenuItemMutation),
@@ -309,41 +306,39 @@ class Body extends State<RestaurantMenuEditScreen> {
                                                     255, 255, 0, 0),
                                               ));
                                         }),*/
-                                  ],
-                                ),
-                                // TODO: Darg and Drop
-                                // IconButton(
-                                //     onPressed: () {},
-                                //     icon: const Icon(
-                                //       Icons.menu,
-                                //       color: Colors.black87,
-                                //     )),
                               ],
-                            )
+                            ),
+                            // TODO: Darg and Drop
+                            // IconButton(
+                            //     onPressed: () {},
+                            //     icon: const Icon(
+                            //       Icons.menu,
+                            //       color: Colors.black87,
+                            //     )),
                           ],
-                        )))),
-              Expanded(
-                  flex: 1,
-                  child: TextFieldContainer(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.add_circle_outline_rounded),
-                        onPressed: () {
-                          setState(() {
-                            item = {
-                              "name": "",
-                              "description": "",
-                              "price": 0.00,
-                              "available": true,
-                              "type": "FOOD"
-                            };
-                          });
-                        },
-                      ),
-                    ],
-                  )))
+                        )
+                      ],
+                    ))),
+              TextFieldContainer(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline_rounded),
+                    onPressed: () {
+                      setState(() {
+                        item = {
+                          "name": "",
+                          "description": "",
+                          "price": 0.00,
+                          "available": true,
+                          "type": "FOOD"
+                        };
+                      });
+                    },
+                  ),
+                ],
+              ))
             ],
           )));
         });
