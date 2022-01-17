@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/overview/components/body.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -16,12 +15,14 @@ query RoleInRestaurant($restaurantId: ID!) {
 
 class OverviewScreen extends StatelessWidget {
   UserType userType;
+  late UserType f;
+  late OverviewArguments args;
   OverviewScreen({Key? key, this.userType = UserType.NONE}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null')
+    args = ModalRoute.of(context)!.settings.arguments == null
+        ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
     return Query(
@@ -43,9 +44,10 @@ class OverviewScreen extends StatelessWidget {
 
         // it can be either Map or List
         String userTypeFetch = result.data!['roleInRestaurant']['role'];
-        UserType f = UserType.values.firstWhere(
+        f = UserType.values.firstWhere(
             (e) => e.toString() == 'UserType.' + userTypeFetch,
             orElse: () => UserType.NONE);
+
         return Scaffold(body: Body(userType: f, args: args));
       },
     );

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_welcome/components/background.dart';
+import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -67,14 +67,7 @@ class Body extends StatelessWidget {
                   options: MutationOptions(
                     document: gql(updateBookingStatus),
                     onCompleted: (data) {
-                      Fluttertoast.showToast(
-                        msg: 'Waiter was called.',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 3,
-                        backgroundColor: okColor,
-                        webBgColor: okColorWebToast,
-                      );
+                      showFeedback("Waiter was called.");
                     },
                   ),
                   builder: (RunMutation runMutation, QueryResult? result) {
@@ -82,14 +75,13 @@ class Body extends StatelessWidget {
                         text: "Call waiter",
                         click: () {
                           runMutation({
-                            //TODO: replace hardcoded tableID with the one from QR Code 
                             "data": {
-                              "tableId": 'c823d232-8700-42e8-ad5c-e0813cf807e9',
+                              "tableId": args.tableId,
                               "status": "NEEDS_SERVICE"
                             }
                           });
                         });
-                  }),
+                  })
             ],
           ),
         )),
@@ -130,14 +122,7 @@ class Body extends StatelessWidget {
         ),
       ));
     } else {
-      Fluttertoast.showToast(
-        msg: 'Something went wrong. Please try again later.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 3,
-        backgroundColor: warningColor,
-        webBgColor: warningColorWebToast,
-      );
+      showErrorMessage('Something went wrong. Please try again later.');
       logOutUser();
       Navigator.pushNamed(context, '/');
       return Container();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_selectMenu/select_menu.dart';
@@ -26,7 +25,7 @@ class SelectBody extends State<SelectMenuScreen> {
   @override
   Widget build(BuildContext context) {
     var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null')
+        ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
     return Query(
@@ -63,14 +62,7 @@ class SelectBody extends State<SelectMenuScreen> {
                     item: menuItems[index],
                     click: () {
                       items.add(menuItems[index]);
-                      Fluttertoast.showToast(
-                        msg: "Item added to cart",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 3,
-                        backgroundColor: okColor,
-                        webBgColor: okColorWebToast,
-                      );
+                      showFeedback("Items added to selection.");
                     },
                     editable: false,
                   );

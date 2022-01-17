@@ -32,7 +32,7 @@ class TableServiceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null')
+        ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -93,7 +93,7 @@ class TableServiceScreen extends StatelessWidget {
                         // TODO: replace hardcoded tableID
                         runMutation({
                           "data": {
-                            "tableId": 'c823d232-8700-42e8-ad5c-e0813cf807e9',
+                            "tableId": args.tableId,
                             "status": "CHECKED_IN"
                           }
                         });

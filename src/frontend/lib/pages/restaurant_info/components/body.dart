@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_multiline_input_field.dart';
@@ -20,12 +19,13 @@ class Body extends StatelessWidget {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
     return Background(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
       children: <Widget>[
-        const Text(
-          "Restaurant information",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        const Center(
+          child: Text(
+            "Restaurant information",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         SizedBox(
           height: size.height * 0.1,
@@ -72,14 +72,7 @@ class Body extends StatelessWidget {
                   restaurantStreetNr.isEmpty ||
                   restaurantZipCode.isEmpty ||
                   restaurantCity.isEmpty) {
-                Fluttertoast.showToast(
-                  msg: 'Please fill out all required values',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 3,
-                  backgroundColor: warningColor,
-                  webBgColor: warningColorWebToast,
-                );
+                showErrorMessage('Please fill out all required values');
               } else {
                 // TODO: save restaurant information
                 // sucessfull --> back to overview
