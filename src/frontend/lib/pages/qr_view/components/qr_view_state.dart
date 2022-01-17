@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/qr_view/components/qr_information.dart';
@@ -30,7 +31,7 @@ class QrViewState extends State<QrViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
+    args = ModalRoute.of(context)!.settings.arguments == null
         ? OverviewArguments('null', 'null', 'null')
         : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
 
@@ -116,20 +117,20 @@ class QrViewState extends State<QrViewScreen> {
   }
 
   void onQRViewCreated(QRViewController controller) {
+    debugPrint('hello');
     setState(() {
       this.controller = controller;
     });
 
     controller.scannedDataStream.listen((scanData) {
       // only allow qr code and do not execute request multiple times
+
       if (!requestLoading && scanData.format == BarcodeFormat.qrcode) {
         requestLoading = true;
         if (scanData.code == null) {
           showErrorMessage("QR-Code has no content.");
           sleep(const Duration(seconds: 2));
-          setState(() {
-            requestLoading = false;
-          });
+          requestLoading = false;
           return;
         } else {
           setState(() {
@@ -139,11 +140,11 @@ class QrViewState extends State<QrViewScreen> {
           if (information!.tableId.isEmpty) {
             showErrorMessage("QR-Code is not corrrect.");
             sleep(const Duration(seconds: 2));
-            setState(() {
-              requestLoading = false;
-            });
+            requestLoading = false;
             return;
           } else {
+            //TODO: check if booked an then join instead
+            createBooking(args.restaurantId, information!.tableId);
             Navigator.pushNamed(context, '/color',
                 arguments: OverviewArguments(
                     args.restaurantId, information!.tableId, 'null'));

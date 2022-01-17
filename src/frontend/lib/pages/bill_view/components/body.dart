@@ -54,7 +54,7 @@ class Body extends State<BillScreen> {
         options: QueryOptions(
           document: gql(getBillQuery),
           variables: {
-            'bookingId': args.tableId,
+            'bookingId': args.bookingId,
           },
           pollInterval: const Duration(seconds: 30),
         ),

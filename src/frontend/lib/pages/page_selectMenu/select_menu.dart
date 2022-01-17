@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/pages/page_selectMenu/components/order_body.dart';
 import 'package:frontend/pages/page_selectMenu/components/select_body.dart';
 
 class SelectMenuScreen extends StatefulWidget {

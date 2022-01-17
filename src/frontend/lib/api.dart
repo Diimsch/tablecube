@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const storage = FlutterSecureStorage();
-const url = 'http://localhost:4000/graphql/';
+const url =
+    'https://47e6-2003-c2-2f42-3c8e-8c09-1dc9-2d1b-5c0d.ngrok.io/graphql';
 
 final _httpLink = HttpLink(
   url,
@@ -74,6 +75,28 @@ logOutUser() async {
 
   navigatorKey.currentState
       ?.pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+}
+
+createBooking(String restaurantId, String tableId) async {
+  const String createBooking = r'''
+    mutation Mutation($booking: CreateBookingInput!) {
+      createBooking(booking: $booking) {
+        id
+      }
+  }
+  ''';
+
+  final MutationOptions options = MutationOptions(
+      document: gql(createBooking),
+      variables: <String, dynamic>{
+        'booking': {'restaurantId': restaurantId, 'tableId': tableId}
+      });
+
+  final QueryResult result = await client.mutate(options);
+
+  if (result.hasException) {
+    handleError(result.exception!);
+  }
 }
 
 createUser(

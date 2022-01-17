@@ -10,9 +10,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'list-item.dart';
 
-const String addItemToTable = r"""
-mutation AddItemToTable($data: AddItemToTableInput!) {
-  addItemToTable(data: $data) {
+const String addItemToBooking = r"""
+mutation AddItemToBooking($data: AddItemToBookingInput!) {
+  addItemToBooking(data: $data) {
     id
   }
 }
@@ -88,7 +88,7 @@ class OrderBody extends State<SelectMenuScreen> {
                 ),
                 Mutation(
                     options: MutationOptions(
-                        document: gql(addItemToTable),
+                        document: gql(addItemToBooking),
                         onCompleted: (dynamic data) {
                           if (data == null) {
                             return;
