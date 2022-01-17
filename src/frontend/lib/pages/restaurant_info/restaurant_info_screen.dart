@@ -13,6 +13,13 @@ class RestaurantInfoScreen extends StatelessWidget {
       // TODO: logout and toast
       // return to WelcomeScreen
     }
-    return Scaffold(body: Body());
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("Edit restaurant information"),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: primaryColor,
+        ),
+        body: Body());
   }
 }

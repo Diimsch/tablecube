@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const storage = FlutterSecureStorage();
-const url =
-    'https://47e6-2003-c2-2f42-3c8e-8c09-1dc9-2d1b-5c0d.ngrok.io/graphql';
+const url = 'http://localhost:4000/graphql';
 
 final _httpLink = HttpLink(
   url,

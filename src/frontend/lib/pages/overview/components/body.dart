@@ -3,7 +3,6 @@ import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_welcome/components/background.dart';
-import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
