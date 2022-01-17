@@ -77,7 +77,7 @@ class TableOverviewScreen extends StatelessWidget {
                   .toList() ??
               [];
 
-          return Column(
+          return ListView(
             children: [
               Card(
                 child: ExpandablePanel(

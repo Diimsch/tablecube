@@ -56,9 +56,9 @@ class MyApp extends StatelessWidget {
           '/service': (context) => const TableServiceScreen(),
           '/overview': (context) => OverviewScreen(),
           '/scanner': (context) => const QrViewScreen(),
-          '/cart': (context) => SelectMenuScreen(),
+          '/cart': (context) => SelectMenuScreen(screen: '/cart'),
           '/bill': (context) => const BillScreen(),
-          '/menu': (context) => SelectMenuScreen(),
+          '/menu': (context) => SelectMenuScreen(screen: '/menu'),
           '/admin/info': (context) => const RestaurantInfoScreen(),
           '/admin/menu': (context) => const RestaurantMenuEditScreen()
         },
