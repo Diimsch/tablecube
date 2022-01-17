@@ -376,6 +376,28 @@ export const bookingResolvers: Resolvers = {
         throw new AuthenticationError("invalid user");
       }
 
+      const booking = await ctx.prisma.booking.findFirst({
+        where: {
+          tableId: args.tableId,
+          status: BookingStatus.CHECKED_IN,
+        },
+      });
+
+      if (booking) {
+        if (args.code.toString() !== booking.joinValidationData?.toString()) {
+          throw new UserInputError("invalid color validation code");
+        }
+
+        await ctx.prisma.usersAtBooking.create({
+          data: {
+            bookingId: booking.id,
+            role: "GUEST",
+            userId: user.id,
+          },
+        });
+        return booking;
+      }
+
       const current = new Date();
       const nextBooking = await ctx.prisma.booking.findFirst({
         where: {
@@ -401,7 +423,7 @@ export const bookingResolvers: Resolvers = {
         throw new UserInputError("invalid color validation code");
       }
 
-      const booking = await ctx.prisma.booking.update({
+      const updatedBooking = await ctx.prisma.booking.update({
         where: {
           id: nextBooking.id,
         },
@@ -412,27 +434,14 @@ export const bookingResolvers: Resolvers = {
 
       pubsub.publish("TABLE_UPDATED", {
         tableId: args.tableId,
-        status: booking.status,
+        status: updatedBooking.status,
       });
 
-      return booking;
+      return updatedBooking;
     },
     changeBookingStatus: async (parent, args, ctx) => {
       let booking: (Booking & { items: ItemsOnBooking[] }) | null;
       if (ctx.token.type === "HUMAN") {
-        const user = await ctx.prisma.user.findUnique({
-          where: {
-            id: ctx.token.userId!,
-          },
-          include: {
-            rolesInRestaurants: true,
-          },
-        });
-
-        if (!user) {
-          throw new AuthenticationError("invalid user");
-        }
-
         booking = await ctx.prisma.booking.findFirst({
           where: {
             tableId: args.data.tableId,
@@ -448,7 +457,7 @@ export const bookingResolvers: Resolvers = {
                 restaurant: {
                   usersWithRoles: {
                     every: {
-                      userId: user.id,
+                      userId: ctx.token.userId!,
                       role: {
                         in: ["ADMIN", "WAITER"],
                       },
