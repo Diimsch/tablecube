@@ -44,6 +44,15 @@ export const restaurantResolver: Resolvers = {
   },
   Query: {
     restaurant: async (parent, args, ctx) => {
+      const restaurant = await ctx.prisma.restaurant.findUnique({
+        where: {
+          id: args.restaurantId
+        }
+      });
+      return restaurant;
+    },
+
+    restaurants: async (parent, args, ctx) => {
       const restaurants = await ctx.prisma.restaurant.findMany();
       return restaurants;
     },

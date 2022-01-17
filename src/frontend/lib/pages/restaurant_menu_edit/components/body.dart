@@ -78,7 +78,7 @@ class Body extends State<RestaurantMenuEditScreen> {
         options: QueryOptions(
           document: gql(getMenuQuery),
           variables: {
-            'restaurantId': "65a2929f-66aa-465b-88c0-be6ef3a10504",
+            'restaurantId': args.restaurantId,
           },
           pollInterval: const Duration(seconds: 60),
         ),

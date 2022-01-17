@@ -9,8 +9,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants.dart';
 
 const String getRestaurantsQuery = r"""
-query Restaurant {
-  restaurant {
+query Restaurants {
+  restaurants {
     id
     name
     tables {
@@ -66,7 +66,7 @@ class TableOverviewScreen extends StatelessWidget {
           }
 
           // it can be either Map or List
-          List restaurants = result.data!['restaurant'];
+          List restaurants = result.data!['restaurants'];
 
           List selectedRestaurant =
               restaurants.where((r) => r['id'] == restaurantId).toList();

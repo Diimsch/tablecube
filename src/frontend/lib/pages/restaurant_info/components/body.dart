@@ -9,7 +9,7 @@ import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getRestaurantInfo = r'''
-query Query {
+query Query($restaurantId: ID!) {
   restaurant(restaurantId: $restaurantId) {
     name
     description
@@ -29,7 +29,7 @@ mutation Mutation($data: EditRestaurantInfoInput!) {
 ''';
 
 class Body extends StatelessWidget {
-  Body({Key? key}) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class Body extends StatelessWidget {
         options: QueryOptions(
           document: gql(getRestaurantInfo),
           variables: {
-            'bookingId': args.bookingId,
+            'restaurantId': args.restaurantId,
           },
           pollInterval: const Duration(seconds: 30),
         ),

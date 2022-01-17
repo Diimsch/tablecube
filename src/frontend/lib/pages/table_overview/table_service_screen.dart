@@ -13,8 +13,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants.dart';
 
 const String getRestaurantsQuery = r"""
-query Restaurant {
-  restaurant {
+query Restaurants {
+  restaurants {
     id
     name
     tables {
