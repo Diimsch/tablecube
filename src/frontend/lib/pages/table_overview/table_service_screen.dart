@@ -93,7 +93,7 @@ class TableServiceScreen extends StatelessWidget {
                         // TODO: replace hardcoded tableID
                         runMutation({
                           "data": {
-                            "tableId": 'c823d232-8700-42e8-ad5c-e0813cf807e9',
+                            "tableId": args.tableId,
                             "status": "CHECKED_IN"
                           }
                         });
