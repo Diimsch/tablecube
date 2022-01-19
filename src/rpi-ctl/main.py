@@ -1,18 +1,14 @@
-from base64 import decode
-from re import M
-from typing import final
-import keybow
 import argparse
 import asyncio
-import time
-from gql import gql, Client
-from gql.transport.websockets import WebsocketsTransport
-from gql.transport.requests import RequestsHTTPTransport
-from gql.transport.exceptions import TransportQueryError
-import jwt
 import os
+import jwt
+import keybow
 from aiostream import stream
 from dotenv import load_dotenv
+from gql import Client, gql
+from gql.transport.exceptions import TransportQueryError
+from gql.transport.requests import RequestsHTTPTransport
+from gql.transport.websockets import WebsocketsTransport
 
 load_dotenv()
 keybow.setup(keybow.MINI)
@@ -116,6 +112,18 @@ query Table($tableId: ID!) {
     """
 )
 
+blink_task: asyncio.Task = None
+
+
+async def blink(index, r, g, b):
+    while True:
+        keybow.set_led(index, r, g, b)
+        keybow.show()
+        await asyncio.sleep(0.5)
+        keybow.set_led(index, 0, 0, 0)
+        keybow.show()
+        await asyncio.sleep(0.5)
+
 
 @keybow.on()
 def handle_input(index, state):
@@ -157,12 +165,20 @@ def handle_input(index, state):
 
 
 def setBaseColors(status):
+    global blink_task
+    if blink_task and not blink_task.cancelled:
+        blink_task.cancel()
+
     if status == "DONE":
         keybow.set_all(0, 255, 0)
     elif status == "RESERVED":
         keybow.set_all(255, 127, 0)
     else:
         for i, colors in enumerate(standardColors):
+            if i == 0 and status == "NEEDS_SERVICE":
+                blink_task = asyncio.create_task(blink(i, colors.get(
+                    "r"), colors.get("g"), colors.get("b")))
+                continue
             keybow.set_led(i, colors.get(
                 "r"), colors.get("g"), colors.get("b"))
     keybow.show()
