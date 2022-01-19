@@ -128,22 +128,26 @@ def blink(index, r, g, b):
     blink_r = r
     blink_g = g
     blink_b = b
-    blink_event.set()
+    if blink_index >= 0:
+        blink_event.set()
 
 
 def cancel_blink():
-    blink(-1, 0, 0, 0)
     blink_event.clear()
 
 
 async def blink_loop():
     while True:
         await blink_event.wait()
-        keybow.set_led(blink_index, blink_r, blink_g, blink_b)
-        keybow.show()
+        if not promptedValidation:
+            keybow.set_led(blink_index, 0, 0, 0)
+            keybow.show()
         await asyncio.sleep(0.5)
-        keybow.set_led(blink_index, 0, 0, 0)
-        keybow.show()
+        if not promptedValidation:
+            keybow.set_led(blink_index, blink_r, blink_g, blink_b)
+            print("blinking: %d %d %d %d" %
+                  (blink_index, blink_r, blink_g, blink_b))
+            keybow.show()
         await asyncio.sleep(0.5)
 
 
@@ -176,6 +180,8 @@ def handle_input(index, state):
             if result.get("promptValidation") == False:
                 promptedValidation = False
         else:
+            if status == task:
+                task = "CHECKED_IN"
             result = client.execute(changleTableStatusMutation, variable_values={
                 "data": {
                     "tableId": decodedJwt.get("sub"),
@@ -187,10 +193,7 @@ def handle_input(index, state):
 
 
 def setBaseColors(status):
-    global blink_task
-    if blink_task and not blink_task.cancelled:
-        blink_task.cancel()
-
+    cancel_blink()
     if status == "DONE":
         keybow.set_all(0, 255, 0)
     elif status == "RESERVED":
@@ -198,15 +201,16 @@ def setBaseColors(status):
     else:
         for i, colors in enumerate(standardColors):
             if i == 0 and status == "NEEDS_SERVICE":
-                blink_task = asyncio.create_task(blink(i, colors.get(
-                    "r"), colors.get("g"), colors.get("b")))
-                continue
+                blink(i, colors.get(
+                    "r"), colors.get("g"), colors.get("b"))
             keybow.set_led(i, colors.get(
                 "r"), colors.get("g"), colors.get("b"))
     keybow.show()
 
 
 async def main():
+    asyncio.create_task(blink_loop())
+
     transport = WebsocketsTransport(url='ws://%s' % args["destination"], init_payload={
                                     'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(
@@ -236,8 +240,6 @@ subscription TableUpdated($tableId: ID!) {
 
         global promptedValidation
         global status
-
-        asyncio.create_task(blink_loop())
 
         tableStatusEvents = session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
