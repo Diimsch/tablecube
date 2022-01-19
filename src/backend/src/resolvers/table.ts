@@ -37,25 +37,25 @@ export const tablesResolvers: Resolvers = {
           OR: [
             {
               status: {
-                notIn: ["DONE", "RESERVED"]
-              }
+                notIn: ["DONE", "RESERVED"],
+              },
             },
             {
               status: {
                 not: "DONE",
               },
               start: {
-                lt: current
+                lt: current,
               },
               end: {
-                gte: current
+                gte: current,
               },
-            }
-          ]
+            },
+          ],
         },
       });
       return booking;
-    }
+    },
   },
   Subscription: {
     validationPrompted: {
@@ -70,8 +70,8 @@ export const tablesResolvers: Resolvers = {
       subscribe: () => pubsub.asyncIterator("TABLE_UPDATED"),
       resolve: (msg: any) => {
         return msg;
-      }
-    }
+      },
+    },
   },
   Query: {
     table: async (parent, args, ctx) => {
@@ -150,21 +150,21 @@ export const tablesResolvers: Resolvers = {
           OR: [
             {
               status: {
-                notIn: ["DONE", "RESERVED"]
-              }
+                notIn: ["DONE", "RESERVED"],
+              },
             },
             {
               status: {
                 not: "DONE",
               },
               start: {
-                lt: current
+                lt: current,
               },
               end: {
-                gte: current
+                gte: current,
               },
-            }
-          ]
+            },
+          ],
         },
       });
 
