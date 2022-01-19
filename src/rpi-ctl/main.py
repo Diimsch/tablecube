@@ -115,12 +115,34 @@ query Table($tableId: ID!) {
 blink_task: asyncio.Task = None
 
 
-async def blink(index, r, g, b):
+blink_event = asyncio.Event()
+blink_index = -1
+blink_r = 0
+blink_g = 0
+blink_b = 0
+
+
+def blink(index, r, g, b):
+    global blink_r, blink_g, blink_b, blink_index, blink_event
+    blink_index = index
+    blink_r = r
+    blink_g = g
+    blink_b = b
+    blink_event.set()
+
+
+def cancel_blink():
+    blink(-1, 0, 0, 0)
+    blink_event.clear()
+
+
+async def blink_loop():
     while True:
-        keybow.set_led(index, r, g, b)
+        await blink_event.wait()
+        keybow.set_led(blink_index, blink_r, blink_g, blink_b)
         keybow.show()
         await asyncio.sleep(0.5)
-        keybow.set_led(index, 0, 0, 0)
+        keybow.set_led(blink_index, 0, 0, 0)
         keybow.show()
         await asyncio.sleep(0.5)
 
@@ -214,6 +236,8 @@ subscription TableUpdated($tableId: ID!) {
 
         global promptedValidation
         global status
+
+        asyncio.create_task(blink_loop())
 
         tableStatusEvents = session.subscribe(tableStatus, variable_values={
             "tableId": decodedJwt.get("sub")
