@@ -12,7 +12,8 @@
     "db:erase": "docker-compose down",
     "db:seed": "prisma db seed",
     "db:init": "prisma db push",
-    "codegen": "prisma generate && graphql-codegen --config codegen.yml"
+    "codegen": "prisma generate && graphql-codegen --config codegen.yml",
+    "prettier": "prettier --write ./src/**"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -27,6 +28,7 @@
     "@graphql-codegen/typescript-resolvers": "2.4.2",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/node": "^16.11.19",
+    "prettier": "2.5.1",
     "prisma": "3.6.0",
     "prisma-dbml-generator": "^0.8.3",
     "ts-node": "^10.4.0",

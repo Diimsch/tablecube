@@ -27,7 +27,7 @@ const genericResolvers: Resolvers = {
   }),
 };
 
-import { allow, and, rule, shield } from 'graphql-shield'
+import { allow, and, rule, shield } from "graphql-shield";
 
 const isAuthenticated = rule()(async (parent, args, ctx, info) => {
   return ctx.token.userId != null;
@@ -41,31 +41,41 @@ const isRobot = rule()(async (parent, args, ctx, info) => {
   return ctx.token.type === "ROBOT";
 });
 
-export const permissions = shield({
-  Query: {
-    me: and(isAuthenticated, isHuman),
-    booking: and(isAuthenticated, isHuman),
-    table: isAuthenticated,
-    menu: allow,
-    promptValidation: isAuthenticated,
-    restaurant: allow,
-    roleInRestaurant: and(isAuthenticated, isHuman),
+export const permissions = shield(
+  {
+    Query: {
+      me: and(isAuthenticated, isHuman),
+      booking: and(isAuthenticated, isHuman),
+      table: isAuthenticated,
+      menu: allow,
+      promptValidation: isAuthenticated,
+      restaurant: allow,
+      roleInRestaurant: and(isAuthenticated, isHuman),
+    },
+    Mutation: {
+      createUser: allow,
+      checkIn: and(isAuthenticated, isHuman),
+      addMenuItem: and(isAuthenticated, isHuman),
+      updateMenuItem: and(isAuthenticated, isHuman),
+      delMenuItem: and(isAuthenticated, isHuman),
+      createBooking: and(isAuthenticated, isHuman),
+      joinBooking: and(isAuthenticated, isHuman),
+      addItemToBooking: and(isAuthenticated, isHuman),
+      changeBookingStatus: isAuthenticated,
+      payItems: and(isAuthenticated, isHuman),
+      editRestaurantInfo: and(isAuthenticated, isHuman),
+    },
   },
-  Mutation: {
-    createUser: allow,
-    checkIn: and(isAuthenticated, isHuman),
-    addMenuItem: and(isAuthenticated, isHuman),
-    updateMenuItem: and(isAuthenticated, isHuman),
-    delMenuItem: and(isAuthenticated, isHuman),
-    createBooking: and(isAuthenticated, isHuman),
-    joinBooking: and(isAuthenticated, isHuman),
-    addItemToBooking: and(isAuthenticated, isHuman),
-    changeBookingStatus: isAuthenticated,
-    payItems: and(isAuthenticated, isHuman),
-    editRestaurantInfo: and(isAuthenticated, isHuman),
+  {
+    debug: true,
   }
-}, {
-  debug: true
-});
+);
 
-export default mergeResolvers([usersResolver, bookingResolvers, menuResolvers, restaurantResolver, tablesResolvers, genericResolvers]);
+export default mergeResolvers([
+  usersResolver,
+  bookingResolvers,
+  menuResolvers,
+  restaurantResolver,
+  tablesResolvers,
+  genericResolvers,
+]);
