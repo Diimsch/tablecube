@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/pages/bill_view/components/background.dart';
@@ -85,12 +86,12 @@ class TableServiceScreen extends StatelessWidget {
                       webBgColor: okColorWebToast,
                     );
                   },
+                  onError: (error) => handleError(error as OperationException),
                 ),
                 builder: (RunMutation runMutation, QueryResult? result) {
                   return RoundedButton(
                       text: "Service Finished",
                       click: () {
-                        // TODO: replace hardcoded tableID
                         runMutation({
                           "data": {
                             "tableId": args.tableId,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
+import 'package:frontend/pages/overview/components/body.dart';
 import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -158,41 +160,94 @@ class Body extends State<BillScreen> {
                                   Text(balance.toStringAsFixed(2) + "€",
                                       style: const TextStyle(fontSize: 18))
                                 ])),
-                        Mutation(
-                            options: MutationOptions(
-                              document: gql(payItems),
-                              onCompleted: (data) {
-                                showFeedback("Items payed.");
-                                if (refetch != null) {
-                                  refetch();
-                                  setState(() {
-                                    selected = List.generate(
-                                        items.length, (index) => true);
-                                  });
-                                }
-                              },
-                            ),
-                            builder:
-                                (RunMutation runMutation, QueryResult? result) {
-                              return RoundedButton(
-                                  text: "Pay current bill",
-                                  click: () {
-                                    if (balance == 0.0) {
-                                      showErrorMessage(
-                                          "You can not pay a bill with zweo balance.");
-                                    } else {
-                                      List ids = [];
-                                      for (var i = 0; i < items.length; i++) {
-                                        if (!selected[i]) continue;
-                                        ids.add(items[i]["id"]);
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Mutation(
+                                  options: MutationOptions(
+                                    document: gql(payItems),
+                                    onCompleted: (data) {
+                                      showFeedback("Items payed.");
+                                      if (refetch != null) {
+                                        refetch();
+                                        setState(() {
+                                          selected = List.generate(
+                                              items.length, (index) => true);
+                                        });
                                       }
-                                      runMutation({
-                                        "bookingItemId": ids,
-                                        // Zahlungsinformationen
-                                      });
-                                    }
-                                  });
-                            }),
+                                    },
+                                    onError: (error) => handleError(
+                                        error as OperationException),
+                                  ),
+                                  builder: (RunMutation runMutation,
+                                      QueryResult? result) {
+                                    return Expanded(
+                                        flex: 1,
+                                        child: RoundedButton(
+                                            text: "Pay current bill",
+                                            click: () {
+                                              if (balance == 0.0) {
+                                                showErrorMessage(
+                                                    "You can not pay a bill with zero balance.");
+                                              } else {
+                                                List ids = [];
+                                                for (var i = 0;
+                                                    i < items.length;
+                                                    i++) {
+                                                  if (!selected[i]) continue;
+                                                  ids.add(items[i]["id"]);
+                                                }
+                                                runMutation({
+                                                  "bookingItemId": ids,
+                                                  // Zahlungsinformationen
+                                                });
+                                              }
+                                            }));
+                                  }),
+                              Mutation(
+                                  options: MutationOptions(
+                                    document: gql(updateBookingStatus),
+                                    onCompleted: (data) {
+                                      showFeedback("Items payed.");
+                                      if (refetch != null) {
+                                        refetch();
+                                        setState(() {
+                                          selected = List.generate(
+                                              items.length, (index) => true);
+                                        });
+                                      }
+                                    },
+                                    onError: (error) => handleError(
+                                        error as OperationException),
+                                  ),
+                                  builder: (RunMutation runMutation,
+                                      QueryResult? result) {
+                                    return Expanded(
+                                        flex: 1,
+                                        child: RoundedButton(
+                                            text: "Pay with cash",
+                                            click: () {
+                                              if (balance == 0.0) {
+                                                showErrorMessage(
+                                                    "You can not pay a bill with zero balance.");
+                                              } else {
+                                                List ids = [];
+                                                for (var i = 0;
+                                                    i < items.length;
+                                                    i++) {
+                                                  if (!selected[i]) continue;
+                                                  ids.add(items[i]["id"]);
+                                                }
+                                                runMutation({
+                                                  "data": {
+                                                    "tableId": args.tableId,
+                                                    "status": "NEEDS_SERVICE"
+                                                  }
+                                                });
+                                              }
+                                            }));
+                                  }),
+                            ]),
                       ]))
                 ],
               )));
