@@ -43,13 +43,6 @@ class Body extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                "Select an option",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: size.height * 0.05,
-              ),
               RoundedButton(
                   text: "Select menu items",
                   click: () {
@@ -112,13 +105,6 @@ class Body extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
-                  "Select an option",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
                 RoundedButton(
                     text: "Edit restaurant information",
                     click: () {

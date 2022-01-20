@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/bottom_nav_bar/account_bubble.dart';
-import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
@@ -64,9 +62,7 @@ mutation UpdateMenuItem($menuItemId: ID!, $menuItem: CreateMenuItemInput!) {
 """;
 
 class Body extends State<RestaurantMenuEditScreen> {
-  Map<String, dynamic>? item;
-  Map<String, bool> editable;
-  Body({required this.item, required this.editable});
+  Body();
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +119,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                               direction: DismissDirection.none,
                               onDismissed: (_) {
                                 setState(() {
-                                  editable.remove(item["id"]);
+                                  widget.editable.remove(item["id"]);
                                 });
                               },
 
@@ -136,7 +132,8 @@ class Body extends State<RestaurantMenuEditScreen> {
                                       child: RoundedMenuItem(
                                     item: item,
                                     addButtonVisible: false,
-                                    editable: editable.containsKey(item["id"]),
+                                    editable:
+                                        widget.editable.containsKey(item["id"]),
                                     click: () {},
                                   )),
                                   Row(
@@ -170,23 +167,26 @@ class Body extends State<RestaurantMenuEditScreen> {
                                                         }
                                                       });
                                                       setState(() {
-                                                        if (editable
+                                                        if (widget.editable
                                                             .containsKey(
                                                                 item["id"])) {
-                                                          editable.remove(
-                                                              item["id"]);
+                                                          widget.editable
+                                                              .remove(
+                                                                  item["id"]);
                                                         } else {
-                                                          editable[item["id"]] =
+                                                          widget.editable[
+                                                                  item["id"]] =
                                                               true;
                                                         }
                                                       });
                                                     },
                                                     icon: Icon(
-                                                      editable.containsKey(
-                                                              item["id"])
+                                                      widget.editable
+                                                              .containsKey(
+                                                                  item["id"])
                                                           ? Icons.check_outlined
                                                           : Icons.edit_rounded,
-                                                      color: editable
+                                                      color: widget.editable
                                                               .containsKey(
                                                                   item["id"])
                                                           ? Colors.green[800]
@@ -225,18 +225,11 @@ class Body extends State<RestaurantMenuEditScreen> {
                               )));
                         },
                       )),
-                  if (item != null)
+                  if (widget.item.isNotEmpty)
                     Dismissible(
                         key: UniqueKey(),
                         direction: DismissDirection.none,
-                        onDismissed: (_) {
-                          /*
-                            setState(() {
-                              menuItems.removeAt(index);
-                              editables.removeAt(index);
-                            });
-                            */
-                        },
+                        onDismissed: (_) {},
 
                         // Display item's title, price...
                         child: TextFieldContainer(
@@ -244,12 +237,13 @@ class Body extends State<RestaurantMenuEditScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: RoundedMenuItem(
-                              item: item!,
-                              addButtonVisible: false,
-                              editable: true,
-                              click: () {},
-                            )),
+                              child: RoundedMenuItem(
+                                item: widget.item,
+                                addButtonVisible: false,
+                                editable: true,
+                                click: () {},
+                              ),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -265,7 +259,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                                             }
 
                                             setState(() {
-                                              item = null;
+                                              widget.item = {};
                                             });
                                           },
                                         ),
@@ -275,12 +269,13 @@ class Body extends State<RestaurantMenuEditScreen> {
                                               onPressed: () {
                                                 runMutation({
                                                   'restaurantId':
-                                                      '15727139-d6b4-4aac-b8e2-033ecad4935f',
+                                                      args.restaurantId,
                                                   'menuItem': {
-                                                    'name': item!['name'],
+                                                    'name': widget.item['name'],
                                                     'description':
-                                                        item!['name'],
-                                                    'price': item!['price'],
+                                                        widget.item['name'],
+                                                    'price':
+                                                        widget.item['price'],
                                                     'type': "FOOD",
                                                   }
                                                 });
@@ -291,34 +286,13 @@ class Body extends State<RestaurantMenuEditScreen> {
                                     IconButton(
                                         onPressed: () {
                                           setState(() {
-                                            item = null;
+                                            widget.item = {};
                                           });
                                         },
                                         icon: const Icon(
                                           Icons.delete_outline_rounded,
                                           color: Color.fromARGB(255, 255, 0, 0),
                                         ))
-                                    /*
-                                    Mutation(
-                                        options: MutationOptions(
-                                          document: gql(delMenuItemMutation),
-                                          onCompleted: (data) => {
-                                            if (refetch != null) {refetch()}
-                                          },
-                                        ),
-                                        builder: (RunMutation runMutation,
-                                            QueryResult? result) {
-                                          return IconButton(
-                                              onPressed: () {
-                                                runMutation(
-                                                    {'menuItemId': item['id']});
-                                              },
-                                              icon: const Icon(
-                                                Icons.delete_outline_rounded,
-                                                color: Color.fromARGB(
-                                                    255, 255, 0, 0),
-                                              ));
-                                        }),*/
                                   ],
                                 ),
                               ],
@@ -333,7 +307,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                         icon: const Icon(Icons.add_circle_outline_rounded),
                         onPressed: () {
                           setState(() {
-                            item = {
+                            widget.item = {
                               "name": "",
                               "description": "",
                               "price": 0.00,

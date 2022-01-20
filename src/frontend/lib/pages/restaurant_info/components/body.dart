@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_multiline_input_field.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/restaurant_info/components/background.dart';
+import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getRestaurantInfo = r'''
@@ -28,8 +30,14 @@ mutation Mutation($data: EditRestaurantInfoInput!) {
 }
 ''';
 
-class Body extends StatelessWidget {
-  const Body({Key? key}) : super(key: key);
+class Body extends State<RestaurantInfoScreen> {
+  Body({Key? key});
+
+  late TextEditingController nameController;
+  late TextEditingController addressController;
+  late TextEditingController zipController;
+  late TextEditingController cityController;
+  late TextEditingController descrController;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +51,8 @@ class Body extends StatelessWidget {
           variables: {
             'restaurantId': args.restaurantId,
           },
-          pollInterval: const Duration(seconds: 30),
+          fetchPolicy: FetchPolicy.noCache,
+          pollInterval: const Duration(days: 5),
         ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -56,85 +65,107 @@ class Body extends StatelessWidget {
           }
 
           // it can be either Map or List
-          Map restaurant = result.data!['restaurant'];
+          Map loadetRestaurant = result.data!['restaurant'];
+          if (!widget.dataLoaded && result.data != null) {
+            widget.restaurant = loadetRestaurant;
+            nameController =
+                TextEditingController(text: widget.restaurant["name"]);
+            addressController =
+                TextEditingController(text: widget.restaurant["address"]);
+            zipController =
+                TextEditingController(text: widget.restaurant["zipCode"]);
+            cityController =
+                TextEditingController(text: widget.restaurant["city"]);
+            descrController =
+                TextEditingController(text: widget.restaurant["description"]);
+            widget.dataLoaded = true;
+          }
 
-          return Background(
-              child: ListView(
-            children: <Widget>[
-              RoundedInputField(
-                  text: restaurant["name"],
-                  hintText: "Restaurant name",
-                  icon: Icons.store_mall_directory,
-                  onChanged: (value) {
-                    restaurant["name"] = value;
-                  }),
-              RoundedInputField(
-                text: restaurant["address"],
-                hintText: "Street and number",
-                icon: Icons.store_mall_directory,
-                onChanged: (value) {
-                  restaurant["address"] = value;
-                },
+          return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  AccountBubble(click: () {
+                    logOutUser();
+                  })
+                ],
+                title: const Text("Restaurant information"),
+                centerTitle: true,
+                elevation: 0,
+                backgroundColor: primaryColor,
               ),
-              RoundedInputField(
-                text: restaurant["zipCode"],
-                hintText: "Zip code",
-                icon: Icons.store_mall_directory,
-                onChanged: (value) {
-                  restaurant["zipCode"] = value;
-                },
-              ),
-              RoundedInputField(
-                text: restaurant["city"],
-                hintText: "City",
-                icon: Icons.store_mall_directory,
-                onChanged: (value) {
-                  restaurant["city"] = value;
-                },
-              ),
-              RoundedMultilineInputField(
-                text: restaurant["description"],
-                hintText: "Description",
-                icon: Icons.info_outlined,
-                onChanged: (value) {
-                  restaurant["description"] = value;
-                },
-              ),
-              Mutation(
-                  options: MutationOptions(
-                      document: gql(updateRestaurantInfo),
-                      onError: (error) =>
-                          handleError(error as OperationException),
-                      onCompleted: (data) {
-                        showFeedback("Information saved.");
+              body: Background(
+                  child: ListView(
+                children: <Widget>[
+                  RoundedInputField(
+                      controller: nameController,
+                      hintText: "Restaurant name",
+                      icon: Icons.store_mall_directory,
+                      onChanged: (value) {
+                        widget.restaurant["name"] = value;
                       }),
-                  builder: (RunMutation runMutation, QueryResult? result) {
-                    return RoundedButton(
-                        text: "Save",
-                        click: () {
-                          if (restaurant["name"].isEmpty ||
-                              restaurant["description"].isEmpty ||
-                              restaurant["address"].isEmpty ||
-                              restaurant["zipCode"].isEmpty ||
-                              restaurant["city"].isEmpty) {
-                            showErrorMessage(
-                                'Please fill out all required values');
-                          } else {
-                            runMutation({
-                              "data": {
-                                "restaurantId": args.restaurantId,
-                                "name": restaurant["name"],
-                                "description": restaurant["description"],
-                                "address": restaurant["address"],
-                                "zipCode": restaurant["zipCode"],
-                                "city": restaurant["city"]
+                  RoundedInputField(
+                      controller: addressController,
+                      hintText: "Street and number",
+                      icon: Icons.store_mall_directory,
+                      onChanged: (value) {
+                        widget.restaurant["address"] = value;
+                      }),
+                  RoundedInputField(
+                      controller: zipController,
+                      hintText: "Zip Code",
+                      icon: Icons.store_mall_directory,
+                      onChanged: (value) {
+                        widget.restaurant["zipCode"] = value;
+                      }),
+                  RoundedInputField(
+                      controller: cityController,
+                      hintText: "City",
+                      icon: Icons.store_mall_directory,
+                      onChanged: (value) {
+                        widget.restaurant["city"] = value;
+                      }),
+                  RoundedMultilineInputField(
+                      controller: descrController,
+                      hintText: "Description",
+                      icon: Icons.store_mall_directory,
+                      onChanged: (value) {
+                        widget.restaurant["description"] = value;
+                      }),
+                  Mutation(
+                      options: MutationOptions(
+                          document: gql(updateRestaurantInfo),
+                          onError: (error) =>
+                              handleError(error as OperationException),
+                          onCompleted: (data) {
+                            showFeedback("Information saved.");
+                          }),
+                      builder: (RunMutation runMutation, QueryResult? result) {
+                        return RoundedButton(
+                            text: "Save",
+                            click: () {
+                              if (widget.restaurant["name"].isEmpty ||
+                                  widget.restaurant["description"].isEmpty ||
+                                  widget.restaurant["address"].isEmpty ||
+                                  widget.restaurant["zipCode"].isEmpty ||
+                                  widget.restaurant["city"].isEmpty) {
+                                showErrorMessage('Please fill out all fields.');
+                              } else {
+                                runMutation({
+                                  "data": {
+                                    "restaurantId": args.restaurantId,
+                                    "name": widget.restaurant["name"],
+                                    "description":
+                                        widget.restaurant["description"],
+                                    "address": widget.restaurant["address"],
+                                    "zipCode": widget.restaurant["zipCode"],
+                                    "city": widget.restaurant["city"]
+                                  }
+                                });
                               }
                             });
-                          }
-                        });
-                  })
-            ],
-          ));
+                      })
+                ],
+              )));
         });
   }
 }

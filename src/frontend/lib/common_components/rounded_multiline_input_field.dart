@@ -6,20 +6,20 @@ class RoundedMultilineInputField extends StatelessWidget {
   final String hintText;
   final IconData icon;
   final ValueChanged<String> onChanged;
-  String text;
+  TextEditingController controller;
   RoundedMultilineInputField(
       {Key? key,
       required this.hintText,
       this.icon = Icons.person,
       required this.onChanged,
-      this.text = ""})
+      required this.controller})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextField(
-          controller: TextEditingController(text: text),
+          controller: controller,
           maxLines: 10,
           onChanged: onChanged,
           decoration: InputDecoration(

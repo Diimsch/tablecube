@@ -21,6 +21,7 @@ class Body extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RoundedInputField(
+            controller: TextEditingController(text: ""),
             hintText: "E-mail",
             onChanged: (value) {
               email = value;

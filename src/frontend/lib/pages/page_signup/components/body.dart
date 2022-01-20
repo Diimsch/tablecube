@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/login_or_signup.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
@@ -26,17 +27,20 @@ class Body extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RoundedInputField(
+            controller: TextEditingController(text: ""),
             hintText: "First Name",
             onChanged: (value) {
               firstName = value;
             }),
         RoundedInputField(
+          controller: TextEditingController(text: ""),
           hintText: "Last Name",
           onChanged: (value) {
             lastName = value;
           },
         ),
         RoundedInputField(
+          controller: TextEditingController(text: ""),
           hintText: "E-mail",
           onChanged: (value) {
             email = value;
