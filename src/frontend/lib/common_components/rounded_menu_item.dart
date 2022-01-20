@@ -114,7 +114,7 @@ class _ButtonState extends State<RoundedMenuItem> {
                       )),
                 ],
               ),
-              Wrap(
+              Row(
                 children: [
                   Visibility(
                     child: Expanded(

@@ -9,18 +9,18 @@ import { Resolvers } from "../generated/graphql";
 
 export const usersResolver: Resolvers = {
   User: {
-    bookings: async(parent, args, ctx) => {
+    bookings: async (parent, args, ctx) => {
       const bookings = await ctx.prisma.booking.findMany({
         where: {
           users: {
             some: {
               userId: parent.id,
-            }
-          }
-        }
+            },
+          },
+        },
       });
       return bookings;
-    }
+    },
   },
   Query: {
     me: async (parent, args, ctx) => {
@@ -49,7 +49,9 @@ export const usersResolver: Resolvers = {
 
       if (
         !user ||
-        !await argon2.verify(user.password, args.password, { type: argon2.argon2id })
+        !(await argon2.verify(user.password, args.password, {
+          type: argon2.argon2id,
+        }))
       ) {
         throw new UserInputError("Invalid email or password");
       }
