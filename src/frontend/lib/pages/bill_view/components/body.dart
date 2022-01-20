@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
-import 'package:frontend/pages/restaurant_info/components/background.dart';
+import 'package:frontend/common_components/background.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getBillQuery = r"""
@@ -48,9 +47,7 @@ class Body extends State<BillScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    var args = getOverviewArguments(context);
 
     return Query(
         options: QueryOptions(
@@ -77,21 +74,12 @@ class Body extends State<BillScreen> {
           calculateBalance(items);
 
           return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  AccountBubble(click: () {
-                    logOutUser();
-                  })
-                ],
-                title: const Text("Pay"),
-                centerTitle: true,
-                elevation: 0,
-                backgroundColor: primaryColor,
-              ),
+              appBar: getAppBar("Bill and Pay"),
               body: Background(
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  // Help buttons
                   Row(
                     children: [
                       allSelected
@@ -116,12 +104,12 @@ class Body extends State<BillScreen> {
                               })
                     ],
                   ),
+                  // Main Content
                   Expanded(
                       flex: 5,
                       child: ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, index) {
-                          // Display the list item
                           if (items.isNotEmpty) {
                             return TextFieldContainer(
                                 child: Row(
@@ -148,6 +136,7 @@ class Body extends State<BillScreen> {
                           }
                         },
                       )),
+                  // bottom buttons
                   TextFieldContainer(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -195,7 +184,6 @@ class Body extends State<BillScreen> {
                                       }
                                       runMutation({
                                         "bookingItemId": ids,
-                                        // Zahlungsinformationen
                                       });
                                     }
                                   });

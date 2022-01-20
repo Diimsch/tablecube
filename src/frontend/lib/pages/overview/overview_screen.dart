@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/overview/components/body.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getRoleInRestaurant = r"""
@@ -21,9 +22,7 @@ class OverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    args = getOverviewArguments(context);
 
     return Query(
       options: QueryOptions(

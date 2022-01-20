@@ -8,6 +8,7 @@ import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/qr_view/components/qr_information.dart';
+import 'package:frontend/utils.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../qr_view_screen.dart';
@@ -32,22 +33,10 @@ class QrViewState extends State<QrViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    args = getOverviewArguments(context);
 
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          AccountBubble(click: () {
-            logOutUser();
-          })
-        ],
-        title: const Text("Scan Table Code"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: primaryColor,
-      ),
+      appBar: getAppBar("Scan table Code"),
       body: Column(
         children: <Widget>[
           Expanded(flex: 5, child: qrViewFrame(context)),
