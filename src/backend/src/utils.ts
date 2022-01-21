@@ -1,3 +1,8 @@
+/**
+ * Generates a color code that is used for checkin validation
+ * @param count count of colors used for the generated color code
+ * @returns 
+ */
 export const generateValidatorCode = (count = 4) => {
   const colors = ["RED", "GREEN", "BLUE", "YELLOW"];
 
