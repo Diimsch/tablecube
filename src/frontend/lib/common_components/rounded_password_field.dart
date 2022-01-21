@@ -33,7 +33,10 @@ class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
         icon: const Icon(Icons.lock, color: primaryColor),
         suffixIcon: IconButton(
             onPressed: _toggle,
-            icon: const Icon(Icons.visibility, color: primaryColor)),
+            icon: _obscureText
+                ? const Icon(Icons.visibility, color: primaryColor)
+                : const Icon(Icons.visibility_off_rounded,
+                    color: primaryColor)),
         border: InputBorder.none,
       ),
     ));

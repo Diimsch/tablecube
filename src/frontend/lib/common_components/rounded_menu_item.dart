@@ -78,7 +78,6 @@ class _ButtonState extends State<RoundedMenuItem> {
                         ],
                       )),
                   Expanded(
-                      flex: 1,
                       // padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: widget.editable
                           ? TextField(
@@ -114,7 +113,7 @@ class _ButtonState extends State<RoundedMenuItem> {
                       )),
                 ],
               ),
-              Wrap(
+              Row(
                 children: [
                   Visibility(
                     child: Expanded(

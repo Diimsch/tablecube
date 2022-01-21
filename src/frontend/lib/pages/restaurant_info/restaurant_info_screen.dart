@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/main.dart';
-
-import '../../constants.dart';
 import 'components/body.dart';
 
-class RestaurantInfoScreen extends StatelessWidget {
-  const RestaurantInfoScreen({Key? key}) : super(key: key);
+class RestaurantInfoScreen extends StatefulWidget {
+  RestaurantInfoScreen({Key? key}) : super(key: key);
+
+  late Map restaurant;
+  bool dataLoaded = false;
 
   @override
-  Widget build(BuildContext context) {
-    if (userType != UserType.ADMIN) {
-      // TODO: logout and toast
-      // return to WelcomeScreen
-    }
-    return Scaffold(body: Body());
+  State<StatefulWidget> createState() {
+    return Body();
   }
 }

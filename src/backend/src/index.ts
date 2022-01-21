@@ -1,34 +1,27 @@
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadTypedefsSync } from "@graphql-tools/load";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { PrismaClient } from "@prisma/client";
-import { ApolloServer } from "apollo-server-express";
 import {
   ApolloServerPluginDrainHttpServer,
   AuthenticationError,
   UserInputError,
 } from "apollo-server-core";
+import { ApolloServer } from "apollo-server-express";
+import cors from "cors";
 import express from "express";
-import http, { IncomingMessage } from "http";
-import { DocumentNode, GraphQLScalarType, Kind } from "graphql";
+import { DocumentNode, execute, subscribe } from "graphql";
+import { applyMiddleware } from "graphql-middleware";
+import http from "http";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { join } from "path";
+import { SubscriptionServer } from "subscriptions-transport-ws";
 import resolvers, { permissions } from "./resolvers";
 import { IServerContext, ITokenData } from "./types/context";
 
-import { createServer } from "http";
-import { execute, subscribe } from "graphql";
-import { SubscriptionServer } from "subscriptions-transport-ws";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { WebSocket } from "ws";
-import qs from "querystring";
-import { URL, URLSearchParams } from "url";
-import cors from 'cors';
-import { applyMiddleware } from "graphql-middleware";
-
 const prisma = new PrismaClient({
-  log: ['query'],
+  log: ["query"],
 });
-
 
 const sources = loadTypedefsSync(join(__dirname, "schema.graphql"), {
   loaders: [new GraphQLFileLoader()],
@@ -37,11 +30,13 @@ const typeDefs = sources
   .map((source) => source.document)
   .filter((d) => d !== undefined) as DocumentNode[];
 
-const processAuthToken = async (token: string | undefined): Promise<ITokenData> => {
+const processAuthToken = async (
+  token: string | undefined
+): Promise<ITokenData> => {
   if (!token) {
     return {
       userId: null,
-      type: "HUMAN"
+      type: "HUMAN",
     };
   }
   try {
@@ -56,13 +51,17 @@ const processAuthToken = async (token: string | undefined): Promise<ITokenData> 
       process.env.JWT_SECRET ?? ""
     ) as JwtPayload & { type?: string };
 
-    if(!!decodedToken.type && decodedToken.type !== "ROBOT" && decodedToken.type !== "HUMAN") {
+    if (
+      !!decodedToken.type &&
+      decodedToken.type !== "ROBOT" &&
+      decodedToken.type !== "HUMAN"
+    ) {
       throw new UserInputError("token is lacking type claim or its invalid");
     }
 
     return {
       userId: decodedToken.sub ?? null,
-      type: decodedToken.type as "HUMAN" | "ROBOT" ?? "HUMAN"
+      type: (decodedToken.type as "HUMAN" | "ROBOT") ?? "HUMAN",
     };
   } catch (e) {
     return {
@@ -79,7 +78,10 @@ async function startApolloServer() {
   const httpServer = http.createServer(app);
 
   // Same ApolloServer initialization as before, plus the drain plugin.
-  let schema = applyMiddleware(makeExecutableSchema({ typeDefs, resolvers }), permissions);
+  let schema = applyMiddleware(
+    makeExecutableSchema({ typeDefs, resolvers }),
+    permissions
+  );
 
   const subscriptionServer = SubscriptionServer.create(
     {
@@ -93,8 +95,8 @@ async function startApolloServer() {
         connectionContext: any
       ) => {
         const token = connectionParams.Authorization;
-        if(!token) {
-          throw new AuthenticationError('missing jwt');
+        if (!token) {
+          throw new AuthenticationError("missing jwt");
         }
         return {
           token: await processAuthToken(token),
@@ -133,7 +135,6 @@ async function startApolloServer() {
         },
       },
     ],
-    
   });
 
   // More required logic for integrating with Express

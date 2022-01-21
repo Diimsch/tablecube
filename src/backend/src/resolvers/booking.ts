@@ -1,11 +1,4 @@
-import {
-  Booking,
-  BookingStatus,
-  ItemsOnBooking,
-  MenuItem,
-  PrismaClient,
-  UserRole,
-} from "@prisma/client";
+import { Booking, BookingStatus, ItemsOnBooking } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
@@ -312,7 +305,7 @@ export const bookingResolvers: Resolvers = {
               {
                 restaurant: {
                   usersWithRoles: {
-                    every: {
+                    some: {
                       userId: user.id,
                       role: {
                         in: ["ADMIN", "WAITER"],
@@ -347,7 +340,7 @@ export const bookingResolvers: Resolvers = {
               {
                 restaurant: {
                   usersWithRoles: {
-                    every: {
+                    some: {
                       userId: user.id,
                       role: {
                         in: ["ADMIN", "WAITER"],
@@ -464,7 +457,7 @@ export const bookingResolvers: Resolvers = {
               {
                 restaurant: {
                   usersWithRoles: {
-                    every: {
+                    some: {
                       userId: ctx.token.userId!,
                       role: {
                         in: ["ADMIN", "WAITER"],

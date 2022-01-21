@@ -5,12 +5,12 @@ import { Resolvers } from "../generated/graphql";
 export const menuResolvers: Resolvers = {
   Query: {
     menu: async (parent, args, ctx) => {
-        const menu = await ctx.prisma.menuItem.findMany({
-            where: {
-                restaurantId: args.restaurantId,
-            }
-        });
-        return menu;
+      const menu = await ctx.prisma.menuItem.findMany({
+        where: {
+          restaurantId: args.restaurantId,
+        },
+      });
+      return menu;
     },
   },
   Mutation: {
@@ -67,11 +67,11 @@ export const menuResolvers: Resolvers = {
 
       const menuItem = await ctx.prisma.menuItem.findUnique({
         where: {
-          id: args.menuItemId
-        }
+          id: args.menuItemId,
+        },
       });
 
-      if(!menuItem) {
+      if (!menuItem) {
         throw new UserInputError("invalid item id");
       }
 
@@ -115,11 +115,11 @@ export const menuResolvers: Resolvers = {
 
       const menuItem = await ctx.prisma.menuItem.findUnique({
         where: {
-          id: args.menuItemId
-        }
+          id: args.menuItemId,
+        },
       });
 
-      if(!menuItem) {
+      if (!menuItem) {
         throw new UserInputError("invalid item id");
       }
 
@@ -135,8 +135,8 @@ export const menuResolvers: Resolvers = {
 
       return ctx.prisma.menuItem.delete({
         where: {
-          id: args.menuItemId
-        }
+          id: args.menuItemId,
+        },
       });
     },
   },

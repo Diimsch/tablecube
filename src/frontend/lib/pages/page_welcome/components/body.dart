@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/page_welcome/components/background.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {

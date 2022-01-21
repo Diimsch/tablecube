@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:frontend/constants.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql/client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const storage = FlutterSecureStorage();
-const url = 'http://localhost:4000/graphql/';
+const url = 'http://localhost:4000/graphql';
 
 final _httpLink = HttpLink(
   url,
@@ -35,14 +34,11 @@ final ValueNotifier<GraphQLClient> vnClient =
     ValueNotifier(GraphQLClient(cache: GraphQLCache(), link: _link));
 
 handleError(OperationException error) {
-  Fluttertoast.showToast(
-    msg: error.graphqlErrors[0].message.toString(),
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.CENTER,
-    timeInSecForIosWeb: 3,
-    backgroundColor: warningColor,
-    webBgColor: warningColorWebToast,
-  );
+  if (error.graphqlErrors.isEmpty) {
+    showErrorMessage("An Error occured. Please try again later.");
+  } else {
+    showErrorMessage(error.graphqlErrors[0].message.toString());
+  }
 }
 
 logInUser(String email, String password) async {
@@ -77,6 +73,28 @@ logOutUser() async {
 
   navigatorKey.currentState
       ?.pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+}
+
+createBooking(String restaurantId, String tableId) async {
+  const String createBooking = r'''
+    mutation Mutation($booking: CreateBookingInput!) {
+      createBooking(booking: $booking) {
+        id
+      }
+  }
+  ''';
+
+  final MutationOptions options = MutationOptions(
+      document: gql(createBooking),
+      variables: <String, dynamic>{
+        'booking': {'restaurantId': restaurantId, 'tableId': tableId}
+      });
+
+  final QueryResult result = await client.mutate(options);
+
+  if (result.hasException) {
+    handleError(result.exception!);
+  }
 }
 
 createUser(

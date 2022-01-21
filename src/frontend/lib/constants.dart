@@ -22,7 +22,8 @@ final List<Map<String, dynamic>> selectedItems = [];
 
 class OverviewArguments {
   String restaurantId;
+  String tableId;
   String bookingId;
 
-  OverviewArguments(this.restaurantId, this.bookingId);
+  OverviewArguments(this.restaurantId, this.tableId, this.bookingId);
 }
