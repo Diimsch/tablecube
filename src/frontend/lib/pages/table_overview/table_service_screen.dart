@@ -92,12 +92,12 @@ class TableServiceScreen extends StatelessWidget {
                       webBgColor: okColorWebToast,
                     );
                   },
+                  onError: (error) => handleError(error as OperationException),
                 ),
                 builder: (RunMutation runMutation, QueryResult? result) {
                   return RoundedButton(
                       text: "Service Finished",
                       click: () {
-                        // TODO: replace hardcoded tableID
                         runMutation({
                           "data": {
                             "tableId": args.tableId,

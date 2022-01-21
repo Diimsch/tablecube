@@ -201,6 +201,9 @@ class Body extends State<RestaurantMenuEditScreen> {
                                                   if (refetch != null)
                                                     {refetch()}
                                                 },
+                                                onError: (error) => handleError(
+                                                    error
+                                                        as OperationException),
                                               ),
                                               builder: (RunMutation runMutation,
                                                   QueryResult? result) {
@@ -257,11 +260,12 @@ class Body extends State<RestaurantMenuEditScreen> {
                                             if (refetch != null) {
                                               refetch();
                                             }
-
                                             setState(() {
                                               widget.item = {};
                                             });
                                           },
+                                          onError: (error) => handleError(
+                                              error as OperationException),
                                         ),
                                         builder: (RunMutation runMutation,
                                             QueryResult? result) {

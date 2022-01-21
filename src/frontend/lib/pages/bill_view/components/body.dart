@@ -6,7 +6,9 @@ import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/main.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
+import 'package:frontend/pages/overview/components/body.dart';
 import 'package:frontend/pages/restaurant_info/components/background.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -58,7 +60,7 @@ class Body extends State<BillScreen> {
           variables: {
             'bookingId': args.bookingId,
           },
-          pollInterval: const Duration(seconds: 30),
+          pollInterval: const Duration(seconds: 5),
         ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -70,10 +72,11 @@ class Body extends State<BillScreen> {
             return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
-          // it can be either Map or List
           List items = result.data!['booking']?["items"] ?? List.empty();
+          List falseItems = items.where((i) => i["paid"] == false).toList();
+          List trueItems = items.where((i) => i["paid"] == true).toList();
+          items = falseItems + trueItems;
 
-          items = items.where((i) => i["paid"] == false).toList();
           calculateBalance(items);
 
           return Scaffold(
@@ -126,14 +129,17 @@ class Body extends State<BillScreen> {
                             return TextFieldContainer(
                                 child: Row(
                               children: [
-                                Checkbox(
-                                    value: selected[index],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selected[index] = value!;
-                                        calculateBalance(items);
-                                      });
-                                    }),
+                                items[index]["paid"]
+                                    ? const Icon(Icons.check,
+                                        color: Colors.green)
+                                    : Checkbox(
+                                        value: selected[index],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selected[index] = value!;
+                                            calculateBalance(items);
+                                          });
+                                        }),
                                 Expanded(
                                     child: RoundedMenuItem(
                                   item: items[index]["item"],
@@ -165,41 +171,144 @@ class Body extends State<BillScreen> {
                                   Text(balance.toStringAsFixed(2) + "€",
                                       style: const TextStyle(fontSize: 18))
                                 ])),
-                        Mutation(
-                            options: MutationOptions(
-                              document: gql(payItems),
-                              onCompleted: (data) {
-                                showFeedback("Items payed.");
-                                if (refetch != null) {
-                                  refetch();
-                                  setState(() {
-                                    selected = List.generate(
-                                        items.length, (index) => true);
-                                  });
-                                }
-                              },
-                            ),
-                            builder:
-                                (RunMutation runMutation, QueryResult? result) {
-                              return RoundedButton(
-                                  text: "Pay current bill",
-                                  click: () {
-                                    if (balance == 0.0) {
-                                      showErrorMessage(
-                                          "You can not pay a bill with zweo balance.");
-                                    } else {
-                                      List ids = [];
-                                      for (var i = 0; i < items.length; i++) {
-                                        if (!selected[i]) continue;
-                                        ids.add(items[i]["id"]);
-                                      }
-                                      runMutation({
-                                        "bookingItemId": ids,
-                                        // Zahlungsinformationen
+                        userType == UserType.WAITER
+                            ? Mutation(
+                                options: MutationOptions(
+                                  document: gql(payItems),
+                                  onCompleted: (data) {
+                                    showFeedback("Items paid.");
+                                    if (refetch != null) {
+                                      refetch();
+                                      setState(() {
+                                        selected = List.generate(
+                                            items.length, (index) => true);
                                       });
                                     }
-                                  });
-                            }),
+                                  },
+                                  onError: (error) =>
+                                      handleError(error as OperationException),
+                                ),
+                                builder: (RunMutation runMutation,
+                                    QueryResult? result) {
+                                  return Expanded(
+                                      child: RoundedButton(
+                                          text: "Mark as paid",
+                                          click: () {
+                                            if (balance == 0.0) {
+                                              showErrorMessage(
+                                                  "You can not pay a bill with zero balance.");
+                                            } else {
+                                              List ids = [];
+                                              for (var i = 0;
+                                                  i < items.length;
+                                                  i++) {
+                                                if (!selected[i]) continue;
+                                                ids.add(items[i]["id"]);
+                                              }
+                                              runMutation({
+                                                "bookingItemId": ids,
+                                              });
+                                            }
+                                          }));
+                                })
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                    Mutation(
+                                        options: MutationOptions(
+                                          document: gql(payItems),
+                                          onCompleted: (data) {
+                                            showFeedback("Items paid.");
+                                            if (refetch != null) {
+                                              refetch();
+                                              setState(() {
+                                                selected = List.generate(
+                                                    items.length,
+                                                    (index) => true);
+                                              });
+                                            }
+                                          },
+                                          onError: (error) => handleError(
+                                              error as OperationException),
+                                        ),
+                                        builder: (RunMutation runMutation,
+                                            QueryResult? result) {
+                                          return Expanded(
+                                              flex: 1,
+                                              child: RoundedButton(
+                                                  text: "Pay current bill",
+                                                  click: () {
+                                                    if (balance == 0.0) {
+                                                      showErrorMessage(
+                                                          "You can not pay a bill with zero balance.");
+                                                    } else {
+                                                      List ids = [];
+                                                      for (var i = 0;
+                                                          i < items.length;
+                                                          i++) {
+                                                        if (items[i]["paid"] ||
+                                                            !selected[i]) {
+                                                          continue;
+                                                        }
+                                                        ids.add(items[i]["id"]);
+                                                      }
+                                                      runMutation({
+                                                        "bookingItemId": ids,
+                                                        // Zahlungsinformationen
+                                                      });
+                                                    }
+                                                  }));
+                                        }),
+                                    Mutation(
+                                        options: MutationOptions(
+                                          document: gql(updateBookingStatus),
+                                          onCompleted: (data) {
+                                            showFeedback("Items paid.");
+                                            if (refetch != null) {
+                                              refetch();
+                                              setState(() {
+                                                selected = List.generate(
+                                                    items.length,
+                                                    (index) => true);
+                                              });
+                                            }
+                                          },
+                                          onError: (error) => handleError(
+                                              error as OperationException),
+                                        ),
+                                        builder: (RunMutation runMutation,
+                                            QueryResult? result) {
+                                          return Expanded(
+                                              flex: 1,
+                                              child: RoundedButton(
+                                                  text: "Pay with cash",
+                                                  click: () {
+                                                    if (balance == 0.0) {
+                                                      showErrorMessage(
+                                                          "You can not pay a bill with zero balance.");
+                                                    } else {
+                                                      List ids = [];
+                                                      for (var i = 0;
+                                                          i < items.length;
+                                                          i++) {
+                                                        if (!selected[i]) {
+                                                          continue;
+                                                        }
+                                                        ids.add(items[i]["id"]);
+                                                      }
+                                                      runMutation({
+                                                        "data": {
+                                                          "tableId":
+                                                              args.tableId,
+                                                          "status":
+                                                              "NEEDS_SERVICE"
+                                                        }
+                                                      });
+                                                    }
+                                                  }));
+                                        }),
+                                  ]),
                       ]))
                 ],
               )));
@@ -209,7 +318,7 @@ class Body extends State<BillScreen> {
   void calculateBalance(List items) {
     balance = 0.0;
     for (var i = 0; i < (items.length); i++) {
-      if (selected[i]) {
+      if (selected[i] && items[i]["paid"] == false) {
         balance = balance + items[i]["item"]["price"];
       }
     }

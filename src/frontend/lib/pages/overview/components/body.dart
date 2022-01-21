@@ -67,6 +67,8 @@ class Body extends StatelessWidget {
                     onCompleted: (data) {
                       showFeedback("Waiter was called.");
                     },
+                    onError: (error) =>
+                        handleError(error as OperationException),
                   ),
                   builder: (RunMutation runMutation, QueryResult? result) {
                     return RoundedButton(
