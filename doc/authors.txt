@@ -1,8 +1,8 @@
 ## Frontend
 /.dart_tool                                             untouched
 /android                                                untouched
-/android/build.gradle                                   Schmidt, Vogrinc, Seng
-/adnroid/app/build.gradle                               Schmidt, Vogrinc, Seng
+/android/build.gradle                                   Schmidt, Seng, Vogrinc
+/adnroid/app/build.gradle                               Schmidt, Seng, Vogrinc
 /assets                                                 all
 /build                                                  untouched
 /ios                                                    untouched
@@ -11,9 +11,9 @@
 /lib/bottom_nav_bar/account_bubble.dart                 Seng
 /lib/bottom_nav_bar/nav.dart                            Schmidt
 /lib/common_components/login_or_iignup.dart             Schmidt
-/lib/common_components/rounded_button.dart              Vogrinc, Schmidt, Seng
+/lib/common_components/rounded_button.dart              Schmidt, Seng, Vogrinc
 /lib/common_components/rounded_input_field              Schmidt
-/lib/common_components/rounded_menu_item.dart           Vogrinc, Schmidt, Seng
+/lib/common_components/rounded_menu_item.dart           Schmidt, Seng, Vogrinc
 /lib/common_components/rounded_multiline_input_field    Seng
 /lib/common_components/rounded_password_field.dart      Schmidt
 /lib/common_components/text_field_container.dart        Schmidt
@@ -24,13 +24,14 @@
 /lib/pages/page_selectMenu                              Vogrinc
 /lib/pages/page_signup                                  Schmidt
 /lib/pages/page_welcome                                 Schmidt
-/lib/pages/restaurante_info                             Seng, Busse
-/lib/pages/restaurant_menu_edit                         Seng, Busse
+/lib/pages/restaurante_info                             Busse, Seng
+/lib/pages/restaurant_menu_edit                         Busse, Seng
 /lib/pages/select_color                                 Seng
 /lib/pages/table_overview                               Schmidt
 /lib/api.dart                                           all
 /lib/constants.dart                                     all
 /lib/main.dart                                          all
+/lib/utils.dart						all
 .flutter-plugins                                        untouched
 .flutter-plugins-dependencies                           untouched
 .metadata                                               untouched
@@ -42,18 +43,18 @@ README.md                                               all
 
 ## Backend  
 /node_modules                                           untouched
-/prisma/dbml/schema.dbml                                Busse
-/prisma/schema.prisma                                   Busse
+/prisma/dbml/schema.dbml                                untouched
+/prisma/schema.prisma                                   Busse, Vogrinc
 /prisma/seed.ts                                         Busse
 /src/generated                                          untouched
-/src/resolvers/booking.ts                               Busse
+/src/resolvers/booking.ts                               Busse, Vogrinc
 /src/resolvers/index.ts                                 Busse
 /src/resolvers/menu.ts                                  Busse
 /src/resolvers/restaurant.ts                            Busse
-/src/resolvers/table.ts                                 Busse
+/src/resolvers/table.ts                                 Busse, Vogrinc
 /src/resolvers/users.ts                                 Busse
 /src/types/context.ts                                   Busse
-/src/index.ts                                           Busse
+/src/index.ts                                           Busse, Vogrinc
 /src/schema.graphql                                     Busse
 /src/utils.ts                                           Busse
 .env.example                                            untouched
@@ -63,11 +64,11 @@ docker-compose.yaml                                     Busse
 nodemon.json                                            Busse
 Dockerfile                                              Busse
 graphql.schema.json                                     Busse
-README.md                                               untouched
+README.md                                               Vogrinc
 tsconfig.json                                           Busse
 
 ## IOT
 /_pypackages_                                           untouched
-main.py                                                 Busse
-pyproject.toml                                          Busse
-README.md                                               Busse
+main.py                                                 Busse, Vogrinc
+pyproject.toml                                          Busse, Vogrinc
+README.md                                               Busse, Vogrinc
