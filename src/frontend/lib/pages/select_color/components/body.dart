@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/page_login/components/background.dart';
 import 'package:frontend/pages/select_color/color_screen.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String checkIn = r'''
@@ -23,174 +22,39 @@ class Body extends State<ColorScreen> {
   String color3 = "RED";
   String color4 = "RED";
 
-  Body();
-
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    var args = getOverviewArguments(context);
 
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            AccountBubble(click: () {
-              logOutUser();
-            })
-          ],
-          title: const Text("Verification"),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: primaryColor,
-        ),
+        appBar: getAppBar("Verification"),
         body: Background(
             child: Column(children: [
+          // Display hint
           Container(
-              padding: const EdgeInsets.all(20),
-              child: const Text(
-                "Look at the device on the reserved table and pick the colors, that will light up, in the correct order. If you want to see the colors again. Press the button on the device.",
-                style: TextStyle(fontSize: 15),
-                textAlign: TextAlign.center,
-              )),
+            padding: const EdgeInsets.all(20),
+            child: const Text(
+              "Look at the device on the reserved table and pick the colors, that will light up, in the correct order. If you want to see the colors again. Press the button on the device.",
+              style: TextStyle(fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          // Main content
           Expanded(
             flex: 5,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.only(
-                            right: 20, top: 40, bottom: 40),
-                        child: const Text(
-                          "Farbe 1: ",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        )),
-                    DropdownButton<String>(
-                      value: color1,
-                      icon: const Icon(Icons.arrow_drop_down_outlined),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.black,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          color1 = newValue!;
-                        });
-                      },
-                      items:
-                          colors.map<DropdownMenuItem<String>>((String value) {
-                        return getDropdownMenuItem(value);
-                      }).toList(),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.only(
-                            right: 20, top: 40, bottom: 40),
-                        child: const Text(
-                          "Farbe 2: ",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        )),
-                    DropdownButton<String>(
-                      value: color2,
-                      icon: const Icon(Icons.arrow_drop_down_outlined),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.black,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          color2 = newValue!;
-                        });
-                      },
-                      items:
-                          colors.map<DropdownMenuItem<String>>((String value) {
-                        return getDropdownMenuItem(value);
-                      }).toList(),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.only(
-                            right: 20, top: 40, bottom: 40),
-                        child: const Text(
-                          "Farbe 3: ",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        )),
-                    DropdownButton<String>(
-                      value: color3,
-                      icon: const Icon(Icons.arrow_drop_down_outlined),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.black,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          color3 = newValue!;
-                        });
-                      },
-                      items:
-                          colors.map<DropdownMenuItem<String>>((String value) {
-                        return getDropdownMenuItem(value);
-                      }).toList(),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.only(
-                            right: 20, top: 40, bottom: 40),
-                        child: const Text(
-                          "Farbe 4: ",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        )),
-                    DropdownButton<String>(
-                      value: color4,
-                      icon: const Icon(Icons.arrow_drop_down_outlined),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.black,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          color4 = newValue!;
-                        });
-                      },
-                      items:
-                          colors.map<DropdownMenuItem<String>>((String value) {
-                        return getDropdownMenuItem(value);
-                      }).toList(),
-                    )
-                  ],
-                )
+                getWigetColor1(),
+                getWigetColor2(),
+                getWigetColor3(),
+                getWigetColor4(),
               ],
             ),
           ),
           Expanded(
-              flex: 0,
               child: TextFieldContainer(
+                  // Mutatation check in on table with selected color code
                   child: Mutation(
                       options: MutationOptions(
                           document: gql(checkIn),
@@ -218,6 +82,134 @@ class Body extends State<ColorScreen> {
                         );
                       })))
         ])));
+  }
+
+  Widget getWigetColor1() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            child: const Text(
+              "Farbe 1: ",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            )),
+        DropdownButton<String>(
+          value: color1,
+          icon: const Icon(Icons.arrow_drop_down_outlined),
+          elevation: 16,
+          style: const TextStyle(color: Colors.black),
+          underline: Container(
+            height: 2,
+            color: Colors.black,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              color1 = newValue!;
+            });
+          },
+          items: colors.map<DropdownMenuItem<String>>((String value) {
+            return getDropdownMenuItem(value);
+          }).toList(),
+        )
+      ],
+    );
+  }
+
+  Widget getWigetColor2() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            child: const Text(
+              "Farbe 2: ",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            )),
+        DropdownButton<String>(
+          value: color2,
+          icon: const Icon(Icons.arrow_drop_down_outlined),
+          elevation: 16,
+          style: const TextStyle(color: Colors.black),
+          underline: Container(
+            height: 2,
+            color: Colors.black,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              color2 = newValue!;
+            });
+          },
+          items: colors.map<DropdownMenuItem<String>>((String value) {
+            return getDropdownMenuItem(value);
+          }).toList(),
+        )
+      ],
+    );
+  }
+
+  Widget getWigetColor3() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            child: const Text(
+              "Farbe 3: ",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            )),
+        DropdownButton<String>(
+          value: color3,
+          icon: const Icon(Icons.arrow_drop_down_outlined),
+          elevation: 16,
+          style: const TextStyle(color: Colors.black),
+          underline: Container(
+            height: 2,
+            color: Colors.black,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              color3 = newValue!;
+            });
+          },
+          items: colors.map<DropdownMenuItem<String>>((String value) {
+            return getDropdownMenuItem(value);
+          }).toList(),
+        )
+      ],
+    );
+  }
+
+  Widget getWigetColor4() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            child: const Text(
+              "Farbe 4: ",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            )),
+        DropdownButton<String>(
+          value: color4,
+          icon: const Icon(Icons.arrow_drop_down_outlined),
+          elevation: 16,
+          style: const TextStyle(color: Colors.black),
+          underline: Container(
+            height: 2,
+            color: Colors.black,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              color4 = newValue!;
+            });
+          },
+          items: colors.map<DropdownMenuItem<String>>((String value) {
+            return getDropdownMenuItem(value);
+          }).toList(),
+        )
+      ],
+    );
   }
 
   DropdownMenuItem<String> getDropdownMenuItem(String value) {

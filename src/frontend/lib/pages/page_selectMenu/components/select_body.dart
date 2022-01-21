@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
-import 'package:frontend/constants.dart';
-import 'package:frontend/pages/page_selectMenu/components/background.dart';
 import 'package:frontend/pages/page_selectMenu/select_menu.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getMenuQuery = r"""
@@ -29,9 +27,7 @@ class SelectBody extends State<SelectMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    var args = getOverviewArguments(context);
 
     return Query(
       options: QueryOptions(
@@ -54,19 +50,9 @@ class SelectBody extends State<SelectMenuScreen> {
         List menuItems = result.data!['menu'];
 
         return Scaffold(
-            appBar: AppBar(
-              actions: [
-                AccountBubble(click: () {
-                  logOutUser();
-                })
-              ],
-              title: const Text("Menu items"),
-              centerTitle: true,
-              elevation: 0,
-              backgroundColor: primaryColor,
-            ),
+            appBar: getAppBar("Select Menu Items"),
             body: Background(
-                body: Column(children: [
+                child: Column(children: [
               Expanded(
                   child: ListView.builder(
                       itemCount: menuItems.length,

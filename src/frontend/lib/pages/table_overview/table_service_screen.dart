@@ -1,16 +1,10 @@
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
-import 'package:frontend/main.dart';
-import 'package:frontend/pages/bill_view/components/background.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:frontend/pages/overview/components/body.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
-import '../../constants.dart';
 
 const String getRestaurantsQuery = r"""
 query Restaurants {
@@ -33,24 +27,10 @@ class TableServiceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    var args = getOverviewArguments(context);
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          AccountBubble(click: () {
-            logOutUser();
-          })
-        ],
-        title: const Text("Table Options"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: primaryColor,
-      ),
-      body: Background(
-          child: SingleChildScrollView(
+    return Background(
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -83,14 +63,7 @@ class TableServiceScreen extends StatelessWidget {
                 options: MutationOptions(
                   document: gql(updateBookingStatus),
                   onCompleted: (data) {
-                    Fluttertoast.showToast(
-                      msg: 'Service has been finished.',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 3,
-                      backgroundColor: okColor,
-                      webBgColor: okColorWebToast,
-                    );
+                    showFeedback('Service has been finished.');
                   },
                   onError: (error) => handleError(error as OperationException),
                 ),
@@ -108,7 +81,7 @@ class TableServiceScreen extends StatelessWidget {
                 }),
           ],
         ),
-      )),
+      ),
     );
   }
 }

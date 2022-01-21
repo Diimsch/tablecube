@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/login_or_signup.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_password_field.dart';
-import 'package:frontend/constants.dart';
-import 'package:frontend/pages/page_signup/components/background.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/utils.dart';
 
 class Body extends StatelessWidget {
-  final Widget child;
   String firstName = '';
   String lastName = '';
   String email = '';
@@ -17,7 +15,6 @@ class Body extends StatelessWidget {
 
   Body({
     Key? key,
-    required this.child,
   }) : super(key: key);
 
   @override

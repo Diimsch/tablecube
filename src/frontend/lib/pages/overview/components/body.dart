@@ -3,8 +3,9 @@ import 'package:frontend/api.dart';
 import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/page_welcome/components/background.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String updateBookingStatus = r"""
@@ -27,17 +28,7 @@ class Body extends StatelessWidget {
 
     if (userType == UserType.NONE) {
       return Scaffold(
-        appBar: AppBar(
-          actions: [
-            AccountBubble(click: () {
-              logOutUser();
-            })
-          ],
-          title: const Text("Table Options"),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: primaryColor,
-        ),
+        appBar: getAppBar("Table Options"),
         body: Background(
             child: SingleChildScrollView(
           child: Column(

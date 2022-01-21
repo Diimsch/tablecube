@@ -8,9 +8,7 @@ class RestaurantInfoScreen extends StatefulWidget {
   bool dataLoaded = false;
 
   @override
-  // ignore: no_logic_in_create_state
   State<StatefulWidget> createState() {
-    dataLoaded = false;
     return Body();
   }
 }

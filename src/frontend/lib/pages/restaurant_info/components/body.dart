@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_multiline_input_field.dart';
-import 'package:frontend/constants.dart';
-import 'package:frontend/pages/restaurant_info/components/background.dart';
+import 'package:frontend/common_components/background.dart';
 import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getRestaurantInfo = r'''
@@ -41,9 +40,7 @@ class Body extends State<RestaurantInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)!.settings.arguments == null
-        ? OverviewArguments('null', 'null', 'null')
-        : ModalRoute.of(context)!.settings.arguments as OverviewArguments;
+    var args = getOverviewArguments(context);
 
     return Query(
         options: QueryOptions(
@@ -64,7 +61,8 @@ class Body extends State<RestaurantInfoScreen> {
             return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
-          // it can be either Map or List
+          // must be done with controllers to preset TextField values.
+          // dataLoaded is mandatory because of GraphQL polling, that will reset the controller values and your edited texts
           Map loadetRestaurant = result.data!['restaurant'];
           if (!widget.dataLoaded && result.data != null) {
             widget.restaurant = loadetRestaurant;
@@ -82,17 +80,7 @@ class Body extends State<RestaurantInfoScreen> {
           }
 
           return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  AccountBubble(click: () {
-                    logOutUser();
-                  })
-                ],
-                title: const Text("Restaurant information"),
-                centerTitle: true,
-                elevation: 0,
-                backgroundColor: primaryColor,
-              ),
+              appBar: getAppBar("Edit Restaurant Information"),
               body: Background(
                   child: ListView(
                 children: <Widget>[
