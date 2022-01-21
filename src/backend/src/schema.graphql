@@ -173,7 +173,11 @@ type Query {
   """
   Returns list of restaurants
   """
-  restaurant: [Restaurant]!
+  restaurant(restaurantId: ID!): Restaurant
+  """
+  Returns list of restaurants
+  """
+  restaurants: [Restaurant]!
   """
   Get role in Restaurant
   """

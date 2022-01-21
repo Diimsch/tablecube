@@ -1,18 +1,14 @@
-from base64 import decode
-from re import M
-from typing import final
-import keybow
 import argparse
 import asyncio
-import time
-from gql import gql, Client
-from gql.transport.websockets import WebsocketsTransport
-from gql.transport.requests import RequestsHTTPTransport
-from gql.transport.exceptions import TransportQueryError
-import jwt
 import os
+import jwt
+import keybow
 from aiostream import stream
 from dotenv import load_dotenv
+from gql import Client, gql
+from gql.transport.exceptions import TransportQueryError
+from gql.transport.requests import RequestsHTTPTransport
+from gql.transport.websockets import WebsocketsTransport
 
 load_dotenv()
 keybow.setup(keybow.MINI)
@@ -116,6 +112,44 @@ query Table($tableId: ID!) {
     """
 )
 
+blink_task: asyncio.Task = None
+
+
+blink_event = asyncio.Event()
+blink_index = -1
+blink_r = 0
+blink_g = 0
+blink_b = 0
+
+
+def blink(index, r, g, b):
+    global blink_r, blink_g, blink_b, blink_index, blink_event
+    blink_index = index
+    blink_r = r
+    blink_g = g
+    blink_b = b
+    if blink_index >= 0:
+        blink_event.set()
+
+
+def cancel_blink():
+    blink_event.clear()
+
+
+async def blink_loop():
+    while True:
+        await blink_event.wait()
+        if not promptedValidation:
+            keybow.set_led(blink_index, 0, 0, 0)
+            keybow.show()
+        await asyncio.sleep(0.5)
+        if not promptedValidation:
+            keybow.set_led(blink_index, blink_r, blink_g, blink_b)
+            print("blinking: %d %d %d %d" %
+                  (blink_index, blink_r, blink_g, blink_b))
+            keybow.show()
+        await asyncio.sleep(0.5)
+
 
 @keybow.on()
 def handle_input(index, state):
@@ -146,6 +180,8 @@ def handle_input(index, state):
             if result.get("promptValidation") == False:
                 promptedValidation = False
         else:
+            if status == task:
+                task = "CHECKED_IN"
             result = client.execute(changleTableStatusMutation, variable_values={
                 "data": {
                     "tableId": decodedJwt.get("sub"),
@@ -157,18 +193,24 @@ def handle_input(index, state):
 
 
 def setBaseColors(status):
+    cancel_blink()
     if status == "DONE":
         keybow.set_all(0, 255, 0)
     elif status == "RESERVED":
         keybow.set_all(255, 127, 0)
     else:
         for i, colors in enumerate(standardColors):
+            if i == 0 and status == "NEEDS_SERVICE":
+                blink(i, colors.get(
+                    "r"), colors.get("g"), colors.get("b"))
             keybow.set_led(i, colors.get(
                 "r"), colors.get("g"), colors.get("b"))
     keybow.show()
 
 
 async def main():
+    asyncio.create_task(blink_loop())
+
     transport = WebsocketsTransport(url='ws://%s' % args["destination"], init_payload={
                                     'Authorization': 'Bearer %s' % (args["jwt"])})
     async with Client(

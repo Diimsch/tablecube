@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/login_or_signup.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_input_field.dart';
@@ -21,31 +22,25 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Background(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const Text(
-          "SIGNUP",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        SizedBox(
-          height: size.height * 0.1,
-        ),
         RoundedInputField(
+            controller: TextEditingController(text: ""),
             hintText: "First Name",
             onChanged: (value) {
               firstName = value;
             }),
         RoundedInputField(
+          controller: TextEditingController(text: ""),
           hintText: "Last Name",
           onChanged: (value) {
             lastName = value;
           },
         ),
         RoundedInputField(
+          controller: TextEditingController(text: ""),
           hintText: "E-mail",
           onChanged: (value) {
             email = value;

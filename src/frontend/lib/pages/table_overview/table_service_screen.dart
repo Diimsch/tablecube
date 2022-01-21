@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/pages/bill_view/components/background.dart';
@@ -12,8 +13,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants.dart';
 
 const String getRestaurantsQuery = r"""
-query Restaurant {
-  restaurant {
+query Restaurants {
+  restaurants {
     id
     name
     tables {
@@ -38,6 +39,11 @@ class TableServiceScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          AccountBubble(click: () {
+            logOutUser();
+          })
+        ],
         title: const Text("Table Options"),
         centerTitle: true,
         elevation: 0,

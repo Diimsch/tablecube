@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/common_components/rounded_button.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
@@ -63,9 +62,7 @@ mutation UpdateMenuItem($menuItemId: ID!, $menuItem: CreateMenuItemInput!) {
 """;
 
 class Body extends State<RestaurantMenuEditScreen> {
-  Map<String, dynamic>? item;
-  Map<String, bool> editable;
-  Body({required this.item, required this.editable});
+  Body();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +74,7 @@ class Body extends State<RestaurantMenuEditScreen> {
         options: QueryOptions(
           document: gql(getMenuQuery),
           variables: {
-            'restaurantId': "65a2929f-66aa-465b-88c0-be6ef3a10504",
+            'restaurantId': args.restaurantId,
           },
           pollInterval: const Duration(seconds: 60),
         ),
@@ -94,260 +91,240 @@ class Body extends State<RestaurantMenuEditScreen> {
           // it can be either Map or List
           List menuItems = result.data!['menu'];
 
-          //List editables = List.generate(menuItems.length, (index) => false);
-
           return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  AccountBubble(click: () {
+                    logOutUser();
+                  })
+                ],
+                title: const Text("Edit restaurant menu"),
+                centerTitle: true,
+                elevation: 0,
+                backgroundColor: primaryColor,
+              ),
               body: Background(
                   child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  flex: 5,
-                  child: ListView.builder(
-                    itemCount: menuItems.length,
-                    itemBuilder: (context, index) {
-                      final item = menuItems[index];
-                      // Display the list item
-                      return Dismissible(
-                          key: Key(item['id']),
-                          direction: DismissDirection.none,
-                          onDismissed: (_) {
-                            setState(() {
-                              editable.remove(item["id"]);
-                            });
-                          },
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                      flex: 5,
+                      child: ListView.builder(
+                        itemCount: menuItems.length,
+                        itemBuilder: (context, index) {
+                          final item = menuItems[index];
+                          // Display the list item
+                          return Dismissible(
+                              key: Key(item['id']),
+                              direction: DismissDirection.none,
+                              onDismissed: (_) {
+                                setState(() {
+                                  widget.editable.remove(item["id"]);
+                                });
+                              },
 
-                          // Display item's title, price...
-                          child: TextFieldContainer(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: RoundedMenuItem(
-                                item: item,
-                                addButtonVisible: false,
-                                editable: editable.containsKey(item["id"]),
-                                click: () {},
-                              )),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              // Display item's title, price...
+                              child: TextFieldContainer(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Column(
+                                  Expanded(
+                                      child: RoundedMenuItem(
+                                    item: item,
+                                    addButtonVisible: false,
+                                    editable:
+                                        widget.editable.containsKey(item["id"]),
+                                    click: () {},
+                                  )),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Mutation(
-                                          options: MutationOptions(
-                                            document:
-                                                gql(updateMenuItemMutation),
-                                            onCompleted: (data) => {
-                                              if (refetch != null) {refetch()}
-                                            },
-                                            onError: (error) => handleError(
-                                                error as OperationException),
-                                          ),
-                                          builder: (RunMutation runMutation,
-                                              QueryResult? result) {
-                                            return IconButton(
-                                                onPressed: () {
-                                                  runMutation({
-                                                    "menuItemId": item["id"],
-                                                    "menuItem": {
-                                                      "name": item["name"],
-                                                      "price": item["price"],
-                                                      "description":
-                                                          item["description"],
-                                                      "type": item["type"]
-                                                    }
-                                                  });
-                                                  setState(() {
-                                                    if (editable.containsKey(
-                                                        item["id"])) {
-                                                      editable
-                                                          .remove(item["id"]);
-                                                    } else {
-                                                      editable[item["id"]] =
-                                                          true;
-                                                    }
-                                                  });
+                                      Column(
+                                        children: [
+                                          Mutation(
+                                              options: MutationOptions(
+                                                document:
+                                                    gql(updateMenuItemMutation),
+                                                onCompleted: (data) => {
+                                                  if (refetch != null)
+                                                    {refetch()}
                                                 },
-                                                icon: Icon(
-                                                  editable.containsKey(
-                                                          item["id"])
-                                                      ? Icons.check_outlined
-                                                      : Icons.edit_rounded,
-                                                  color: editable.containsKey(
-                                                          item["id"])
-                                                      ? Colors.green[800]
-                                                      : Colors.black87,
-                                                ));
-                                          }),
-                                      Mutation(
-                                          options: MutationOptions(
-                                            document: gql(delMenuItemMutation),
-                                            onCompleted: (data) => {
-                                              if (refetch != null) {refetch()}
-                                            },
-                                            onError: (error) => handleError(
-                                                error as OperationException),
-                                          ),
-                                          builder: (RunMutation runMutation,
-                                              QueryResult? result) {
-                                            return IconButton(
-                                                onPressed: () {
-                                                  runMutation({
-                                                    'menuItemId': item['id']
-                                                  });
+                                              ),
+                                              builder: (RunMutation runMutation,
+                                                  QueryResult? result) {
+                                                return IconButton(
+                                                    onPressed: () {
+                                                      runMutation({
+                                                        "menuItemId":
+                                                            item["id"],
+                                                        "menuItem": {
+                                                          "name": item["name"],
+                                                          "price":
+                                                              item["price"],
+                                                          "description": item[
+                                                              "description"],
+                                                          "type": item["type"]
+                                                        }
+                                                      });
+                                                      setState(() {
+                                                        if (widget.editable
+                                                            .containsKey(
+                                                                item["id"])) {
+                                                          widget.editable
+                                                              .remove(
+                                                                  item["id"]);
+                                                        } else {
+                                                          widget.editable[
+                                                                  item["id"]] =
+                                                              true;
+                                                        }
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      widget.editable
+                                                              .containsKey(
+                                                                  item["id"])
+                                                          ? Icons.check_outlined
+                                                          : Icons.edit_rounded,
+                                                      color: widget.editable
+                                                              .containsKey(
+                                                                  item["id"])
+                                                          ? Colors.green[800]
+                                                          : Colors.black87,
+                                                    ));
+                                              }),
+                                          Mutation(
+                                              options: MutationOptions(
+                                                document:
+                                                    gql(delMenuItemMutation),
+                                                onCompleted: (data) => {
+                                                  if (refetch != null)
+                                                    {refetch()}
                                                 },
-                                                icon: const Icon(
-                                                  Icons.delete_outline_rounded,
-                                                  color: Color.fromARGB(
-                                                      255, 255, 0, 0),
-                                                ));
-                                          }),
+                                                onError: (error) => handleError(
+                                                    error
+                                                        as OperationException),
+                                              ),
+                                              builder: (RunMutation runMutation,
+                                                  QueryResult? result) {
+                                                return IconButton(
+                                                    onPressed: () {
+                                                      runMutation({
+                                                        'menuItemId': item['id']
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .delete_outline_rounded,
+                                                      color: Color.fromARGB(
+                                                          255, 255, 0, 0),
+                                                    ));
+                                              }),
+                                        ],
+                                      ),
                                     ],
-                                  ),
-                                  // TODO: Darg and Drop
-                                  // IconButton(
-                                  //     onPressed: () {},
-                                  //     icon: const Icon(
-                                  //       Icons.menu,
-                                  //       color: Colors.black87,
-                                  //     )),
+                                  )
                                 ],
-                              )
-                            ],
-                          )));
-                    },
-                  )),
-              if (item != null)
-                Dismissible(
-                    key: UniqueKey(),
-                    direction: DismissDirection.none,
-                    onDismissed: (_) {
-                      /*
-                            setState(() {
-                              menuItems.removeAt(index);
-                              editables.removeAt(index);
-                            });
-                            */
-                    },
+                              )));
+                        },
+                      )),
+                  if (widget.item.isNotEmpty)
+                    Dismissible(
+                        key: UniqueKey(),
+                        direction: DismissDirection.none,
+                        onDismissed: (_) {},
 
-                    // Display item's title, price...
-                    child: TextFieldContainer(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            child: RoundedMenuItem(
-                          item: item!,
-                          addButtonVisible: false,
-                          editable: true,
-                          click: () {},
-                        )),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        // Display item's title, price...
+                        child: TextFieldContainer(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Column(
+                            Expanded(
+                              child: RoundedMenuItem(
+                                item: widget.item,
+                                addButtonVisible: false,
+                                editable: true,
+                                click: () {},
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Mutation(
-                                    options: MutationOptions(
-                                      document: gql(addMenuItemMutation),
-                                      onCompleted: (data) {
-                                        showFeedback("Item added.");
-                                        if (refetch != null) {
-                                          refetch();
-                                        }
-
-                                        setState(() {
-                                          item = null;
-                                        });
-                                      },
-                                      onError: (error) => handleError(
-                                          error as OperationException),
-                                    ),
-                                    builder: (RunMutation runMutation,
-                                        QueryResult? result) {
-                                      return IconButton(
-                                          onPressed: () {
-                                            runMutation({
-                                              'restaurantId':
-                                                  '15727139-d6b4-4aac-b8e2-033ecad4935f',
-                                              'menuItem': {
-                                                'name': item!['name'],
-                                                'description': item!['name'],
-                                                'price': item!['price'],
-                                                'type': "FOOD",
-                                              }
-                                            });
-                                          },
-                                          icon: Icon(Icons.check_outlined,
-                                              color: Colors.green[800]));
-                                    }),
-                                IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        item = null;
-                                      });
-                                    },
-                                    icon: const Icon(
-                                      Icons.delete_outline_rounded,
-                                      color: Color.fromARGB(255, 255, 0, 0),
-                                    ))
-                                /*
+                                Column(
+                                  children: [
                                     Mutation(
                                         options: MutationOptions(
-                                          document: gql(delMenuItemMutation),
-                                          onCompleted: (data) => {
-                                            if (refetch != null) {refetch()}
+                                          document: gql(addMenuItemMutation),
+                                          onCompleted: (data) {
+                                            showFeedback("Item added.");
+                                            if (refetch != null) {
+                                              refetch();
+                                            }
+                                            setState(() {
+                                              widget.item = {};
+                                            });
                                           },
+                                          onError: (error) => handleError(
+                                              error as OperationException),
                                         ),
                                         builder: (RunMutation runMutation,
                                             QueryResult? result) {
                                           return IconButton(
                                               onPressed: () {
-                                                runMutation(
-                                                    {'menuItemId': item['id']});
+                                                runMutation({
+                                                  'restaurantId':
+                                                      args.restaurantId,
+                                                  'menuItem': {
+                                                    'name': widget.item['name'],
+                                                    'description':
+                                                        widget.item['name'],
+                                                    'price':
+                                                        widget.item['price'],
+                                                    'type': "FOOD",
+                                                  }
+                                                });
                                               },
-                                              icon: const Icon(
-                                                Icons.delete_outline_rounded,
-                                                color: Color.fromARGB(
-                                                    255, 255, 0, 0),
-                                              ));
-                                        }),*/
+                                              icon: Icon(Icons.check_outlined,
+                                                  color: Colors.green[800]));
+                                        }),
+                                    IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.item = {};
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete_outline_rounded,
+                                          color: Color.fromARGB(255, 255, 0, 0),
+                                        ))
+                                  ],
+                                ),
                               ],
-                            ),
-                            // TODO: Darg and Drop
-                            // IconButton(
-                            //     onPressed: () {},
-                            //     icon: const Icon(
-                            //       Icons.menu,
-                            //       color: Colors.black87,
-                            //     )),
+                            )
                           ],
-                        )
-                      ],
-                    ))),
-              TextFieldContainer(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.add_circle_outline_rounded),
-                    onPressed: () {
-                      setState(() {
-                        item = {
-                          "name": "",
-                          "description": "",
-                          "price": 0.00,
-                          "available": true,
-                          "type": "FOOD"
-                        };
-                      });
-                    },
-                  ),
+                        ))),
+                  TextFieldContainer(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.add_circle_outline_rounded),
+                        onPressed: () {
+                          setState(() {
+                            widget.item = {
+                              "name": "",
+                              "description": "",
+                              "price": 0.00,
+                              "available": true,
+                              "type": "FOOD"
+                            };
+                          });
+                        },
+                      ),
+                    ],
+                  ))
                 ],
-              ))
-            ],
-          )));
+              )));
         });
   }
 

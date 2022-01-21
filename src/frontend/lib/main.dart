@@ -9,7 +9,6 @@ import 'package:frontend/pages/page_signup/signup_screen.dart';
 import 'package:frontend/pages/page_welcome/welcome_screen.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/qr_view/qr_view_screen.dart';
-import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 import 'package:frontend/pages/table_overview/table_service_screen.dart';
 import 'package:frontend/pages/select_color/color_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -61,8 +60,8 @@ class MyApp extends StatelessWidget {
           '/menu': (context) => SelectMenuScreen(screen: '/menu'),
           '/color': (context) => const ColorScreen(),
           '/overview': (context) => OverviewScreen(),
-          '/admin/info': (context) => const RestaurantInfoScreen(),
-          '/admin/menu': (context) => const RestaurantMenuEditScreen()
+          '/admin/info': (context) => RestaurantInfoScreen(),
+          '/admin/menu': (context) => RestaurantMenuEditScreen()
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
