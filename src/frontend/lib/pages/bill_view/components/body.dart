@@ -57,9 +57,10 @@ class Body extends State<BillScreen> {
         options: QueryOptions(
           document: gql(getBillQuery),
           variables: {
-            'bookingId': args.bookingId,
+            'bookingId':
+                "84c49800-5644-44d8-8f15-dfce161e8d7e", //args.bookingId,
           },
-          pollInterval: const Duration(seconds: 30),
+          pollInterval: const Duration(seconds: 5),
         ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -71,10 +72,11 @@ class Body extends State<BillScreen> {
             return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
-          // it can be either Map or List
           List items = result.data!['booking']?["items"] ?? List.empty();
+          List falseItems = items.where((i) => i["paid"] == false).toList();
+          List trueItems = items.where((i) => i["paid"] == true).toList();
+          items = falseItems + trueItems;
 
-          items = items.where((i) => i["paid"] == false).toList();
           calculateBalance(items);
 
           return Scaffold(
@@ -122,14 +124,17 @@ class Body extends State<BillScreen> {
                             return TextFieldContainer(
                                 child: Row(
                               children: [
-                                Checkbox(
-                                    value: selected[index],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selected[index] = value!;
-                                        calculateBalance(items);
-                                      });
-                                    }),
+                                items[index]["paid"]
+                                    ? const Icon(Icons.check,
+                                        color: Colors.green)
+                                    : Checkbox(
+                                        value: selected[index],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selected[index] = value!;
+                                            calculateBalance(items);
+                                          });
+                                        }),
                                 Expanded(
                                     child: RoundedMenuItem(
                                   item: items[index]["item"],
@@ -166,7 +171,7 @@ class Body extends State<BillScreen> {
                                 options: MutationOptions(
                                   document: gql(payItems),
                                   onCompleted: (data) {
-                                    showFeedback("Items payed.");
+                                    showFeedback("Items paid.");
                                     if (refetch != null) {
                                       refetch();
                                       setState(() {
@@ -182,7 +187,7 @@ class Body extends State<BillScreen> {
                                     QueryResult? result) {
                                   return Expanded(
                                       child: RoundedButton(
-                                          text: "Mark as payed",
+                                          text: "Mark as paid",
                                           click: () {
                                             if (balance == 0.0) {
                                               showErrorMessage(
@@ -197,7 +202,6 @@ class Body extends State<BillScreen> {
                                               }
                                               runMutation({
                                                 "bookingItemId": ids,
-                                                // Zahlungsinformationen
                                               });
                                             }
                                           }));
@@ -210,7 +214,7 @@ class Body extends State<BillScreen> {
                                         options: MutationOptions(
                                           document: gql(payItems),
                                           onCompleted: (data) {
-                                            showFeedback("Items payed.");
+                                            showFeedback("Items paid.");
                                             if (refetch != null) {
                                               refetch();
                                               setState(() {
@@ -238,8 +242,10 @@ class Body extends State<BillScreen> {
                                                       for (var i = 0;
                                                           i < items.length;
                                                           i++) {
-                                                        if (!selected[i])
+                                                        if (items[i]["paid"] ||
+                                                            !selected[i]) {
                                                           continue;
+                                                        }
                                                         ids.add(items[i]["id"]);
                                                       }
                                                       runMutation({
@@ -253,7 +259,7 @@ class Body extends State<BillScreen> {
                                         options: MutationOptions(
                                           document: gql(updateBookingStatus),
                                           onCompleted: (data) {
-                                            showFeedback("Items payed.");
+                                            showFeedback("Items paid.");
                                             if (refetch != null) {
                                               refetch();
                                               setState(() {
@@ -281,8 +287,9 @@ class Body extends State<BillScreen> {
                                                       for (var i = 0;
                                                           i < items.length;
                                                           i++) {
-                                                        if (!selected[i])
+                                                        if (!selected[i]) {
                                                           continue;
+                                                        }
                                                         ids.add(items[i]["id"]);
                                                       }
                                                       runMutation({
@@ -306,7 +313,7 @@ class Body extends State<BillScreen> {
   void calculateBalance(List items) {
     balance = 0.0;
     for (var i = 0; i < (items.length); i++) {
-      if (selected[i]) {
+      if (selected[i] && items[i]["paid"] == false) {
         balance = balance + items[i]["item"]["price"];
       }
     }
@@ -320,8 +327,4 @@ class Body extends State<BillScreen> {
       allSelected = value;
     });
   }
-
-  getWaiterButton() {}
-
-  getDefaultButton() {}
 }
