@@ -16,7 +16,7 @@ class Body extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Text("Welcome to Tablecube",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
           SizedBox(height: size.height * 0.05),
           SvgPicture.asset("assets/icons/logo4.svg", height: size.height * 0.3),
           RoundedButton(

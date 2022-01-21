@@ -8,6 +8,7 @@ export const menuResolvers: Resolvers = {
       const menu = await ctx.prisma.menuItem.findMany({
         where: {
           restaurantId: args.restaurantId,
+          available: true,
         },
       });
       return menu;
@@ -133,11 +134,15 @@ export const menuResolvers: Resolvers = {
         throw new UserInputError("no permissions for specified restaurant.");
       }
 
-      return ctx.prisma.menuItem.delete({
+      const deletedItem = await ctx.prisma.menuItem.update({
         where: {
           id: args.menuItemId,
         },
+        data: {
+          available: false,
+        }
       });
+      return deletedItem;
     },
   },
 };

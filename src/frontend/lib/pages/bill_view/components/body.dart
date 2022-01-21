@@ -71,9 +71,9 @@ class Body extends State<BillScreen> {
           }
 
           List items = result.data!['booking']?["items"] ?? List.empty();
-          List falseItems = items.where((i) => i["paid"] == false).toList();
-          List trueItems = items.where((i) => i["paid"] == true).toList();
-          items = falseItems + trueItems;
+          List unpaidItems = items.where((i) => i["paid"] == false).toList();
+          List paidItems = items.where((i) => i["paid"] == true).toList();
+          items = unpaidItems + paidItems;
 
           calculateBalance(items);
 
@@ -182,8 +182,14 @@ class Body extends State<BillScreen> {
                                     QueryResult? result) {
                                   return Expanded(
                                       child: RoundedButton(
+                                          color: unpaidItems.isEmpty
+                                              ? Colors.grey
+                                              : primaryColor,
                                           text: "Mark as paid",
                                           click: () {
+                                            if (unpaidItems.isEmpty) {
+                                              return;
+                                            }
                                             if (balance == 0.0) {
                                               showErrorMessage(
                                                   "You can not pay a bill with zero balance.");
@@ -210,6 +216,8 @@ class Body extends State<BillScreen> {
                                           document: gql(payItems),
                                           onCompleted: (data) {
                                             showFeedback("Items paid.");
+                                            showFeedback(
+                                                "This function is a preview and is not supported yet.");
                                             if (refetch != null) {
                                               refetch();
                                               setState(() {
@@ -227,8 +235,14 @@ class Body extends State<BillScreen> {
                                           return Expanded(
                                               flex: 1,
                                               child: RoundedButton(
-                                                  text: "Pay current bill",
+                                                  color: unpaidItems.isEmpty
+                                                      ? Colors.grey
+                                                      : primaryColor,
+                                                  text: "Pay online",
                                                   click: () {
+                                                    if (unpaidItems.isEmpty) {
+                                                      return;
+                                                    }
                                                     if (balance == 0.0) {
                                                       showErrorMessage(
                                                           "You can not pay a bill with zero balance.");
@@ -271,8 +285,14 @@ class Body extends State<BillScreen> {
                                           return Expanded(
                                               flex: 1,
                                               child: RoundedButton(
+                                                  color: unpaidItems.isEmpty
+                                                      ? Colors.grey
+                                                      : primaryColor,
                                                   text: "Pay with cash",
                                                   click: () {
+                                                    if (unpaidItems.isEmpty) {
+                                                      return;
+                                                    }
                                                     if (balance == 0.0) {
                                                       showErrorMessage(
                                                           "You can not pay a bill with zero balance.");

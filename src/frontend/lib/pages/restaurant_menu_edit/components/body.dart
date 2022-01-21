@@ -185,6 +185,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                                                 document:
                                                     gql(delMenuItemMutation),
                                                 onCompleted: (data) => {
+                                                  showFeedback("Item deleted."),
                                                   if (refetch != null)
                                                     {refetch()}
                                                 },

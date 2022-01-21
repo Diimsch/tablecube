@@ -26,6 +26,7 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
+    // User screen
     if (userType == UserType.NONE) {
       return Scaffold(
         appBar: getAppBar("Table Options"),
@@ -35,17 +36,17 @@ class Body extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RoundedButton(
-                  text: "Select menu items",
+                  text: "Menu",
                   click: () {
                     Navigator.pushNamed(context, '/menu', arguments: args);
                   }),
               RoundedButton(
-                  text: "Order",
+                  text: "Confirm order",
                   click: () {
                     Navigator.pushNamed(context, '/cart', arguments: args);
                   }),
               RoundedButton(
-                  text: "Pay",
+                  text: "Bill & Payment",
                   click: () {
                     Navigator.pushNamed(context, '/bill', arguments: args);
                   }),
@@ -77,9 +78,11 @@ class Body extends StatelessWidget {
           ),
         )),
       );
+      // waiter screen
     } else if (userType == UserType.WAITER) {
       return Background(
           child: TableOverviewScreen(restaurantId: args.restaurantId));
+      // admin screen
     } else if (userType == UserType.ADMIN) {
       return Scaffold(
           appBar: AppBar(

@@ -5,8 +5,6 @@ class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: getAppBar("Table Options"),
-        body: const Center(child: Text('Home')));
+    return const Scaffold(body: Center(child: Text('Home')));
   }
 }

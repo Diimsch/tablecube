@@ -41,7 +41,7 @@ class Body extends State<ColorScreen> {
           ),
           // Main content
           Expanded(
-            flex: 5,
+            flex: 8,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -91,7 +91,7 @@ class Body extends State<ColorScreen> {
         Container(
             padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
             child: const Text(
-              "Farbe 1: ",
+              "Color 1: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             )),
         DropdownButton<String>(
@@ -123,7 +123,7 @@ class Body extends State<ColorScreen> {
         Container(
             padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
             child: const Text(
-              "Farbe 2: ",
+              "Color 2: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             )),
         DropdownButton<String>(
@@ -155,7 +155,7 @@ class Body extends State<ColorScreen> {
         Container(
             padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
             child: const Text(
-              "Farbe 3: ",
+              "Color 3: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             )),
         DropdownButton<String>(
@@ -187,7 +187,7 @@ class Body extends State<ColorScreen> {
         Container(
             padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
             child: const Text(
-              "Farbe 4: ",
+              "Color 4: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             )),
         DropdownButton<String>(

@@ -45,7 +45,7 @@ class _ButtonState extends State<RoundedMenuItem> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                      flex: 8,
+                      flex: 6,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -78,7 +78,6 @@ class _ButtonState extends State<RoundedMenuItem> {
                         ],
                       )),
                   Expanded(
-                      // padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: widget.editable
                           ? TextField(
                               maxLines: 1,

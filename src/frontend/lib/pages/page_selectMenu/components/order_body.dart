@@ -39,28 +39,34 @@ class OrderBody extends State<SelectMenuScreen> {
             // main content
             Expanded(
                 flex: 5,
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    // Display the list item
-                    return Dismissible(
-                        key: UniqueKey(),
-                        direction: DismissDirection.none,
-                        onDismissed: (_) {
-                          setState(() {
-                            items.removeAt(index);
-                          });
+                child: items.isEmpty
+                    ? const Center(
+                        child: Text(
+                        "No items selected.",
+                        style: TextStyle(fontSize: 15),
+                      ))
+                    : ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          // Display the list item
+                          return Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.none,
+                              onDismissed: (_) {
+                                setState(() {
+                                  items.removeAt(index);
+                                });
+                              },
+                              child: OrderListItem(
+                                item: items[index],
+                                onDelete: () {
+                                  setState(() {
+                                    items.removeAt(index);
+                                  });
+                                },
+                              ));
                         },
-                        child: OrderListItem(
-                          item: items[index],
-                          onDelete: () {
-                            setState(() {
-                              items.removeAt(index);
-                            });
-                          },
-                        ));
-                  },
-                )),
+                      )),
             // bootom buttons
             TextFieldContainer(
                 child: Column(
@@ -96,7 +102,7 @@ class OrderBody extends State<SelectMenuScreen> {
                       return Row(children: [
                         Expanded(
                             child: RoundedButton(
-                                text: "Add items to bill",
+                                text: "Order items",
                                 click: () {
                                   if (balance == 0.0) {
                                     showErrorMessage(

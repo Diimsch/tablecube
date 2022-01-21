@@ -71,7 +71,7 @@ class SelectBody extends State<SelectMenuScreen> {
                 children: [
                   Expanded(
                       child: RoundedButton(
-                          text: "Show selected orders",
+                          text: "Confirm order",
                           click: () {
                             Navigator.pushNamed(context, "/cart");
                           }))

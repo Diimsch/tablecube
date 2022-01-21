@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../constants.dart';
@@ -71,48 +72,52 @@ class TableOverviewScreen extends StatelessWidget {
                 .toList() ??
             [];
 
-        return ListView(
-          children: [
-            Card(
-              child: ExpandablePanel(
-                theme: const ExpandableThemeData(
-                    hasIcon: true,
-                    expandIcon: Icons.alarm,
-                    iconColor: warningColor),
-                header: const Center(
-                    child: Text(
-                  'Service Required',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24),
-                )),
-                collapsed: const Text(''),
-                expanded: SizedBox(
-                  height: size.height / 2.5,
-                  child: tableList(
-                      selectedRestaurant, restaurants, serviceNeededTables),
+        return Scaffold(
+            appBar: getAppBar("Table Options"),
+            body: ListView(
+              children: [
+                Card(
+                  child: ExpandablePanel(
+                    theme: const ExpandableThemeData(
+                        hasIcon: true,
+                        expandIcon: Icons.alarm,
+                        iconColor: warningColor),
+                    header: const Center(
+                        child: Text(
+                      'Service Required',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24),
+                    )),
+                    collapsed: const Text(''),
+                    expanded: SizedBox(
+                      height: size.height / 2.5,
+                      child: tableList(
+                          selectedRestaurant, restaurants, serviceNeededTables),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Card(
-              child: ExpandablePanel(
-                theme: const ExpandableThemeData(
-                    hasIcon: true, expandIcon: Icons.alarm, iconColor: okColor),
-                header: const Center(
-                    child: Text(
-                  'Available Tables',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24),
-                )),
-                collapsed: const Text(''),
-                expanded: SizedBox(
-                  height: size.height / 2.5,
-                  child: tableList(
-                      selectedRestaurant, restaurants, availableTables),
+                Card(
+                  child: ExpandablePanel(
+                    theme: const ExpandableThemeData(
+                        hasIcon: true,
+                        expandIcon: Icons.alarm,
+                        iconColor: okColor),
+                    header: const Center(
+                        child: Text(
+                      'Available Tables',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24),
+                    )),
+                    collapsed: const Text(''),
+                    expanded: SizedBox(
+                      height: size.height / 2.5,
+                      child: tableList(
+                          selectedRestaurant, restaurants, availableTables),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
-        );
+              ],
+            ));
       },
     );
   }
