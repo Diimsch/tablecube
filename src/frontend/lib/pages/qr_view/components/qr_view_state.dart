@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/qr_view/components/qr_information.dart';
@@ -37,6 +38,11 @@ class QrViewState extends State<QrViewScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          AccountBubble(click: () {
+            logOutUser();
+          })
+        ],
         title: const Text("Scan Table Code"),
         centerTitle: true,
         elevation: 0,

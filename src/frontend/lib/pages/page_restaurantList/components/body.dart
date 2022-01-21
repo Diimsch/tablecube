@@ -6,7 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 const String getRestaurantsQuery = r"""
 query Query {
-  restaurant {
+  restaurants {
     id
     name
     description
@@ -49,7 +49,7 @@ class Body extends StatelessWidget {
         }
 
         // it can be either Map or List
-        List restaurants = result.data!['restaurant'];
+        List restaurants = result.data!['restaurants'];
         return ListView.builder(
             itemCount: restaurants.length,
             itemBuilder: (context, index) {

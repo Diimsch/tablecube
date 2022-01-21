@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
@@ -6,8 +8,7 @@ import 'package:frontend/pages/page_login/components/background.dart';
 import 'package:frontend/pages/select_color/color_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-const String checkIn =
-    r'''
+const String checkIn = r'''
 mutation ChangeBookingStatus($tableId: ID!, $code: [ValidationColors!]!) {
   checkIn(tableId: $tableId, code: $code) {
     id
@@ -32,6 +33,11 @@ class Body extends State<ColorScreen> {
 
     return Scaffold(
         appBar: AppBar(
+          actions: [
+            AccountBubble(click: () {
+              logOutUser();
+            })
+          ],
           title: const Text("Verification"),
           centerTitle: true,
           elevation: 0,
