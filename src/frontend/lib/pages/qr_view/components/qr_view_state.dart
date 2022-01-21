@@ -139,7 +139,8 @@ class QrViewState extends State<QrViewScreen> {
             return;
           } else {
             //TODO: check if booked an then join instead
-            createBooking(args.restaurantId, information!.tableId);
+
+            createBooking(args.restaurantId, information!.tableId, true);
             Navigator.pushNamed(context, '/color',
                 arguments: OverviewArguments(
                     args.restaurantId, information!.tableId, 'null'));
