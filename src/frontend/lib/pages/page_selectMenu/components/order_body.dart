@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
@@ -35,6 +36,11 @@ class OrderBody extends State<SelectMenuScreen> {
 
     return Scaffold(
         appBar: AppBar(
+          actions: [
+            AccountBubble(click: () {
+              logOutUser();
+            })
+          ],
           title: const Text("Cart"),
           centerTitle: true,
           elevation: 0,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/pages/home_screen.dart';
 
 class Nav extends StatefulWidget {
@@ -26,7 +28,11 @@ class _State extends State<Nav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bottom Nav Bar')),
+      appBar: AppBar(actions: [
+        AccountBubble(click: () {
+          logOutUser();
+        })
+      ], title: const Text('Bottom Nav Bar')),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

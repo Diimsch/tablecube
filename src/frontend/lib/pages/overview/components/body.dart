@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_welcome/components/background.dart';
-import 'package:frontend/pages/qr_view/qr_view_screen.dart';
 import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -28,6 +28,11 @@ class Body extends StatelessWidget {
     if (userType == UserType.NONE) {
       return Scaffold(
         appBar: AppBar(
+          actions: [
+            AccountBubble(click: () {
+              logOutUser();
+            })
+          ],
           title: const Text("Table Options"),
           centerTitle: true,
           elevation: 0,
@@ -38,13 +43,6 @@ class Body extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                "Select an option",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: size.height * 0.05,
-              ),
               RoundedButton(
                   text: "Select menu items",
                   click: () {
@@ -69,6 +67,8 @@ class Body extends StatelessWidget {
                     onCompleted: (data) {
                       showFeedback("Waiter was called.");
                     },
+                    onError: (error) =>
+                        handleError(error as OperationException),
                   ),
                   builder: (RunMutation runMutation, QueryResult? result) {
                     return RoundedButton(
@@ -90,37 +90,44 @@ class Body extends StatelessWidget {
       return Background(
           child: TableOverviewScreen(restaurantId: args.restaurantId));
     } else if (userType == UserType.ADMIN) {
-      return Background(
-          child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              "Select an option",
-              style: TextStyle(fontWeight: FontWeight.bold),
+      return Scaffold(
+          appBar: AppBar(
+            actions: [
+              AccountBubble(click: () {
+                logOutUser();
+              })
+            ],
+            title: const Text("Admin actions"),
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: primaryColor,
+          ),
+          body: Background(
+              child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RoundedButton(
+                    text: "Edit restaurant information",
+                    click: () {
+                      Navigator.pushNamed(context, '/admin/info',
+                          arguments: args);
+                    }),
+                RoundedButton(
+                    text: "Edit menu",
+                    click: () {
+                      Navigator.pushNamed(context, '/admin/menu',
+                          arguments: args);
+                    }),
+                RoundedButton(
+                    text: "Edit table placement",
+                    click: () {
+                      Navigator.pushNamed(context, '/admin/tables',
+                          arguments: args);
+                    }),
+              ],
             ),
-            SizedBox(
-              height: size.height * 0.05,
-            ),
-            RoundedButton(
-                text: "Edit restaurant information",
-                click: () {
-                  Navigator.pushNamed(context, '/admin/info', arguments: args);
-                }),
-            RoundedButton(
-                text: "Edit menu",
-                click: () {
-                  Navigator.pushNamed(context, '/admin/menu', arguments: args);
-                }),
-            RoundedButton(
-                text: "Edit table placement",
-                click: () {
-                  Navigator.pushNamed(context, '/admin/tables',
-                      arguments: args);
-                }),
-          ],
-        ),
-      ));
+          )));
     } else {
       showErrorMessage('Something went wrong. Please try again later.');
       logOutUser();

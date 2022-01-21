@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const storage = FlutterSecureStorage();
-const url =
-    'http://localhost:4000/graphql';
+const url = 'http://localhost:4000/graphql';
 
 final _httpLink = HttpLink(
   url,
@@ -36,8 +35,7 @@ final ValueNotifier<GraphQLClient> vnClient =
 
 handleError(OperationException error) {
   if (error.graphqlErrors.isEmpty) {
-    showErrorMessage(
-        "Ein Fehler ist aufgetreten. Bitte versuche es später erneut.");
+    showErrorMessage("An Error occured. Please try again later.");
   } else {
     showErrorMessage(error.graphqlErrors[0].message.toString());
   }
