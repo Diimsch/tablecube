@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/constants.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 showErrorMessage(String msg) {
   Fluttertoast.showToast(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:frontend/common_components/background.dart';
+import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
+import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -48,18 +51,33 @@ class SelectBody extends State<SelectMenuScreen> {
 
         return Scaffold(
             appBar: getAppBar("Select Menu Items"),
-            body: ListView.builder(
-                itemCount: menuItems.length,
-                itemBuilder: (context, index) {
-                  return RoundedMenuItem(
-                    item: menuItems[index],
-                    click: () {
-                      items.add(menuItems[index]);
-                      showFeedback("Items added to selection.");
-                    },
-                    editable: false,
-                  );
-                }));
+            body: Background(
+                child: Column(children: [
+              Expanded(
+                  child: ListView.builder(
+                      itemCount: menuItems.length,
+                      itemBuilder: (context, index) {
+                        return RoundedMenuItem(
+                          item: menuItems[index],
+                          click: () {
+                            items.add(menuItems[index]);
+                            showFeedback("Items added to selection.");
+                          },
+                          editable: false,
+                        );
+                      })),
+              TextFieldContainer(
+                  child: Row(
+                children: [
+                  Expanded(
+                      child: RoundedButton(
+                          text: "Show selected orders",
+                          click: () {
+                            Navigator.pushNamed(context, "/cart");
+                          }))
+                ],
+              ))
+            ])));
       },
     );
   }

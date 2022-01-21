@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/background.dart';
 import 'package:frontend/pages/overview/components/body.dart';
@@ -64,6 +65,7 @@ class TableServiceScreen extends StatelessWidget {
                   onCompleted: (data) {
                     showFeedback('Service has been finished.');
                   },
+                  onError: (error) => handleError(error as OperationException),
                 ),
                 builder: (RunMutation runMutation, QueryResult? result) {
                   return RoundedButton(

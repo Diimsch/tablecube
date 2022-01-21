@@ -5,7 +5,6 @@ class Background extends StatelessWidget {
   const Background({
     Key? key,
     required this.child,
-    ListView body,
   }) : super(key: key);
 
   @override

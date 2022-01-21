@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
-import 'package:frontend/constants.dart';
 import 'package:frontend/common_components/background.dart';
 import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/utils.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/common_components/rounded_menu_item.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/common_components/background.dart';
@@ -187,6 +188,9 @@ class Body extends State<RestaurantMenuEditScreen> {
                                                   if (refetch != null)
                                                     {refetch()}
                                                 },
+                                                onError: (error) => handleError(
+                                                    error
+                                                        as OperationException),
                                               ),
                                               builder: (RunMutation runMutation,
                                                   QueryResult? result) {
@@ -243,11 +247,12 @@ class Body extends State<RestaurantMenuEditScreen> {
                                             if (refetch != null) {
                                               refetch();
                                             }
-
                                             setState(() {
                                               widget.item = {};
                                             });
                                           },
+                                          onError: (error) => handleError(
+                                              error as OperationException),
                                         ),
                                         builder: (RunMutation runMutation,
                                             QueryResult? result) {
