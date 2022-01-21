@@ -379,7 +379,9 @@ export const bookingResolvers: Resolvers = {
       const booking = await ctx.prisma.booking.findFirst({
         where: {
           tableId: args.tableId,
-          status: BookingStatus.CHECKED_IN,
+          status: {
+            notIn: ["DONE", "RESERVED"]
+          }
         },
       });
 
@@ -429,6 +431,12 @@ export const bookingResolvers: Resolvers = {
         },
         data: {
           status: "CHECKED_IN",
+          users: {
+            create: {
+              userId: user.id,
+              role: "HOST"
+            },
+          }
         },
       });
 
