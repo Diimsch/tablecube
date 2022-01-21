@@ -57,8 +57,7 @@ class Body extends State<BillScreen> {
         options: QueryOptions(
           document: gql(getBillQuery),
           variables: {
-            'bookingId':
-                "84c49800-5644-44d8-8f15-dfce161e8d7e", //args.bookingId,
+            'bookingId': args.bookingId,
           },
           pollInterval: const Duration(seconds: 5),
         ),
