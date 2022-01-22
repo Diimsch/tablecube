@@ -33,7 +33,7 @@ class TableOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    if (userType != UserType.WAITER) {
+    if (userType != UserType.waiter) {
       // TODO: logout and toast
       // return to WelcomeScreen
     }

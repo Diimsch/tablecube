@@ -118,8 +118,8 @@ class Body extends StatelessWidget {
                                   UserType f = UserType.values.firstWhere(
                                       (e) =>
                                           e.toString() ==
-                                          'UserType.' + userTypeFetch,
-                                      orElse: () => UserType.NONE);
+                                          'UserType.' + userTypeFetch.toLowerCase(),
+                                      orElse: () => UserType.none);
 
                                   return TextButton(
                                     style: TextButton.styleFrom(
@@ -127,7 +127,7 @@ class Body extends StatelessWidget {
                                         backgroundColor: primaryLightColor),
                                     child: const Text('Go To Restauarant'),
                                     onPressed: () {
-                                      if (f == UserType.NONE) {
+                                      if (f == UserType.none) {
                                         Navigator.pushNamed(context, '/scanner',
                                             arguments: OverviewArguments(
                                                 restaurants[index]['id'],

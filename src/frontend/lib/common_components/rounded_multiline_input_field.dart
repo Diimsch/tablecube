@@ -6,8 +6,8 @@ class RoundedMultilineInputField extends StatelessWidget {
   final String hintText;
   final IconData icon;
   final ValueChanged<String> onChanged;
-  TextEditingController controller;
-  RoundedMultilineInputField(
+  final TextEditingController controller;
+  const RoundedMultilineInputField(
       {Key? key,
       required this.hintText,
       this.icon = Icons.person,

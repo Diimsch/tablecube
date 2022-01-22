@@ -161,7 +161,7 @@ class Body extends State<BillScreen> {
                                   Text(balance.toStringAsFixed(2) + "€",
                                       style: const TextStyle(fontSize: 18))
                                 ])),
-                        userType == UserType.WAITER
+                        userType == UserType.waiter
                             ? Mutation(
                                 options: MutationOptions(
                                   document: gql(payItems),

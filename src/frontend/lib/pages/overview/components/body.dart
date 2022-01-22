@@ -27,7 +27,7 @@ class Body extends StatelessWidget {
     Size size = MediaQuery.of(context).size; // total height and width of screen
 
     // User screen
-    if (userType == UserType.NONE) {
+    if (userType == UserType.none) {
       return Scaffold(
         appBar: getAppBar("Table Options"),
         body: Background(
@@ -79,11 +79,11 @@ class Body extends StatelessWidget {
         )),
       );
       // waiter screen
-    } else if (userType == UserType.WAITER) {
+    } else if (userType == UserType.waiter) {
       return Background(
           child: TableOverviewScreen(restaurantId: args.restaurantId));
       // admin screen
-    } else if (userType == UserType.ADMIN) {
+    } else if (userType == UserType.admin) {
       return Scaffold(
           appBar: AppBar(
             actions: [

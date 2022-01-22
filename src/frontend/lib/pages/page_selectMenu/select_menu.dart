@@ -3,6 +3,7 @@ import 'package:frontend/constants.dart';
 import 'package:frontend/pages/page_selectMenu/components/order_body.dart';
 import 'package:frontend/pages/page_selectMenu/components/select_body.dart';
 
+// ignore: must_be_immutable
 class SelectMenuScreen extends StatefulWidget {
   String screen;
   SelectMenuScreen({Key? key, required this.screen}) : super(key: key);
