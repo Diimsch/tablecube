@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "graphdoc": {
+    "endpoint": "http://localhost:4000/graphql",
+    "output": "../../api"
+  },
   "scripts": {
     "start": "ts-node -r dotenv/config src/index.ts",
     "build": "tsc",
@@ -13,7 +17,8 @@
     "db:seed": "prisma db seed",
     "db:init": "prisma db push",
     "codegen": "prisma generate && graphql-codegen --config codegen.yml",
-    "prettier": "prettier --write ./src/**"
+    "prettier": "prettier --write ./src/**",
+    "docs": "graphdoc --force"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -22,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@2fd/graphdoc": "^2.4.0",
     "@graphql-codegen/cli": "2.3.0",
     "@graphql-codegen/introspection": "2.1.0",
     "@graphql-codegen/typescript": "2.4.1",
