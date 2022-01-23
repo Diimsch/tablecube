@@ -121,7 +121,7 @@ export const bookingResolvers: Resolvers = {
       }
 
       return await ctx.prisma.$transaction(async (prisma) => {
-        const bookings = await ctx.prisma.booking.findMany({
+        const bookings = await prisma.booking.findMany({
           where: {
             tableId: args.booking.tableId,
             status: {
@@ -160,7 +160,7 @@ export const bookingResolvers: Resolvers = {
           );
         }
 
-        const booking = await ctx.prisma.booking.create({
+        const booking = await prisma.booking.create({
           data: {
             tableId: args.booking.tableId,
             start: args.booking.start!,
