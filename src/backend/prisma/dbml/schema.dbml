@@ -13,7 +13,6 @@ Table Restaurant {
   bookings Booking [not null]
   menuItems MenuItem [not null]
   usersWithRoles UserRoleInRestaurant [not null]
-  tablePositionGrid TablePosition [not null]
 }
 
 Table User {
@@ -44,20 +43,7 @@ Table Table {
   bookings Booking [not null]
   restaurant Restaurant [not null]
   restaurantId String [not null]
-  tablesPositions TablePosition [not null]
-}
-
-Table TablePosition {
-  x Int [not null]
-  y Int [not null]
-  table Table [not null]
-  tableId String [not null]
-  restaurant Restaurant [not null]
-  restaurantId String [not null]
-
-  indexes {
-    (x, y, restaurantId) [pk]
-  }
+  deleted Boolean [not null, default: false]
 }
 
 Table Booking {
@@ -141,10 +127,6 @@ Ref: UserRoleInRestaurant.restaurantId > Restaurant.id
 Ref: UserRoleInRestaurant.userId > User.id
 
 Ref: Table.restaurantId > Restaurant.id
-
-Ref: TablePosition.tableId > Table.id
-
-Ref: TablePosition.restaurantId > Restaurant.id
 
 Ref: Booking.tableId > Table.id
 
