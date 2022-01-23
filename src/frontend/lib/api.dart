@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const storage = FlutterSecureStorage();
-const url = 'http://localhost:4000/graphql';
+const url =
+    'http://d3df-2003-c2-2f42-3c80-a833-3067-6150-546d.ngrok.io/graphql';
 
 final _httpLink = HttpLink(
   url,
@@ -91,11 +92,6 @@ createBooking(String restaurantId, String tableId, bool prompt) async {
       });
 
   final QueryResult result = await client.mutate(options);
-
-  if (result.hasException) {
-    handleError(result.exception!);
-  }
-
   await promptValidation(tableId);
 }
 

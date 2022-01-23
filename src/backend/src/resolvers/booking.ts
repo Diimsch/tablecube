@@ -1,9 +1,10 @@
-import { Booking, BookingStatus, ItemsOnBooking } from "@prisma/client";
+import { Booking, BookingStatus, ItemsOnBooking, Prisma } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
 import { generateValidatorCode } from "../utils";
 import { pubsub } from "./table";
+import { usersResolver } from "./users";
 
 export const bookingResolvers: Resolvers = {
   BookingItem: {
@@ -39,7 +40,7 @@ export const bookingResolvers: Resolvers = {
     },
   },
   Query: {
-    booking: async (parent, args, ctx): Promise<Booking> => {
+    booking: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({
         where: {
           id: ctx.token.userId!,
@@ -62,10 +63,23 @@ export const bookingResolvers: Resolvers = {
         },
       });
 
-      if (
-        booking?.users.find((u) => u.userId !== user.id) &&
+      if (!booking) {
+        return null;
+      }
+      console.log(
+        "booking",
+        booking?.users.find((u) => u.userId !== user.id)
+      );
+      console.log(
+        "userRes",
         user.rolesInRestaurants.find(
           (r) => r.restaurantId !== booking?.restaurantId
+        )
+      );
+      if (
+        !booking.users.find((u) => u.userId === user.id) &&
+        !user.rolesInRestaurants.find(
+          (r) => r.restaurantId === booking.restaurantId
         )
       ) {
         throw new UserInputError("not allowed to receive this booking");
@@ -106,62 +120,64 @@ export const bookingResolvers: Resolvers = {
         throw new UserInputError("start or end date smaller than current date");
       }
 
-      const bookings = await ctx.prisma.booking.findMany({
-        where: {
-          tableId: args.booking.tableId,
-          status: {
-            not: "DONE",
-          },
-          OR: [
-            {
-              start: {
-                lt: args.booking.start,
-              },
-              end: {
-                gte: args.booking.start,
-              },
+      const booking = await ctx.prisma.$transaction(async (prisma) => {
+        await prisma.$executeRaw(Prisma.sql`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE`);
+        const bookings = await prisma.booking.findMany({
+          where: {
+            tableId: args.booking.tableId,
+            status: {
+              not: "DONE",
             },
-            {
-              AND: [
-                {
-                  start: {
-                    gte: args.booking.start,
-                  },
+            OR: [
+              {
+                start: {
+                  lte: args.booking.start!,
                 },
-                {
-                  start: {
-                    lte: args.booking.end,
-                  },
+                end: {
+                  gte: args.booking.start!,
                 },
-              ],
-            },
-          ],
-        },
-      });
+              },
+              {
+                AND: [
+                  {
+                    start: {
+                      gte: args.booking.start!,
+                    },
+                  },
+                  {
+                    start: {
+                      lte: args.booking.end!,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        });
 
-      if (bookings.length > 0) {
-        throw new UserInputError(
-          "table currently still being served or already reserved"
-        );
-      }
+        if (bookings.length > 0) {
+          throw new UserInputError(
+            "table currently still being served or already reserved"
+          );
+        }
 
-      const booking = await ctx.prisma.booking.create({
-        data: {
-          tableId: args.booking.tableId,
-          start: args.booking.start,
-          end: args.booking.end,
-          restaurantId: args.booking.restaurantId,
-          joinValidationData: validatorColorCode,
-          status: BookingStatus.RESERVED,
-          users: {
-            create: {
-              userId: user.id,
-              role: "HOST",
+        return prisma.booking.create({
+          data: {
+            tableId: args.booking.tableId,
+            start: args.booking.start!,
+            end: args.booking.end!,
+            restaurantId: args.booking.restaurantId,
+            joinValidationData: validatorColorCode,
+            status: BookingStatus.RESERVED,
+            users: {
+              create: {
+                userId: user.id,
+                role: "HOST",
+              },
             },
           },
-        },
+        });
       });
-      console.log(`validation data for ${booking.id}: ${validatorColorCode}`);
 
       if (current >= booking.start && current < booking.end) {
         pubsub.publish("TABLE_UPDATED", {
@@ -297,7 +313,7 @@ export const bookingResolvers: Resolvers = {
             OR: [
               {
                 users: {
-                  every: {
+                  some: {
                     userId: user.id,
                   },
                 },
@@ -332,7 +348,7 @@ export const bookingResolvers: Resolvers = {
             OR: [
               {
                 users: {
-                  every: {
+                  some: {
                     userId: user.id,
                   },
                 },
@@ -361,6 +377,7 @@ export const bookingResolvers: Resolvers = {
           id: ctx.token.userId!,
         },
         include: {
+          bookings: true,
           rolesInRestaurants: true,
         },
       });
@@ -373,12 +390,15 @@ export const bookingResolvers: Resolvers = {
         where: {
           tableId: args.tableId,
           status: {
-            notIn: ["DONE", "RESERVED"]
-          }
+            notIn: ["DONE", "RESERVED"],
+          },
         },
       });
 
       if (booking) {
+        if (user.bookings.find((b) => b.bookingId === booking.id)) {
+          return booking;
+        }
         if (args.code.toString() !== booking.joinValidationData?.toString()) {
           throw new UserInputError("invalid color validation code");
         }
@@ -424,12 +444,6 @@ export const bookingResolvers: Resolvers = {
         },
         data: {
           status: "CHECKED_IN",
-          users: {
-            create: {
-              userId: user.id,
-              role: "HOST"
-            },
-          }
         },
       });
 
@@ -449,7 +463,7 @@ export const bookingResolvers: Resolvers = {
             OR: [
               {
                 users: {
-                  every: {
+                  some: {
                     userId: ctx.token.userId!,
                   },
                 },

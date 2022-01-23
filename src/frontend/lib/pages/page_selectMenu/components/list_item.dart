@@ -24,7 +24,6 @@ class OrderListItem extends StatelessWidget {
                       fontSize: 15, fontWeight: FontWeight.bold),
                 )),
             Expanded(
-                flex: 1,
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Text(
                     "${item["price"].toStringAsFixed(2)}€",

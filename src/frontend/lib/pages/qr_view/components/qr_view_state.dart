@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/qr_view/components/qr_information.dart';
@@ -36,7 +34,7 @@ class QrViewState extends State<QrViewScreen> {
     args = getOverviewArguments(context);
 
     return Scaffold(
-      appBar: getAppBar("Scan table Code"),
+      appBar: getAppBar("Scan table code"),
       body: Column(
         children: <Widget>[
           Expanded(flex: 5, child: qrViewFrame(context)),
@@ -112,7 +110,6 @@ class QrViewState extends State<QrViewScreen> {
   }
 
   void onQRViewCreated(QRViewController controller) {
-    debugPrint('hello');
     setState(() {
       this.controller = controller;
     });
@@ -138,9 +135,6 @@ class QrViewState extends State<QrViewScreen> {
             requestLoading = false;
             return;
           } else {
-            //TODO: check if booked an then join instead
-
-            createBooking(args.restaurantId, information!.tableId, true);
             Navigator.pushNamed(context, '/color',
                 arguments: OverviewArguments(
                     args.restaurantId, information!.tableId, 'null'));

@@ -4,6 +4,7 @@ import 'package:frontend/main.dart';
 import '../../constants.dart';
 import 'components/body.dart';
 
+// ignore: must_be_immutable
 class RestaurantMenuEditScreen extends StatefulWidget {
   RestaurantMenuEditScreen({Key? key}) : super(key: key);
 
@@ -13,10 +14,6 @@ class RestaurantMenuEditScreen extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<StatefulWidget> createState() {
-    if (userType != UserType.ADMIN) {
-      // TODO: logout and toast
-      // return to WelcomeScreen
-    }
 
     return Body();
   }

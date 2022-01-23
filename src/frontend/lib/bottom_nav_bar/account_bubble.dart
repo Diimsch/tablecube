@@ -8,7 +8,6 @@ class AccountBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size; // total height and width of screen
 
     return IconButton(
       tooltip: "Logout",

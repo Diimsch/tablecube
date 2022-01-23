@@ -14,11 +14,12 @@ query RoleInRestaurant($restaurantId: ID!) {
 }
 """;
 
+// ignore: must_be_immutable
 class OverviewScreen extends StatelessWidget {
-  UserType userType;
+  final UserType userType;
   late UserType f;
   late OverviewArguments args;
-  OverviewScreen({Key? key, this.userType = UserType.NONE}) : super(key: key);
+  OverviewScreen({Key? key, this.userType = UserType.none}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,8 @@ class OverviewScreen extends StatelessWidget {
         // it can be either Map or List
         String userTypeFetch = result.data!['roleInRestaurant']['role'];
         f = UserType.values.firstWhere(
-            (e) => e.toString() == 'UserType.' + userTypeFetch,
-            orElse: () => UserType.NONE);
+            (e) => e.toString() == 'UserType.' + userTypeFetch.toLowerCase(),
+            orElse: () => UserType.none);
 
         return Scaffold(body: Body(userType: f, args: args));
       },

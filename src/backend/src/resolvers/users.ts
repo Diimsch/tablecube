@@ -21,6 +21,21 @@ export const usersResolver: Resolvers = {
       });
       return bookings;
     },
+    occupyingBooking: async (parent, args, ctx) => {
+      const booking = await ctx.prisma.booking.findFirst({
+        where: {
+          users: {
+            some: {
+              userId: parent.id
+            }
+          },
+          status: {
+            notIn: ['DONE', 'RESERVED']
+          }
+        }
+      });
+      return booking
+    }
   },
   Query: {
     me: async (parent, args, ctx) => {

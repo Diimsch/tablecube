@@ -7,6 +7,7 @@ import 'package:frontend/common_components/background.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/utils.dart';
 
+// ignore: must_be_immutable
 class Body extends StatelessWidget {
   String firstName = '';
   String lastName = '';

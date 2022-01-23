@@ -7,7 +7,7 @@ import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'list-item.dart';
+import 'list_item.dart';
 
 const String addItemToBooking = r"""
 mutation AddItemToBooking($data: AddItemToBookingInput!) {
@@ -57,13 +57,19 @@ class OrderBody extends State<SelectMenuScreen> {
                                   items.removeAt(index);
                                 });
                               },
-                              child: OrderListItem(
-                                item: items[index],
-                                onDelete: () {
-                                  setState(() {
-                                    items.removeAt(index);
-                                  });
-                                },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: OrderListItem(
+                                      item: items[index],
+                                      onDelete: () {
+                                        setState(() {
+                                          items.removeAt(index);
+                                        });
+                                      },
+                                    ),
+                                  )
+                                ],
                               ));
                         },
                       )),

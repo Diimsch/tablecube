@@ -6,6 +6,7 @@ import 'package:frontend/common_components/rounded_input_field.dart';
 import 'package:frontend/common_components/rounded_password_field.dart';
 import 'package:frontend/common_components/background.dart';
 
+// ignore: must_be_immutable
 class Body extends StatelessWidget {
   String email = '';
   String password = '';
