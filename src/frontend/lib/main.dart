@@ -17,13 +17,6 @@ import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-// state
-UserType userType = UserType.none;
-
-//TODO: is this needed?
-String tableId = '';
-String restaurantId = '65a2929f-66aa-465b-88c0-be6ef3a10504';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var storedToken = await storage.read(key: 'authToken');
@@ -35,7 +28,6 @@ void main() async {
     initialRoute: isLogged ? '/home' : '/',
   );
   runApp(myApp);
-  // runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

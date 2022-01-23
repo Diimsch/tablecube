@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/qr_view/components/qr_information.dart';
@@ -111,7 +110,6 @@ class QrViewState extends State<QrViewScreen> {
   }
 
   void onQRViewCreated(QRViewController controller) {
-    debugPrint('hello');
     setState(() {
       this.controller = controller;
     });

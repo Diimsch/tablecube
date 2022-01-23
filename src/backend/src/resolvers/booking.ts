@@ -1,4 +1,4 @@
-import { Booking, BookingStatus, ItemsOnBooking } from "@prisma/client";
+import { Booking, BookingStatus, ItemsOnBooking, Prisma } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server-errors";
 import ms from "ms";
 import { Resolvers } from "../generated/graphql";
@@ -121,6 +121,7 @@ export const bookingResolvers: Resolvers = {
       }
 
       const booking = await ctx.prisma.$transaction(async (prisma) => {
+        await prisma.$executeRaw(Prisma.sql`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE`);
         const bookings = await prisma.booking.findMany({
           where: {
             tableId: args.booking.tableId,

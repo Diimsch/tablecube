@@ -1,7 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:frontend/main.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -32,11 +31,6 @@ class TableOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    if (userType != UserType.waiter) {
-      // TODO: logout and toast
-      // return to WelcomeScreen
-    }
     return Query(
       options: QueryOptions(
         document: gql(getRestaurantsQuery),

@@ -14,10 +14,6 @@ class RestaurantMenuEditScreen extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<StatefulWidget> createState() {
-    if (userType != UserType.admin) {
-      // TODO: logout and toast
-      // return to WelcomeScreen
-    }
 
     return Body();
   }

@@ -77,6 +77,7 @@ class Body extends State<ColorScreen> {
             }
           }
           if (!found) {
+            debugPrint('hello');
             createBooking(args.restaurantId, args.tableId, true);
           }
           return Scaffold(
@@ -114,7 +115,8 @@ class Body extends State<ColorScreen> {
                               if (data != null) {
                                 showFeedback(
                                     "Check in on table was successful.");
-                                Navigator.pushNamed(context, '/overview',
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    '/overview', ModalRoute.withName('/home'),
                                     arguments: OverviewArguments(
                                         args.restaurantId,
                                         args.tableId,
