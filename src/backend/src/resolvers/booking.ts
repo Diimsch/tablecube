@@ -66,10 +66,16 @@ export const bookingResolvers: Resolvers = {
       if (!booking) {
         return null;
       }
-      console.log('booking', booking?.users.find((u) => u.userId !== user.id));
-      console.log('userRes', user.rolesInRestaurants.find(
+      console.log(
+        "booking",
+        booking?.users.find((u) => u.userId !== user.id)
+      );
+      console.log(
+        "userRes",
+        user.rolesInRestaurants.find(
           (r) => r.restaurantId !== booking?.restaurantId
-      ));
+        )
+      );
       if (
         !booking.users.find((u) => u.userId === user.id) &&
         !user.rolesInRestaurants.find(
@@ -114,71 +120,73 @@ export const bookingResolvers: Resolvers = {
         throw new UserInputError("start or end date smaller than current date");
       }
 
-      const bookings = await ctx.prisma.booking.findMany({
-        where: {
-          tableId: args.booking.tableId,
-          status: {
-            not: "DONE",
-          },
-          OR: [
-            {
-              start: {
-                lte: args.booking.start,
-              },
-              end: {
-                gte: args.booking.start,
-              },
+      return await ctx.prisma.$transaction(async (prisma) => {
+        const bookings = await ctx.prisma.booking.findMany({
+          where: {
+            tableId: args.booking.tableId,
+            status: {
+              not: "DONE",
             },
-            {
-              AND: [
-                {
-                  start: {
-                    gte: args.booking.start,
-                  },
+            OR: [
+              {
+                start: {
+                  lte: args.booking.start!,
                 },
-                {
-                  start: {
-                    lte: args.booking.end,
-                  },
+                end: {
+                  gte: args.booking.start!,
                 },
-              ],
-            },
-          ],
-        },
-      });
-
-      if (bookings.length > 0) {
-        throw new UserInputError(
-          "table currently still being served or already reserved"
-        );
-      }
-
-      const booking = await ctx.prisma.booking.create({
-        data: {
-          tableId: args.booking.tableId,
-          start: args.booking.start,
-          end: args.booking.end,
-          restaurantId: args.booking.restaurantId,
-          joinValidationData: validatorColorCode,
-          status: BookingStatus.RESERVED,
-          users: {
-            create: {
-              userId: user.id,
-              role: "HOST",
-            },
+              },
+              {
+                AND: [
+                  {
+                    start: {
+                      gte: args.booking.start!,
+                    },
+                  },
+                  {
+                    start: {
+                      lte: args.booking.end!,
+                    },
+                  },
+                ],
+              },
+            ],
           },
-        },
-      });
-      console.log(`validation data for ${booking.id}: ${validatorColorCode}`);
-
-      if (current >= booking.start && current < booking.end) {
-        pubsub.publish("TABLE_UPDATED", {
-          tableId: booking.tableId,
-          status: booking.status,
         });
-      }
 
-      return booking;
+        if (bookings.length > 0) {
+          throw new UserInputError(
+            "table currently still being served or already reserved"
+          );
+        }
+
+        const booking = await ctx.prisma.booking.create({
+          data: {
+            tableId: args.booking.tableId,
+            start: args.booking.start!,
+            end: args.booking.end!,
+            restaurantId: args.booking.restaurantId,
+            joinValidationData: validatorColorCode,
+            status: BookingStatus.RESERVED,
+            users: {
+              create: {
+                userId: user.id,
+                role: "HOST",
+              },
+            },
+          },
+        });
+        console.log(`validation data for ${booking.id}: ${validatorColorCode}`);
+
+        if (current >= booking.start && current < booking.end) {
+          pubsub.publish("TABLE_UPDATED", {
+            tableId: booking.tableId,
+            status: booking.status,
+          });
+        }
+
+        return booking;
+      });
     },
     joinBooking: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({
@@ -382,8 +390,8 @@ export const bookingResolvers: Resolvers = {
         where: {
           tableId: args.tableId,
           status: {
-            notIn: ["DONE", "RESERVED"]
-          }
+            notIn: ["DONE", "RESERVED"],
+          },
         },
       });
 
