@@ -63,7 +63,7 @@ class Body extends State<BillScreen> {
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
-            return Text(result.exception.toString());
+            return Scaffold(body: Text(result.exception.toString()));
           }
 
           if (result.isLoading) {
@@ -161,88 +161,78 @@ class Body extends State<BillScreen> {
                                   Text(balance.toStringAsFixed(2) + "€",
                                       style: const TextStyle(fontSize: 18))
                                 ])),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Mutation(
-                                  options: MutationOptions(
-                                    document: gql(payItems),
-                                    onCompleted: (data) {
-                                      showFeedback("Items paid.");
+                        Mutation(
+                            options: MutationOptions(
+                              document: gql(payItems),
+                              onCompleted: (data) {
+                                showFeedback("Items paid.");
 
-                                      if (refetch != null) {
-                                        refetch();
-                                        setState(() {
-                                          selected = List.generate(
-                                              items.length, (index) => true);
-                                        });
+                                if (refetch != null) {
+                                  refetch();
+                                  setState(() {
+                                    selected = List.generate(
+                                        items.length, (index) => true);
+                                  });
+                                }
+                              },
+                              onError: (error) =>
+                                  handleError(error as OperationException),
+                            ),
+                            builder:
+                                (RunMutation runMutation, QueryResult? result) {
+                              return RoundedButton(
+                                  color: Colors.grey,
+                                  text: "Pay online",
+                                  click: () {
+                                    showFeedback(
+                                        "This function is a preview and is not supported yet.");
+                                    return;
+                                  });
+                            }),
+                        Mutation(
+                            options: MutationOptions(
+                              document: gql(payItems),
+                              onCompleted: (data) {
+                                if (refetch != null) {
+                                  showFeedback("Items paid.");
+                                  refetch();
+                                  setState(() {
+                                    selected = List.generate(
+                                        items.length, (index) => true);
+                                  });
+                                }
+                              },
+                              onError: (error) =>
+                                  handleError(error as OperationException),
+                            ),
+                            builder:
+                                (RunMutation runMutation, QueryResult? result) {
+                              return RoundedButton(
+                                  color: unpaidItems.isEmpty
+                                      ? Colors.grey
+                                      : primaryColor,
+                                  text: "Pay in cash",
+                                  click: () {
+                                    if (unpaidItems.isEmpty) {
+                                      return;
+                                    }
+                                    if (balance == 0.0) {
+                                      showErrorMessage(
+                                          "You can not pay a bill with zero balance.");
+                                    } else {
+                                      List ids = [];
+                                      for (var i = 0; i < items.length; i++) {
+                                        if (!selected[i]) {
+                                          continue;
+                                        }
+                                        ids.add(items[i]["id"]);
                                       }
-                                    },
-                                    onError: (error) => handleError(
-                                        error as OperationException),
-                                  ),
-                                  builder: (RunMutation runMutation,
-                                      QueryResult? result) {
-                                    return Expanded(
-                                        flex: 1,
-                                        child: RoundedButton(
-                                            color: Colors.grey,
-                                            text: "Pay online",
-                                            click: () {
-                                              showFeedback(
-                                                  "This function is a preview and is not supported yet.");
-                                              return;
-                                            }));
-                                  }),
-                              Mutation(
-                                  options: MutationOptions(
-                                    document: gql(payItems),
-                                    onCompleted: (data) {
-                                      if (refetch != null) {
-                                        showFeedback("Items paid.");
-                                        refetch();
-                                        setState(() {
-                                          selected = List.generate(
-                                              items.length, (index) => true);
-                                        });
-                                      }
-                                    },
-                                    onError: (error) => handleError(
-                                        error as OperationException),
-                                  ),
-                                  builder: (RunMutation runMutation,
-                                      QueryResult? result) {
-                                    return Expanded(
-                                        flex: 1,
-                                        child: RoundedButton(
-                                            color: unpaidItems.isEmpty
-                                                ? Colors.grey
-                                                : primaryColor,
-                                            text: "Pay in cash",
-                                            click: () {
-                                              if (unpaidItems.isEmpty) {
-                                                return;
-                                              }
-                                              if (balance == 0.0) {
-                                                showErrorMessage(
-                                                    "You can not pay a bill with zero balance.");
-                                              } else {
-                                                List ids = [];
-                                                for (var i = 0;
-                                                    i < items.length;
-                                                    i++) {
-                                                  if (!selected[i]) {
-                                                    continue;
-                                                  }
-                                                  ids.add(items[i]["id"]);
-                                                }
-                                                runMutation({
-                                                  "bookingItemId": ids,
-                                                });
-                                              }
-                                            }));
-                                  }),
-                            ]),
+                                      runMutation({
+                                        "bookingItemId": ids,
+                                      });
+                                    }
+                                  });
+                            }),
                       ]))
                 ],
               )));

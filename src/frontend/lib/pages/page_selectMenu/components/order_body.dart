@@ -57,13 +57,19 @@ class OrderBody extends State<SelectMenuScreen> {
                                   items.removeAt(index);
                                 });
                               },
-                              child: OrderListItem(
-                                item: items[index],
-                                onDelete: () {
-                                  setState(() {
-                                    items.removeAt(index);
-                                  });
-                                },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: OrderListItem(
+                                      item: items[index],
+                                      onDelete: () {
+                                        setState(() {
+                                          items.removeAt(index);
+                                        });
+                                      },
+                                    ),
+                                  )
+                                ],
                               ));
                         },
                       )),

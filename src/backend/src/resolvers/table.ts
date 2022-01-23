@@ -21,7 +21,7 @@ export const tablesResolvers: Resolvers = {
         where: {
           tableId: parent.id,
           users: {
-            every: {
+            some: {
               userId: ctx.token.userId!,
             },
           },

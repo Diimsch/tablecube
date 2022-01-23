@@ -6,6 +6,7 @@ type User {
   firstName: String!
   lastName: String!
   bookings: [Booking]!
+  occupyingBooking: Booking
 }
 
 type Restaurant {

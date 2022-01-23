@@ -73,10 +73,9 @@ class SelectBody extends State<SelectMenuScreen> {
                       child: RoundedButton(
                           text: "Confirm order",
                           click: () {
-                            Navigator.pushNamedAndRemoveUntil(
+                            Navigator.pushReplacementNamed(
                               context,
                               '/cart',
-                              ModalRoute.withName('/service'),
                               arguments: args,
                             );
                           }))

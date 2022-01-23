@@ -4,6 +4,7 @@ import ms from "ms";
 import { Resolvers } from "../generated/graphql";
 import { generateValidatorCode } from "../utils";
 import { pubsub } from "./table";
+import { usersResolver } from "./users";
 
 export const bookingResolvers: Resolvers = {
   BookingItem: {
@@ -39,7 +40,7 @@ export const bookingResolvers: Resolvers = {
     },
   },
   Query: {
-    booking: async (parent, args, ctx): Promise<Booking> => {
+    booking: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({
         where: {
           id: ctx.token.userId!,
@@ -62,10 +63,17 @@ export const bookingResolvers: Resolvers = {
         },
       });
 
-      if (
-        booking?.users.find((u) => u.userId !== user.id) &&
-        user.rolesInRestaurants.find(
+      if (!booking) {
+        return null;
+      }
+      console.log('booking', booking?.users.find((u) => u.userId !== user.id));
+      console.log('userRes', user.rolesInRestaurants.find(
           (r) => r.restaurantId !== booking?.restaurantId
+      ));
+      if (
+        !booking.users.find((u) => u.userId === user.id) &&
+        !user.rolesInRestaurants.find(
+          (r) => r.restaurantId === booking.restaurantId
         )
       ) {
         throw new UserInputError("not allowed to receive this booking");
@@ -115,7 +123,7 @@ export const bookingResolvers: Resolvers = {
           OR: [
             {
               start: {
-                lt: args.booking.start,
+                lte: args.booking.start,
               },
               end: {
                 gte: args.booking.start,
@@ -297,7 +305,7 @@ export const bookingResolvers: Resolvers = {
             OR: [
               {
                 users: {
-                  every: {
+                  some: {
                     userId: user.id,
                   },
                 },
@@ -332,7 +340,7 @@ export const bookingResolvers: Resolvers = {
             OR: [
               {
                 users: {
-                  every: {
+                  some: {
                     userId: user.id,
                   },
                 },
@@ -361,6 +369,7 @@ export const bookingResolvers: Resolvers = {
           id: ctx.token.userId!,
         },
         include: {
+          bookings: true,
           rolesInRestaurants: true,
         },
       });
@@ -379,6 +388,9 @@ export const bookingResolvers: Resolvers = {
       });
 
       if (booking) {
+        if (user.bookings.find((b) => b.bookingId === booking.id)) {
+          return booking;
+        }
         if (args.code.toString() !== booking.joinValidationData?.toString()) {
           throw new UserInputError("invalid color validation code");
         }
@@ -424,12 +436,6 @@ export const bookingResolvers: Resolvers = {
         },
         data: {
           status: "CHECKED_IN",
-          users: {
-            create: {
-              userId: user.id,
-              role: "HOST"
-            },
-          }
         },
       });
 
@@ -449,7 +455,7 @@ export const bookingResolvers: Resolvers = {
             OR: [
               {
                 users: {
-                  every: {
+                  some: {
                     userId: ctx.token.userId!,
                   },
                 },
