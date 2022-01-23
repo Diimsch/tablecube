@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
+import 'package:frontend/pages/page_editTables/restaurant_table_edit_screen.dart';
 import 'package:frontend/pages/page_login/login_screen.dart';
 import 'package:frontend/pages/page_restaurantList/restaurant_list_screen.dart';
 import 'package:frontend/pages/page_selectMenu/select_menu.dart';
@@ -55,7 +56,8 @@ class MyApp extends StatelessWidget {
           '/color': (context) => const ColorScreen(),
           '/overview': (context) => OverviewScreen(),
           '/admin/info': (context) => RestaurantInfoScreen(),
-          '/admin/menu': (context) => RestaurantMenuEditScreen()
+          '/admin/menu': (context) => RestaurantMenuEditScreen(),
+          '/admin/tables': (context) => RestaurantTableEditScreen()
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

@@ -23,19 +23,18 @@ class OrderListItem extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 15, fontWeight: FontWeight.bold),
                 )),
-            Expanded(
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Text(
-                    "${item["price"].toStringAsFixed(2)}€",
-                    textAlign: TextAlign.end,
-                  ),
-                  IconButton(
-                    onPressed: onDelete,
-                    splashRadius: 25,
-                    icon: const Icon(Icons.delete_outline_rounded,
-                        color: Color.fromARGB(255, 255, 0, 0)),
-                  ),
-                ]))
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Text(
+                "${item["price"].toStringAsFixed(2)}€",
+                textAlign: TextAlign.end,
+              ),
+              IconButton(
+                onPressed: onDelete,
+                splashRadius: 25,
+                icon: const Icon(Icons.delete_outline_rounded,
+                    color: Color.fromARGB(255, 255, 0, 0)),
+              ),
+            ])
           ],
         ),
         if (item["comment"] != null)
