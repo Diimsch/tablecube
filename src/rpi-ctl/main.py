@@ -92,9 +92,9 @@ mutation ChangeBookingStatus($data: ChangeBookingStatusInput!) {
 """
 )
 
-promptValidationCodeQuery = gql(
+promptValidationCodeMutation = gql(
     """
-query Query($tableId: String!) {
+mutation Mutation($tableId: String!) {
   promptValidation(tableId: $tableId)
 }
     """
@@ -174,7 +174,7 @@ def handle_input(index, state):
             if promptedValidation == True:
                 return
             promptedValidation = True
-            result = client.execute(promptValidationCodeQuery, variable_values={
+            result = client.execute(promptValidationCodeMutation, variable_values={
                 "tableId": decodedJwt.get("sub"),
             })
             if result.get("promptValidation") == False:
