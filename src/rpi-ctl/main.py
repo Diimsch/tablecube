@@ -92,9 +92,9 @@ mutation ChangeBookingStatus($data: ChangeBookingStatusInput!) {
 """
 )
 
-promptValidationCodeQuery = gql(
+promptValidationCodeMutation = gql(
     """
-query Query($tableId: String!) {
+mutation Mutation($tableId: String!) {
   promptValidation(tableId: $tableId)
 }
     """
@@ -154,7 +154,7 @@ async def blink_loop():
 @keybow.on()
 def handle_input(index, state):
     global promptedValidation
-    if status == "DONE" or status == "RESERVED":
+    if status == "DONE":
         return
 
     if not state:
@@ -174,12 +174,14 @@ def handle_input(index, state):
             if promptedValidation == True:
                 return
             promptedValidation = True
-            result = client.execute(promptValidationCodeQuery, variable_values={
+            result = client.execute(promptValidationCodeMutation, variable_values={
                 "tableId": decodedJwt.get("sub"),
             })
             if result.get("promptValidation") == False:
                 promptedValidation = False
         else:
+            if status == "RESERVED":
+                return
             if status == task:
                 task = "CHECKED_IN"
             result = client.execute(changleTableStatusMutation, variable_values={
@@ -197,7 +199,9 @@ def setBaseColors(status):
     if status == "DONE":
         keybow.set_all(0, 255, 0)
     elif status == "RESERVED":
-        keybow.set_all(255, 127, 0)
+        keybow.set_led(0, 255, 127, 0)
+        keybow.set_led(1, 127, 0, 255)
+        keybow.set_led(2, 255, 127, 0)
     else:
         for i, colors in enumerate(standardColors):
             if i == 0 and status == "NEEDS_SERVICE":
