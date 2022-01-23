@@ -24,6 +24,7 @@ export const bookingResolvers: Resolvers = {
           id: parent.tableId,
         },
       });
+
       return table!;
     },
     items: async (parent, args, ctx) => {

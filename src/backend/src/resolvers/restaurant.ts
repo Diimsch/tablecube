@@ -6,7 +6,7 @@ export const restaurantResolver: Resolvers = {
   Restaurant: {
     tables: async (parent, args, ctx) => {
       return await ctx.prisma.table.findMany({
-        where: { restaurantId: parent.id },
+        where: { restaurantId: parent.id, deleted: false },
       });
     },
     occupyingBookings: async (parent, args, ctx) => {

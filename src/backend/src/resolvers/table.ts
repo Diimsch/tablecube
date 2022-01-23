@@ -80,6 +80,11 @@ export const tablesResolvers: Resolvers = {
           id: args.tableId,
         },
       });
+
+      if(table && table.deleted) {
+        return null;
+      }
+
       return table;
     },
     promptValidation: async (parent, args, ctx) => {
@@ -129,6 +134,117 @@ export const tablesResolvers: Resolvers = {
     },
   },
   Mutation: {
+    createTable: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.token.userId!,
+        },
+        include: {
+          rolesInRestaurants: true,
+        },
+      });
+
+      if (!user) {
+        throw new AuthenticationError("invalid user");
+      }
+
+      if (
+        !user.rolesInRestaurants.find(
+          (r) => r.restaurantId === args.data.restaurantId && r.role === "ADMIN"
+        )
+      ) {
+        throw new UserInputError("restaurant not found");
+      }
+
+      return ctx.prisma.table.create({
+        data: {
+          restaurantId: args.data.restaurantId,
+          name: args.data.name
+        }
+      })
+    },
+    editTable: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.token.userId!,
+        },
+        include: {
+          rolesInRestaurants: true,
+        },
+      });
+
+      if (!user) {
+        throw new AuthenticationError("invalid user");
+      }
+
+      const table = await ctx.prisma.table.findUnique({
+        where: {
+          id: args.data.tableId
+        }
+      });
+
+      if(!table || table.deleted) {
+        throw new UserInputError("table not found");
+      }
+
+      if (
+        !user.rolesInRestaurants.find(
+          (r) => r.restaurantId === table.restaurantId && r.role === "ADMIN"
+        )
+      ) {
+        throw new UserInputError("table not found");
+      }
+
+      return ctx.prisma.table.update({
+        where: {
+          id: table.id
+        },
+        data: {
+          name: args.data.name
+        }
+      });
+    },
+    deleteTable: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.token.userId!,
+        },
+        include: {
+          rolesInRestaurants: true,
+        },
+      });
+
+      if (!user) {
+        throw new AuthenticationError("invalid user");
+      }
+
+      const table = await ctx.prisma.table.findUnique({
+        where: {
+          id: args.id
+        }
+      });
+
+      if(!table || table.deleted) {
+        throw new UserInputError("table not found");
+      }
+
+      if (
+        !user.rolesInRestaurants.find(
+          (r) => r.restaurantId === table.restaurantId && r.role === "ADMIN"
+        )
+      ) {
+        throw new UserInputError("table not found");
+      }
+
+      return ctx.prisma.table.update({
+        where: {
+          id: table.id
+        },
+        data: {
+          deleted: true
+        }
+      });
+    },
     addItemToTable: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({
         where: {

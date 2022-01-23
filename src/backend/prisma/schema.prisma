@@ -29,17 +29,16 @@ enum BookingStatus {
 }
 
 model Restaurant {
-  id                String                 @id @default(uuid())
-  name              String
-  description       String
-  zipCode           String
-  city              String
-  address           String
-  tables            Table[]
-  bookings          Booking[]
-  menuItems         MenuItem[]
-  usersWithRoles    UserRoleInRestaurant[]
-  tablePositionGrid TablePosition[]
+  id             String                 @id @default(uuid())
+  name           String
+  description    String
+  zipCode        String
+  city           String
+  address        String
+  tables         Table[]
+  bookings       Booking[]
+  menuItems      MenuItem[]
+  usersWithRoles UserRoleInRestaurant[]
 }
 
 model User {
@@ -63,23 +62,12 @@ model UserRoleInRestaurant {
 }
 
 model Table {
-  id              String          @id @default(uuid())
-  name            String
-  bookings        Booking[]
-  restaurant      Restaurant      @relation(fields: [restaurantId], references: [id])
-  restaurantId    String
-  tablesPositions TablePosition[]
-}
-
-model TablePosition {
-  x            Int
-  y            Int
-  table        Table      @relation(fields: [tableId], references: [id])
-  tableId      String
+  id           String     @id @default(uuid())
+  name         String
+  bookings     Booking[]
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   restaurantId String
-
-  @@id([x, y, restaurantId])
+  deleted      Boolean    @default(false)
 }
 
 model Booking {

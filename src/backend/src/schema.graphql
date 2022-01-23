@@ -145,6 +145,16 @@ input EditRestaurantInfoInput {
   city: String
 }
 
+input CreateTableInput {
+  restaurantId: ID!
+  name: String!
+}
+
+input EditTableInput {
+  tableId: ID!
+  name: String!
+}
+
 type Query {
   """
   Returns a JWT token for authentication
@@ -233,6 +243,18 @@ type Mutation {
   Edit restaurant information
   """
   editRestaurantInfo(data: EditRestaurantInfoInput!): Restaurant!
+  """
+  Create new table in restaurant
+  """
+  createTable(data: CreateTableInput!): Table
+  """
+  Edit table data
+  """
+  editTable(data: EditTableInput!): Table
+  """
+  Delete table
+  """
+  deleteTable(id: ID!): Table
 }
 
 type Subscription {
