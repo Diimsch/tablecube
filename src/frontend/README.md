@@ -20,3 +20,6 @@ Build Web:
     - flutter build web
 Build IOS (only on MAC):
     - flutter build ios
+
+### Configuration
+Edit backend endpoint in /src/frontend/api.dart.
