@@ -32,7 +32,7 @@ class TableServiceScreen extends StatelessWidget {
     var args = getOverviewArguments(context);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-                appBar: AppBar(
+      appBar: AppBar(
         actions: [
           AccountBubble(click: () {
             logOutUser();
@@ -83,16 +83,30 @@ class TableServiceScreen extends StatelessWidget {
                         handleError(error as OperationException),
                   ),
                   builder: (RunMutation runMutation, QueryResult? result) {
-                    return RoundedButton(
-                        text: "Service Finished",
-                        click: () {
-                          runMutation({
-                            "data": {
-                              "tableId": args.tableId,
-                              "status": "CHECKED_IN"
-                            }
-                          });
-                        });
+                    return Column(
+                      children: [
+                        RoundedButton(
+                            text: "Service Finished",
+                            click: () {
+                              runMutation({
+                                "data": {
+                                  "tableId": args.tableId,
+                                  "status": "CHECKED_IN"
+                                }
+                              });
+                            }),
+                        RoundedButton(
+                            text: "Free up table",
+                            click: () {
+                              runMutation({
+                                "data": {
+                                  "tableId": args.tableId,
+                                  "status": "DONE"
+                                }
+                              });
+                            }),
+                      ],
+                    );
                   }),
             ],
           ),
