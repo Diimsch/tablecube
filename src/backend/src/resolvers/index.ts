@@ -48,7 +48,6 @@ export const permissions = shield(
       booking: and(isAuthenticated, isHuman),
       table: isAuthenticated,
       menu: allow,
-      promptValidation: isAuthenticated,
       restaurant: allow,
       roleInRestaurant: and(isAuthenticated, isHuman),
     },
@@ -64,6 +63,7 @@ export const permissions = shield(
       changeBookingStatus: isAuthenticated,
       payItems: and(isAuthenticated, isHuman),
       editRestaurantInfo: and(isAuthenticated, isHuman),
+      promptValidation: isAuthenticated,
     },
   },
   {

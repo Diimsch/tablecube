@@ -77,7 +77,6 @@ class Body extends State<ColorScreen> {
             }
           }
           if (!found) {
-            debugPrint('hello');
             createBooking(args.restaurantId, args.tableId, true);
           }
           return Scaffold(
@@ -127,14 +126,25 @@ class Body extends State<ColorScreen> {
                                 {showErrorMessage("Farbauswahl ist falsch.")}),
                         builder:
                             (RunMutation runMutation, QueryResult? result) {
-                          return RoundedButton(
-                            text: "Continue",
-                            click: () {
-                              runMutation({
-                                "tableId": args.tableId,
-                                "code": [color1, color2, color3, color4]
-                              });
-                            },
+                          return Column(
+                            children: [
+                              RoundedButton(
+                                text: "Continue",
+                                click: () {
+                                  runMutation({
+                                    "tableId": args.tableId,
+                                    "code": [color1, color2, color3, color4]
+                                  });
+                                },
+                              ),
+                              RoundedButton(
+                                text: "Show Color prompt",
+                                click: () {
+                                  debugPrint('asd');
+                                  promptValidation(args.tableId);
+                                },
+                              ),
+                            ],
                           );
                         }))
               ])));
@@ -146,7 +156,7 @@ class Body extends State<ColorScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            padding: const EdgeInsets.only(right: 20, top: 30, bottom: 30),
             child: const Text(
               "Color 1: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -178,7 +188,7 @@ class Body extends State<ColorScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            padding: const EdgeInsets.only(right: 20, top: 30, bottom: 30),
             child: const Text(
               "Color 2: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -210,7 +220,7 @@ class Body extends State<ColorScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            padding: const EdgeInsets.only(right: 20, top: 30, bottom: 30),
             child: const Text(
               "Color 3: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -242,7 +252,7 @@ class Body extends State<ColorScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            padding: const EdgeInsets.only(right: 20, top: 40, bottom: 40),
+            padding: const EdgeInsets.only(right: 20, top: 30, bottom: 30),
             child: const Text(
               "Color 4: ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),

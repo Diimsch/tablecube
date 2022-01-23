@@ -21,52 +21,55 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        RoundedInputField(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 80),
+          children: [Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+          RoundedInputField(
+              controller: TextEditingController(text: ""),
+              hintText: "First Name",
+              onChanged: (value) {
+                firstName = value;
+              }),
+          RoundedInputField(
             controller: TextEditingController(text: ""),
-            hintText: "First Name",
+            hintText: "Last Name",
             onChanged: (value) {
-              firstName = value;
-            }),
-        RoundedInputField(
-          controller: TextEditingController(text: ""),
-          hintText: "Last Name",
-          onChanged: (value) {
-            lastName = value;
-          },
-        ),
-        RoundedInputField(
-          controller: TextEditingController(text: ""),
-          hintText: "E-mail",
-          onChanged: (value) {
-            email = value;
-          },
-          icon: Icons.email,
-        ),
-        RoundedPasswordField(onChanged: (value) {
-          password = value;
-        }),
-        RoundedButton(
-            text: "SIGNUP",
+              lastName = value;
+            },
+          ),
+          RoundedInputField(
+            controller: TextEditingController(text: ""),
+            hintText: "E-mail",
+            onChanged: (value) {
+              email = value;
+            },
+            icon: Icons.email,
+          ),
+          RoundedPasswordField(onChanged: (value) {
+            password = value;
+          }),
+          RoundedButton(
+              text: "SIGNUP",
+              click: () {
+                if (firstName.isEmpty ||
+                    lastName.isEmpty ||
+                    email.isEmpty ||
+                    password.isEmpty) {
+                  showErrorMessage("Please fill out all required values!");
+                } else {
+                  createUser(firstName, lastName, email, password);
+                }
+              }),
+          LoginOrSignupCheck(
             click: () {
-              if (firstName.isEmpty ||
-                  lastName.isEmpty ||
-                  email.isEmpty ||
-                  password.isEmpty) {
-                showErrorMessage("Please fill out all required values!");
-              } else {
-                createUser(firstName, lastName, email, password);
-              }
-            }),
-        LoginOrSignupCheck(
-          click: () {
-            Navigator.pushNamed(context, '/login');
-          },
-          login: false,
-        ),
-      ],
-    ));
+              Navigator.pushNamed(context, '/login');
+            },
+            login: false,
+          ),
+              ],
+            )],
+        ));
   }
 }

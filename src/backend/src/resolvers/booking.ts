@@ -129,6 +129,7 @@ export const bookingResolvers: Resolvers = {
             status: {
               not: "DONE",
             },
+            /*
             OR: [
               {
                 start: {
@@ -153,6 +154,7 @@ export const bookingResolvers: Resolvers = {
                 ],
               },
             ],
+            */
           },
         });
 
