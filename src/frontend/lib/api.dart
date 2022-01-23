@@ -75,7 +75,7 @@ logOutUser() async {
       ?.pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
 }
 
-createBooking(String restaurantId, String tableId) async {
+createBooking(String restaurantId, String tableId, bool prompt) async {
   const String createBooking = r'''
     mutation Mutation($booking: CreateBookingInput!) {
       createBooking(booking: $booking) {
@@ -91,6 +91,26 @@ createBooking(String restaurantId, String tableId) async {
       });
 
   final QueryResult result = await client.mutate(options);
+
+  if (result.hasException) {
+    handleError(result.exception!);
+  }
+
+  await promptValidation(tableId);
+}
+
+promptValidation(String tableId) async {
+  const String promptValidation = r'''
+  query Query($tableId: String!) {
+    promptValidation(tableId: $tableId)
+  }
+  ''';
+
+  final QueryOptions options = QueryOptions(
+      document: gql(promptValidation),
+      variables: <String, dynamic>{'tableId': tableId});
+
+  final QueryResult result = await client.query(options);
 
   if (result.hasException) {
     handleError(result.exception!);
