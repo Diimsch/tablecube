@@ -87,51 +87,6 @@ export const tablesResolvers: Resolvers = {
 
       return table;
     },
-    promptValidation: async (parent, args, ctx) => {
-      let booking = await ctx.prisma.booking.findFirst({
-        where: {
-          tableId: args.tableId,
-          NOT: {
-            OR: [
-              {
-                status: BookingStatus.RESERVED,
-              },
-              { status: BookingStatus.DONE },
-            ],
-          },
-        },
-      });
-
-      if (!booking) {
-        const current = new Date();
-        booking = await ctx.prisma.booking.findFirst({
-          where: {
-            tableId: args.tableId,
-            status: "RESERVED",
-            start: {
-              lte: current,
-            },
-            end: {
-              gte: current,
-            },
-          },
-          orderBy: {
-            start: "asc",
-          },
-        });
-      }
-
-      if (!booking) {
-        return false;
-      }
-
-      console.log(booking.joinValidationData);
-      pubsub.publish("VALIDATION_PROMPTED", {
-        tableId: args.tableId,
-        code: booking.joinValidationData,
-      });
-      return true;
-    },
   },
   Mutation: {
     createTable: async (parent, args, ctx) => {
@@ -203,6 +158,48 @@ export const tablesResolvers: Resolvers = {
           name: args.data.name
         }
       });
+    },
+       promptValidation: async (parent, args, ctx) => {
+      let booking = await ctx.prisma.booking.findFirst({
+        where: {
+          tableId: args.tableId,
+          NOT: {
+            OR: [
+              { status: BookingStatus.DONE },
+            ],
+          },
+        },
+      });
+
+      if (!booking) {
+        const current = new Date();
+        booking = await ctx.prisma.booking.findFirst({
+          where: {
+            tableId: args.tableId,
+            status: "RESERVED",
+            start: {
+              lte: current,
+            },
+            end: {
+              gte: current,
+            },
+          },
+          orderBy: {
+            start: "asc",
+          },
+        });
+      }
+
+      if (!booking) {
+        return false;
+      }
+
+      console.log(booking.joinValidationData);
+      pubsub.publish("VALIDATION_PROMPTED", {
+        tableId: args.tableId,
+        code: booking.joinValidationData,
+      });
+      return true;
     },
     deleteTable: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({

@@ -178,10 +178,6 @@ type Query {
   """
   menu(restaurantId: ID!): [MenuItem]!
   """
-  Request authentication color code to be shown on the Raspberry PI
-  """
-  promptValidation(tableId: String!): Boolean
-  """
   Returns list of restaurants
   """
   restaurant(restaurantId: ID!): Restaurant
@@ -256,6 +252,10 @@ type Mutation {
   Delete table
   """
   deleteTable(id: ID!): Table
+  """
+  Request authentication color code to be shown on the Raspberry PI
+  """
+  promptValidation(tableId: String!): Boolean
 }
 
 type Subscription {

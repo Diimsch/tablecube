@@ -92,25 +92,27 @@ createBooking(String restaurantId, String tableId, bool prompt) async {
       });
 
   final QueryResult result = await client.mutate(options);
-  await promptValidation(tableId);
 }
 
 promptValidation(String tableId) async {
   const String promptValidation = r'''
-  query Query($tableId: String!) {
+  mutation Mutation($tableId: String!) {
     promptValidation(tableId: $tableId)
   }
   ''';
 
-  final QueryOptions options = QueryOptions(
-      document: gql(promptValidation),
-      variables: <String, dynamic>{'tableId': tableId});
+  final MutationOptions options = MutationOptions(
+    document: gql(promptValidation),
+    variables: <String, dynamic>{'tableId': tableId},
+  );
 
-  final QueryResult result = await client.query(options);
+  final QueryResult result = await client.mutate(options);
 
   if (result.hasException) {
     handleError(result.exception!);
   }
+
+  return result;
 }
 
 createUser(
