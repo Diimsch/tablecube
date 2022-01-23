@@ -120,7 +120,7 @@ export const bookingResolvers: Resolvers = {
         throw new UserInputError("start or end date smaller than current date");
       }
 
-      return await ctx.prisma.$transaction(async (prisma) => {
+      const booking = await ctx.prisma.$transaction(async (prisma) => {
         const bookings = await prisma.booking.findMany({
           where: {
             tableId: args.booking.tableId,
@@ -160,7 +160,7 @@ export const bookingResolvers: Resolvers = {
           );
         }
 
-        const booking = await prisma.booking.create({
+        return prisma.booking.create({
           data: {
             tableId: args.booking.tableId,
             start: args.booking.start!,
@@ -176,17 +176,16 @@ export const bookingResolvers: Resolvers = {
             },
           },
         });
-        console.log(`validation data for ${booking.id}: ${validatorColorCode}`);
-
-        if (current >= booking.start && current < booking.end) {
-          pubsub.publish("TABLE_UPDATED", {
-            tableId: booking.tableId,
-            status: booking.status,
-          });
-        }
-
-        return booking;
       });
+
+      if (current >= booking.start && current < booking.end) {
+        pubsub.publish("TABLE_UPDATED", {
+          tableId: booking.tableId,
+          status: booking.status,
+        });
+      }
+
+      return booking;
     },
     joinBooking: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findUnique({
