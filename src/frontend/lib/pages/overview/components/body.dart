@@ -114,7 +114,7 @@ class Body extends StatelessWidget {
                           arguments: args);
                     }),
                 RoundedButton(
-                    text: "Edit table placement",
+                    text: "Edit tables",
                     click: () {
                       Navigator.pushNamed(context, '/admin/tables',
                           arguments: args);

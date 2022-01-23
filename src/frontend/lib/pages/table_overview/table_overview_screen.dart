@@ -134,7 +134,7 @@ class TableOverviewScreen extends StatelessWidget {
             onTap: () {
               selectedItems.clear();
               Navigator.pushNamed(context, '/service',
-                  arguments: OverviewArguments(restaurantId, '',
+                  arguments: OverviewArguments(restaurantId, tables[index]['id'],
                       tables[index]['occupyingBooking']['id'].toString()));
             },
             child: Column(

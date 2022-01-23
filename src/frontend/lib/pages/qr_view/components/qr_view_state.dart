@@ -35,7 +35,7 @@ class QrViewState extends State<QrViewScreen> {
     args = getOverviewArguments(context);
 
     return Scaffold(
-      appBar: getAppBar("Scan table Code"),
+      appBar: getAppBar("Scan table code"),
       body: Column(
         children: <Widget>[
           Expanded(flex: 5, child: qrViewFrame(context)),
