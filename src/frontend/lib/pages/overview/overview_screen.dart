@@ -17,13 +17,15 @@ query RoleInRestaurant($restaurantId: ID!) {
 // ignore: must_be_immutable
 class OverviewScreen extends StatelessWidget {
   final UserType userType;
-  late UserType f;
   late OverviewArguments args;
   OverviewScreen({Key? key, this.userType = UserType.none}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    args = getOverviewArguments(context);
+    args = OverviewArguments(
+        "823528e6-6066-4948-94b3-eee316380f1b",
+        "8fd830ce-3dad-4ce5-8743-5a749d1b4a6e",
+        "8fdbcd9e-f628-4bc6-b7f1-ab2aa97a4c3a"); //getOverviewArguments(context);
 
     return Query(
       options: QueryOptions(
@@ -48,7 +50,7 @@ class OverviewScreen extends StatelessWidget {
             (e) => e.toString() == 'UserType.' + userTypeFetch.toLowerCase(),
             orElse: () => UserType.none);
 
-        return Scaffold(body: Body(userType: f, args: args));
+        return Scaffold(body: Body(userType: userRole, args: args));
       },
     );
   }
