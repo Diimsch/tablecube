@@ -19,6 +19,7 @@
 /lib/common_components/text_field_container.dart        Schmidt
 /lib/pages/bill_view                                    Seng
 /lib/pages/overview                                     Seng
+/lib/pages/page_editTables				Schmidt, Seng
 /lib/pages/page_login                                   Schmidt
 /lib/pages/page_restaurantList                          Schmidt
 /lib/pages/page_selectMenu                              Vogrinc
