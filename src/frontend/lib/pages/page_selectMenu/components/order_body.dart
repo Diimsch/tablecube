@@ -93,7 +93,7 @@ class OrderBody extends State<SelectMenuScreen> {
                             return;
                           }
                           showFeedback(
-                            "Items added to bill",
+                            "Items ordered and added to bill.",
                           );
                           setState(() {
                             items.clear();
