@@ -44,7 +44,7 @@ class OverviewScreen extends StatelessWidget {
 
         // it can be either Map or List
         String userTypeFetch = result.data!['roleInRestaurant']['role'];
-        f = UserType.values.firstWhere(
+        userRole = UserType.values.firstWhere(
             (e) => e.toString() == 'UserType.' + userTypeFetch.toLowerCase(),
             orElse: () => UserType.none);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum UserType { waiter, admin, none }
+UserType userRole = UserType.none;
 
 const primaryColor = Color(0xFF4D74FF);
 const primaryLightColor = Color(0xFFdee5ff);
