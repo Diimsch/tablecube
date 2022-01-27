@@ -9,6 +9,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'list_item.dart';
 
+/// Mutation to add the selected item to a Booking
 const String addItemToBooking = r"""
 mutation AddItemToBooking($data: AddItemToBookingInput!) {
   addItemToBooking(data: $data) {
@@ -36,7 +37,7 @@ class OrderBody extends State<SelectMenuScreen> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // main content
+            /// main content
             Expanded(
                 flex: 5,
                 child: items.isEmpty
@@ -48,7 +49,7 @@ class OrderBody extends State<SelectMenuScreen> {
                     : ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, index) {
-                          // Display the list item
+                          /// Display the list item
                           return Dismissible(
                               key: UniqueKey(),
                               direction: DismissDirection.none,
@@ -73,7 +74,7 @@ class OrderBody extends State<SelectMenuScreen> {
                               ));
                         },
                       )),
-            // bootom buttons
+            /// bootom buttons
             TextFieldContainer(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -132,6 +133,8 @@ class OrderBody extends State<SelectMenuScreen> {
         )));
   }
 
+
+  /// Calculates the total price of the selected order
   void calculateCurrentBalance() {
     balance = 0.0;
     for (var item in items) {

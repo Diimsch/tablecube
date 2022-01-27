@@ -5,6 +5,7 @@ import 'package:frontend/constants.dart';
 import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch all available Restaurants with their tables and current occupying bookings
 const String getRestaurantsQuery = r"""
 query Query {
   restaurants {
@@ -49,7 +50,7 @@ class Body extends StatelessWidget {
           return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
         }
 
-        // it can be either Map or List
+        /// it can be either Map or List
         List restaurants = result.data!['restaurants'];
         return Background(
             child: ListView.builder(
@@ -112,7 +113,7 @@ class Body extends StatelessWidget {
                                     return const SpinKitRotatingCircle(
                                         color: Colors.white, size: 50.0);
                                   }
-                                  // it can be either Map or List
+                                  /// it can be either Map or List
                                   String userTypeFetch =
                                       result.data!['roleInRestaurant']['role'];
                                   UserType f = UserType.values.firstWhere(

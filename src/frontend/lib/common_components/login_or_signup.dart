@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
 
+/// The text that is displayed depending on wheter you are on the Log in or Sign up page
+
 class LoginOrSignupCheck extends StatelessWidget {
   final bool login;
   final VoidCallback click;

@@ -8,6 +8,7 @@ import 'package:frontend/pages/table_overview/table_overview_screen.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Mutation to update the Booking status of a Table
 const String updateBookingStatus = r"""
 mutation ChangeBookingStatus($data: ChangeBookingStatusInput!) {
   changeBookingStatus(data: $data) {
@@ -24,9 +25,10 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size; // total height and width of screen
+    /// total height and width of screen
+    Size size = MediaQuery.of(context).size;
 
-    // User screen
+    /// User screen
     if (userType == UserType.none) {
       return Scaffold(
         appBar: getAppBar("Table Options"),
@@ -78,11 +80,11 @@ class Body extends StatelessWidget {
           ),
         )),
       );
-      // waiter screen
+      /// waiter screen
     } else if (userType == UserType.waiter) {
       return Background(
           child: TableOverviewScreen(restaurantId: args.restaurantId));
-      // admin screen
+      /// admin screen
     } else if (userType == UserType.admin) {
       return Scaffold(
           appBar: AppBar(

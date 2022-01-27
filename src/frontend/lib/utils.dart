@@ -4,6 +4,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/bottom_nav_bar/account_bubble.dart';
 import 'package:frontend/constants.dart';
 
+/// Utility function to display Error messages
 showErrorMessage(String msg) {
   Fluttertoast.showToast(
       msg: msg,
@@ -14,6 +15,7 @@ showErrorMessage(String msg) {
       webBgColor: warningColorWebToast);
 }
 
+/// Utility function to display to show Feedback
 showFeedback(String msg) {
   Fluttertoast.showToast(
       msg: msg,
@@ -24,6 +26,7 @@ showFeedback(String msg) {
       webBgColor: okColorWebToast);
 }
 
+/// Common appbar widget
 AppBar getAppBar(String title) {
   return AppBar(
     actions: [
@@ -38,6 +41,7 @@ AppBar getAppBar(String title) {
   );
 }
 
+/// OverviewArguments that are passed between components
 OverviewArguments getOverviewArguments(BuildContext context) {
   return ModalRoute.of(context)!.settings.arguments == null
       ? OverviewArguments('null', 'null', 'null')

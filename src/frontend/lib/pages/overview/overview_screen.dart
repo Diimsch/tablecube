@@ -6,6 +6,7 @@ import 'package:frontend/pages/overview/components/body.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch the Role of a User inside the Selected Restaurant
 const String getRoleInRestaurant = r"""
 query RoleInRestaurant($restaurantId: ID!) {
   roleInRestaurant(restaurantId: $restaurantId) {
@@ -41,7 +42,7 @@ class OverviewScreen extends StatelessWidget {
           return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
         }
 
-        // it can be either Map or List
+        /// it can be either Map or List
         String userTypeFetch = result.data!['roleInRestaurant']['role'];
         userRole = UserType.values.firstWhere(
             (e) => e.toString() == 'UserType.' + userTypeFetch.toLowerCase(),

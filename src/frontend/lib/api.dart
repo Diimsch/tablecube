@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 const storage = FlutterSecureStorage();
-const url = 'http://localhost:4000/graphql';
+const url =
+    'https://21w-me-teamg.adrianmxb.com/graphql';
 
 final _httpLink = HttpLink(
   url,
 );
 
+/// Sets the authentication Link for the GraphQl client
 var _authLink = AuthLink(
   getToken: () async {
     String? token = await storage.read(key: "authToken");
@@ -25,6 +27,7 @@ var _authLink = AuthLink(
 
 Link _link = _authLink.concat(_httpLink);
 
+/// initialize the GraphQL client
 final GraphQLClient client = GraphQLClient(
   cache: GraphQLCache(),
   link: _link,
@@ -33,6 +36,7 @@ final GraphQLClient client = GraphQLClient(
 final ValueNotifier<GraphQLClient> vnClient =
     ValueNotifier(GraphQLClient(cache: GraphQLCache(), link: _link));
 
+/// Common error Handling function
 handleError(OperationException error) {
   if (error.graphqlErrors.isEmpty) {
     showErrorMessage("An Error occured. Please try again later.");
@@ -41,6 +45,7 @@ handleError(OperationException error) {
   }
 }
 
+/// Log in the user and add the Auth token into the secure storage
 logInUser(String email, String password) async {
   const String logInUser = r'''
     query Login($email: String!, $password: String!) {
@@ -68,6 +73,7 @@ logInUser(String email, String password) async {
   }
 }
 
+/// Logout the user, remove the auth token and navigate to the home page
 logOutUser() async {
   await storage.deleteAll();
 
@@ -75,6 +81,7 @@ logOutUser() async {
       ?.pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
 }
 
+//// Create a booking
 createBooking(String restaurantId, String tableId, bool prompt) async {
   const String createBooking = r'''
     mutation Mutation($booking: CreateBookingInput!) {
@@ -93,6 +100,7 @@ createBooking(String restaurantId, String tableId, bool prompt) async {
   final QueryResult result = await client.mutate(options);
 }
 
+/// Prompt the color validation code on the device
 promptValidation(String tableId) async {
   const String promptValidation = r'''
   mutation Mutation($tableId: String!) {
@@ -114,6 +122,7 @@ promptValidation(String tableId) async {
   return result;
 }
 
+/// Create a new user
 createUser(
     String firstName, String lastName, String email, String password) async {
   const String createUser = r'''

@@ -18,8 +18,8 @@ class QrViewState extends State<QrViewScreen> {
   late OverviewArguments args;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
+  /// In order to get hot reload to work we need to pause the camera if the platform
+  /// is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
@@ -88,14 +88,14 @@ class QrViewState extends State<QrViewScreen> {
   }
 
   Widget qrViewFrame(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
+    /// For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
         ? minQrFrameSize
         : defaultQrFrameSize;
 
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
+    /// To ensure the Scanner view is properly sizes after rotation
+    /// we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
       key: qrKey,
       onQRViewCreated: onQRViewCreated,
@@ -115,7 +115,7 @@ class QrViewState extends State<QrViewScreen> {
     });
 
     controller.scannedDataStream.listen((scanData) {
-      // only allow qr code and do not execute request multiple times
+      /// only allow qr code and do not execute request multiple times
 
       if (!requestLoading && scanData.format == BarcodeFormat.qrcode) {
         requestLoading = true;

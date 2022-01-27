@@ -9,6 +9,7 @@ import 'package:frontend/pages/restaurant_info/restaurant_info_screen.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch the information of a Restaurant
 const String getRestaurantInfo = r'''
 query Query($restaurantId: ID!) {
   restaurant(restaurantId: $restaurantId) {
@@ -21,6 +22,7 @@ query Query($restaurantId: ID!) {
 }
 ''';
 
+/// Mutation to update the Restaurant information
 const String updateRestaurantInfo = r'''
 mutation Mutation($data: EditRestaurantInfoInput!) {
   editRestaurantInfo(data: $data) {
@@ -61,8 +63,8 @@ class Body extends State<RestaurantInfoScreen> {
             return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
-          // must be done with controllers to preset TextField values.
-          // dataLoaded is mandatory because of GraphQL polling, that will reset the controller values and your edited texts
+          /// must be done with controllers to preset TextField values.
+          /// dataLoaded is mandatory because of GraphQL polling, that will reset the controller values and your edited texts
           Map loadetRestaurant = result.data!['restaurant'];
           if (!widget.dataLoaded && result.data != null) {
             widget.restaurant = loadetRestaurant;

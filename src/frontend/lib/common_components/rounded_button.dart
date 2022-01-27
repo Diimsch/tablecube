@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
 
+
+/// Common Rounded off button
+
 class RoundedButton extends StatelessWidget {
   final String text;
   final VoidCallback click;

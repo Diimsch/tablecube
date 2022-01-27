@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         title: 'Tablecube',
         initialRoute: initialRoute,
+        /// Defined Routes
         routes: {
           '/': (context) => const WelcomeScreen(),
           '/signup': (context) => const SignUpScreen(),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 
+/// Common rounded of input field
+
 class RoundedInputField extends StatelessWidget {
   final String hintText;
   final IconData icon;

@@ -5,11 +5,11 @@ import 'package:frontend/common_components/background.dart';
 import 'package:frontend/common_components/rounded_button.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
-import 'package:frontend/pages/overview/overview_screen.dart';
 import 'package:frontend/pages/select_color/color_screen.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch the currently active booking of a Table
 const String userOccupyingBooking = r''' 
 query OccupyingBooking {
   me {
@@ -31,6 +31,7 @@ query OccupyingBooking {
 
 ''';
 
+/// Mutation to check into a Table
 const String checkIn = r'''
 mutation ChangeBookingStatus($tableId: ID!, $code: [ValidationColors!]!) {
   checkIn(tableId: $tableId, code: $code) {
@@ -83,7 +84,7 @@ class Body extends State<ColorScreen> {
               appBar: getAppBar("Verification"),
               body: Background(
                   child: Column(children: [
-                // Display hint
+                /// Display hint
                 Container(
                   padding: const EdgeInsets.all(20),
                   child: const Text(
@@ -92,7 +93,7 @@ class Body extends State<ColorScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                // Main content
+                /// Main content
                 Expanded(
                   flex: 3,
                   child: Column(
@@ -106,7 +107,7 @@ class Body extends State<ColorScreen> {
                   ),
                 ),
                 TextFieldContainer(
-                    // Mutatation check in on table with selected color code
+                    /// Mutatation check in on table with selected color code
                     child: Mutation(
                         options: MutationOptions(
                             document: gql(checkIn),

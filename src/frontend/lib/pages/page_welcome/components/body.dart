@@ -4,6 +4,7 @@ import 'package:frontend/constants.dart';
 import 'package:frontend/common_components/background.dart';
 import 'package:flutter_svg/svg.dart';
 
+/// Welcome page when starting the application
 class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);
 

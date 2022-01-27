@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// This is the general background design for the application
+
 class Background extends StatelessWidget {
   final Widget child;
   const Background({

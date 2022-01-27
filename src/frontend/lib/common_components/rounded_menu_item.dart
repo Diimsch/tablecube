@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 
+
+/// Common Rounded Menu item
 class RoundedMenuItem extends StatefulWidget {
   final VoidCallback click;
   final Map<String, dynamic> item;
@@ -34,7 +36,7 @@ class _ButtonState extends State<RoundedMenuItem> {
         })
       },
       child: Container(
-          // Container and color are important to make the area clickable
+          /// Container and color are important to make the area clickable
           color: Colors.transparent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

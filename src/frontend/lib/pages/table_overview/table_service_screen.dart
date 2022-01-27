@@ -8,6 +8,7 @@ import 'package:frontend/pages/overview/components/body.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch all restaurants
 const String getRestaurantsQuery = r"""
 query Restaurants {
   restaurants {

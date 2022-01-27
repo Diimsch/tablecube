@@ -6,6 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../constants.dart';
 
+/// Query to fetch restaurants
 const String getRestaurantsQuery = r"""
 query Restaurants {
   restaurants {
@@ -46,9 +47,10 @@ class TableOverviewScreen extends StatelessWidget {
           return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
         }
 
-        // it can be either Map or List
+        /// it can be either Map or List
         List restaurants = result.data!['restaurants'];
 
+        /// Split the tables into two different groups
         List selectedRestaurant =
             restaurants.where((r) => r['id'] == restaurantId).toList();
 
@@ -160,6 +162,7 @@ class TableOverviewScreen extends StatelessWidget {
         });
   }
 
+  /// This function maps the status that gets returned from the backend into a more nicely readable String to display on the frontend
   String mapStatusToString(String status) {
     switch (status) {
       case 'NEEDS_SERVICE':
@@ -173,6 +176,7 @@ class TableOverviewScreen extends StatelessWidget {
     }
   }
 
+  /// This function Maps a table status to a certain color
   Color mapStatusToColor(String status) {
     switch (status) {
       case 'NEEDS_SERVICE':

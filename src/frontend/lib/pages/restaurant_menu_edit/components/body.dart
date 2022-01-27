@@ -8,6 +8,7 @@ import 'package:frontend/pages/restaurant_menu_edit/restaurant_menu_edit_screen.
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch the menu items of a restaurant
 const String getMenuQuery = r"""
 query($restaurantId: ID!) {
   menu(restaurantId: $restaurantId) {
@@ -21,6 +22,7 @@ query($restaurantId: ID!) {
 }
 """;
 
+/// Mutation to add a new Menu item to the Menu
 const String addMenuItemMutation = r"""
 mutation AddMenuItem($restaurantId: ID!, $menuItem: CreateMenuItemInput!) {
   addMenuItem(restaurantId: $restaurantId, menuItem: $menuItem) {
@@ -34,6 +36,7 @@ mutation AddMenuItem($restaurantId: ID!, $menuItem: CreateMenuItemInput!) {
 }
 """;
 
+/// Mutation to delete the selected Menu item
 const String delMenuItemMutation = r"""
 mutation DelMenuItem($menuItemId: ID!) {
   delMenuItem(menuItemId: $menuItemId) {
@@ -47,6 +50,7 @@ mutation DelMenuItem($menuItemId: ID!) {
 }
 """;
 
+/// Mutation to update a Menu item
 const String updateMenuItemMutation = r"""
 mutation UpdateMenuItem($menuItemId: ID!, $menuItem: CreateMenuItemInput!) {
   updateMenuItem(menuItemId: $menuItemId, menuItem: $menuItem) {
@@ -85,7 +89,7 @@ class Body extends State<RestaurantMenuEditScreen> {
             return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
-          // it can be either Map or List
+          /// it can be either Map or List
           List menuItems = result.data!['menu'];
 
           return Scaffold(
@@ -100,7 +104,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                         itemCount: menuItems.length,
                         itemBuilder: (context, index) {
                           final item = menuItems[index];
-                          // Display the list item
+                          /// Display the list item
                           return Dismissible(
                               key: Key(item['id']),
                               direction: DismissDirection.none,
@@ -110,7 +114,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                                 });
                               },
 
-                              // Display item's title, price...
+                              /// Display item's title, price...
                               child: TextFieldContainer(
                                   child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -222,7 +226,7 @@ class Body extends State<RestaurantMenuEditScreen> {
                         direction: DismissDirection.none,
                         onDismissed: (_) {},
 
-                        // Display item's title, price...
+                        /// Display item's title, price...
                         child: TextFieldContainer(
                             child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -316,6 +320,7 @@ class Body extends State<RestaurantMenuEditScreen> {
         });
   }
 
+  /// Function to check if all fields have a value
   bool isValid(Map<String, dynamic> item) {
     return item["name"] != null &&
         item["name"] != "" &&

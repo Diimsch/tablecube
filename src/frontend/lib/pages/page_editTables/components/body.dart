@@ -8,6 +8,7 @@ import 'package:frontend/pages/page_editTables/restaurant_table_edit_screen.dart
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to get the Tables of a Restaurant
 const String getTablesQuery = r"""
 query Query($restaurantId: ID!) {
   restaurant(restaurantId: $restaurantId) {
@@ -17,9 +18,9 @@ query Query($restaurantId: ID!) {
     }
   }
 }
-
 """;
 
+/// Mutation to create a new Table inside a Restaurant
 const String createTableMutation = r"""
 mutation CreateTable($data: CreateTableInput!) {
   createTable(data: $data) {
@@ -29,6 +30,7 @@ mutation CreateTable($data: CreateTableInput!) {
 }
 """;
 
+/// Mutation to delete the selected Table
 const String delTableMutation = r"""
 mutation DeleteTable($deleteTableId: ID!) {
   deleteTable(id: $deleteTableId) {
@@ -38,6 +40,7 @@ mutation DeleteTable($deleteTableId: ID!) {
 }
 """;
 
+/// Mutation to update the selected Table
 const String updateTableMutation = r"""
 mutation CreateTable($data: EditTableInput!) {
   editTable(data: $data) {
@@ -72,7 +75,7 @@ class Body extends State<RestaurantTableEditScreen> {
             return const SpinKitRotatingCircle(color: Colors.white, size: 50.0);
           }
 
-          // it can be either Map or List
+          /// it can be either Map or List
           List tables = result.data!['restaurant']['tables'];
 
           debugPrint('tables: $tables');
@@ -89,7 +92,7 @@ class Body extends State<RestaurantTableEditScreen> {
                         itemCount: tables.length,
                         itemBuilder: (context, index) {
                           final table = tables[index];
-                          // Display the list item
+                          /// Display the list item
                           return Dismissible(
                               key: Key(table['id']),
                               direction: DismissDirection.none,
@@ -99,7 +102,7 @@ class Body extends State<RestaurantTableEditScreen> {
                                 });
                               },
 
-                              // Display item's title, price...
+                              /// Display item's title, price...
                               child: TextFieldContainer(
                                   child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -208,7 +211,7 @@ class Body extends State<RestaurantTableEditScreen> {
                         direction: DismissDirection.none,
                         onDismissed: (_) {},
 
-                        // Display item's title, price...
+                        /// Display item's title, price...
                         child: TextFieldContainer(
                             child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,

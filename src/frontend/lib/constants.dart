@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+/// Constants that are commonly used throughout the application
 
 enum UserType { waiter, admin, none }
 UserType userRole = UserType.none;

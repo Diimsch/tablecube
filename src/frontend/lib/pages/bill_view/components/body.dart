@@ -7,10 +7,10 @@ import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
 import 'package:frontend/common_components/background.dart';
-import 'package:frontend/pages/overview/components/body.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch the current bill
 const String getBillQuery = r"""
 query Query($bookingId: ID!) {
   booking(bookingId: $bookingId) {
@@ -30,6 +30,7 @@ query Query($bookingId: ID!) {
 }
 """;
 
+/// Mutation to pay selected items
 const String payItems = r"""
 mutation Mutation($bookingItemId: [ID!]!) {
   payItems(bookingItemId: $bookingItemId) {
@@ -82,7 +83,7 @@ class Body extends State<BillScreen> {
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Helper buttons
+                  /// Helper buttons
                   Row(
                     children: [
                       allSelected
@@ -107,7 +108,7 @@ class Body extends State<BillScreen> {
                               })
                     ],
                   ),
-                  // Main Content
+                  /// Main Content
                   Expanded(
                       flex: 5,
                       child: ListView.builder(
@@ -142,7 +143,7 @@ class Body extends State<BillScreen> {
                           }
                         },
                       )),
-                  // bottom buttons
+                  /// bottom buttons
                   TextFieldContainer(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

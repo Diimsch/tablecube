@@ -8,6 +8,7 @@ import 'package:frontend/pages/page_selectMenu/select_menu.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+/// Query to fetch the menu of a restaurant
 const String getMenuQuery = r"""
 query getMenu($restaurantId: ID!) {
   menu(restaurantId: $restaurantId) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_components/text_field_container.dart';
 
+/// Component for an Item on the Order list
 class OrderListItem extends StatelessWidget {
   final Map<String, dynamic> item;
   final VoidCallback onDelete;
