@@ -45,27 +45,6 @@ async function main() {
         data: {
             name: "11R",
             restaurantId: restaurant.id,
-            tablesPositions: {
-                createMany: {
-                    data: [
-                        {
-                            x: 0,
-                            y: 0,
-                            restaurantId: restaurant.id,
-                        },
-                        {
-                            x: 0,
-                            y: 1,
-                            restaurantId: restaurant.id,
-                        },
-                        {
-                            x: 0,
-                            y: 2,
-                            restaurantId: restaurant.id,
-                        },
-                    ]
-                }
-            }
         }
     });
 
