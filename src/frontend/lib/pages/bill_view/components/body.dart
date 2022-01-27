@@ -7,6 +7,7 @@ import 'package:frontend/common_components/text_field_container.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/pages/bill_view/bill_view.dart';
 import 'package:frontend/common_components/background.dart';
+import 'package:frontend/pages/overview/components/body.dart';
 import 'package:frontend/utils.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
