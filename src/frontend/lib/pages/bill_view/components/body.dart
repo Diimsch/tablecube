@@ -183,7 +183,7 @@ class Body extends State<BillScreen> {
                                       color: unpaidItems.isEmpty
                                           ? Colors.grey
                                           : primaryColor,
-                                      text: "Mark as paid.",
+                                      text: "Mark as paid",
                                       click: () {
                                         if (unpaidItems.isEmpty) {
                                           return;
@@ -259,7 +259,7 @@ class Body extends State<BillScreen> {
                                           color: unpaidItems.isEmpty
                                               ? Colors.grey
                                               : primaryColor,
-                                          text: "Pay in cash.",
+                                          text: "Pay in cash",
                                           click: () {
                                             if (unpaidItems.isEmpty) {
                                               return;
